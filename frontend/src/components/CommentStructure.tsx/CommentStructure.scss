@@ -1,0 +1,226 @@
+.userInfo {
+  display: flex;
+  flex-direction: column;
+
+  .commentsTwo {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+
+    .fullName {
+      width: 607px;
+      height: 32px;
+      font-size: 17px;
+      letter-spacing: 0px;
+      line-height: 17px;
+      color: #1cf39c;
+      font-family: neuzeit-grotesk, sans-serif;
+      text-align: left;
+      margin-left: 10px;
+      font-weight: 700;
+    }
+  }
+}
+.actionDiv {
+  display: flex;
+  margin-left: 32px;
+  justify-content: space-between;
+
+  .halfDiv {
+    display: flex;
+    justify-content: flex-start !important;
+  }
+}
+
+.likeBtn {
+  background-color: transparent;
+  border: none;
+  color: #1cf399;
+  outline: none;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 10px;
+
+  &:hover {
+    outline: none;
+    cursor: pointer;
+  }
+  &:focus {
+    outline: 0;
+  }
+  .szh-menu {
+    border-radius: 5px;
+    background-color: #474756;
+    font-size: 0.925rem;
+    box-shadow: 1px 1px 20px 1px rgba(0, 0, 0, 0.1);
+    min-width: 7rem;
+    min-height: 2.925rem;
+    .szh-menu__arrow {
+      box-sizing: border-box;
+      width: 0.75rem;
+      height: 0.75rem;
+      background-color: #474756;
+      right: 96px;
+      position: absolute;
+      z-index: -1;
+    }
+    .szh-menu__item {
+      padding: 5px;
+    }
+    .szh-menu__item:hover {
+      background-color: transparent;
+    }
+  }
+}
+.replyBtn {
+  background-color: transparent;
+  border: none;
+  color: #1cf399;
+  outline: none;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 10px;
+
+  &:hover {
+    outline: none;
+    cursor: pointer;
+  }
+  &:focus {
+    outline: 0;
+  }
+}
+.reactionGroup {
+  border: none;
+  outline: none;
+  display: flex;
+  line-height: 10px;
+  background-color: transparent;
+  transform: scale(0.8);
+  &:hover {
+    outline: none;
+  }
+  &:focus {
+    outline: 0;
+  }
+}
+.reaction-count-text {
+  color: #f2f2f2;
+  padding: 2px;
+  margin-left: 8px;
+  font-weight: 600;
+  line-height: 10px;
+}
+.reply-btn-text {
+  margin-left: 10px;
+}
+.published-time-text {
+  line-height: 10px;
+  font-family: neuzeit-grotesk, sans-serif;
+  margin-left: 8px;
+  background-color: transparent;
+  color: #f2f2f2;
+  font-weight: 600;
+  cursor: auto;
+  // opacity: 0.5;
+}
+.vertical-line {
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+.flagBtn {
+  color: red;
+  background-image: url("../../assets/report-flag.svg");
+  width: 16px;
+  height: 16px;
+  transform: scale(0.9);
+  filter: invert(21%) sepia(100%) saturate(7414%) hue-rotate(359deg)
+    brightness(84%) contrast(73%);
+  &:hover {
+    outline: none;
+    cursor: pointer;
+  }
+  &:focus {
+    outline: 0;
+  }
+}
+.userLink {
+  display: flex;
+  text-decoration: none;
+  color: inherit;
+  align-items: center;
+  .imgdefault {
+    width: 28px;
+    height: 28px;
+    border-radius: 34px;
+  }
+}
+.replysection {
+  display: flex;
+  flex-direction: column;
+}
+.infoStyle {
+  margin-left: 36px;
+  width: 607px;
+  height: 32px;
+  font-size: 17px;
+  letter-spacing: 0px;
+  line-height: 17px;
+  color: #f2f2f2;
+  overflow-wrap: break-word !important;
+  font-family: neuzeit-grotesk, sans-serif;
+  text-align: left;
+}
+.comment-structure {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 5px;
+}
+.reply-flag-margin {
+  margin-left: 25px;
+}
+.float-right {
+  float: right !important;
+}
+.emoji-blue {
+  filter: sepia(100%) hue-rotate(190deg) saturate(910%);
+}
+.emoji-selected {
+  margin-top: 0.25rem;
+  margin-left: 0.925rem;
+  margin-right: 0.925rem;
+  transform: scale(2);
+  text-shadow: 0 0 10px #1b1b1b, 0 0 15px #1b1b1b, 0 0 20px #1b1b1b;
+  &:hover {
+    outline: none;
+    cursor: pointer;
+    text-shadow: none;
+  }
+  &:focus {
+    outline: 0;
+  }
+}
+.emoji-un-selected {
+  margin-top: 0.25rem;
+  margin-left: 0.925rem;
+  margin-right: 0.925rem;
+  transform: scale(1.5);
+  &:hover {
+    outline: none;
+    cursor: pointer;
+    transform: scale(2.5);
+    text-shadow: 0 0 10px #1b1b1b, 0 0 15px #1b1b1b, 0 0 20px #1b1b1b;
+  }
+  &:focus {
+    outline: 0;
+  }
+}
+.report-content {
+  width: 324px;
+  height: 25px;
+  font-size: 17px;
+  letter-spacing: 0px;
+  line-height: 17px;
+  color: #f2f2f2;
+  font-family: neuzeit-grotesk, sans-serif;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: #474756;
+}
