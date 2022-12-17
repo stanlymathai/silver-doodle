@@ -10,7 +10,7 @@ db.connect()
 
 // include routes
 const commentRoute = require("./module/comment/router/comments");
-const userRoute = require("./module/user/router/comments");
+const userRoute = require("./module/user/router/users");
 
 const app = express();
 

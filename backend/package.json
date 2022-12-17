@@ -4,12 +4,13 @@
   "description": "backend for discussion-box",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node bin/www",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Stanly Mathai",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",

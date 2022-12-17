@@ -1,4 +1,4 @@
-const Comment = require('../models/commentsModel')
+const Comment = require('../model/commentsModel')
 
 const addComment = (req, res) => {
     let data = {
