@@ -9,7 +9,8 @@ db.connect()
   .catch((e) => console.log("DB connection failed ", e));
 
 // include routes
-const postRoutes = require("./modules/posts/post.router");
+const commentRoute = require("./module/comment/router/comments");
+const userRoute = require("./module/user/router/comments");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.json({ limit: "20mb" }));
 app.use(express.urlencoded({ extended: false }));
 
 //routing
-app.use(process.env.ENDPOINT_API + "/posts", postRoutes);
+app.use(process.env.ENDPOINT_API + "/user", userRoute);
+app.use(process.env.ENDPOINT_API + "/comment", commentRoute);
 
 module.exports = app;
