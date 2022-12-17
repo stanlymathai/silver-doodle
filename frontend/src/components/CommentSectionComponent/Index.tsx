@@ -50,7 +50,7 @@ const CommentSection = () => {
                   i.replies.length > 0 &&
                   i.replies.map((j) => {
                     return (
-                      <div className='replySection' key={j.comId}>
+                      <div className='reply-section' key={j.comId}>
                         <CommentStructure
                           info={{ ...j, replyComponent: true }}
                           parentId={i.comId}
