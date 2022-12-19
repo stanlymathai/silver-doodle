@@ -53,7 +53,7 @@ const CommentBox = () => {
           currentUserId: "01a",
           currentUserImg:
             "https://s3.eu-west-2.amazonaws.com/prod-monitalks-media/userplaceholder_5734b83bd0.png",
-          currentUserFullName: "Stanly Mathai"
+          currentUserFullName: "MoniTalks"
         }}
         commentData={data}
         currentData={(data: any) => {
