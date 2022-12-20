@@ -1,18 +1,20 @@
-const Comment = require("../model/commentsModel");
+const Comment = require('../model/commentsModel');
 
 const addComment = (req, res) => {
-  let data = {
-    author: {
-      id: "req.body.id",
-      name: "req.body.name",
-    },
-    commentText: "req.body.commentText",
-  };
-  if ("parentId" in req.body) {
-    data.parentId = req.body.parentId;
-  }
-  if ("depth" in req.body) {
-    data.depth = req.body.depth;
+  let data;
+  if (req.body.payload) {
+    data = req.body.payload;
+  } else {
+    data = {
+      userId: Math.random(),
+      comId: Math.random(),
+      fullName: Math.random(),
+      text: Math.random(),
+      avatarUrl:
+        'https://s3.eu-west-2.amazonaws.com/prod-monitalks-media/userplaceholder_5734b83bd0.png',
+      timeStamp: new Date(),
+      replies: [],
+    };
   }
   const comment = new Comment(data);
   comment
@@ -34,7 +36,7 @@ const updateComment = (req, res) => {
     .exec()
     .then((result) =>
       res.status(200).json({
-        message: "Comment Updated",
+        message: 'Comment Updated',
         comment: comment,
       })
     )
@@ -42,12 +44,12 @@ const updateComment = (req, res) => {
 };
 
 const getComments = (req, res) => {
-  console.log("hai from getComments", Comment);
+  console.log('hai from getComments', Comment);
   Comment.find({})
     .lean()
     .exec()
     .then((comments) => {
-      console.log(comments, " getComments");
+      console.log(comments, ' getComments');
 
       return res.json(comments);
       let rec = (comment, threads) => {
@@ -68,7 +70,7 @@ const getComments = (req, res) => {
         comment;
       for (let i = 0; i < comments.length; i++) {
         comment = comments[i];
-        comment["children"] = {};
+        comment['children'] = {};
         let parentId = comment.parentId;
         if (!parentId) {
           threads[comment._id] = comment;
