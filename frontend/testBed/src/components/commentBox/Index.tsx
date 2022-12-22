@@ -27,6 +27,7 @@ const CommentBox = (props: CommentBoxProps) => {
 
   useEffect(() => {
     getCommentData();
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -34,6 +35,7 @@ const CommentBox = (props: CommentBoxProps) => {
       {!loading ? (
         <CommentSection
           commentData={commentData}
+          articleId={props.articleId}
           currentUser={props.currentUser}
           onReplyAction={apiHandler.reply}
           onSubmitAction={apiHandler.submit}

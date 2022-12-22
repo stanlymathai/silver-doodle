@@ -9,6 +9,7 @@ interface CommentSectionProps {
     currentUserImg: string
     currentUserFullName: string
   } | null
+  articleId: string
   inputStyle?: object
   submitBtnStyle?: object
   cancelBtnStyle?: object

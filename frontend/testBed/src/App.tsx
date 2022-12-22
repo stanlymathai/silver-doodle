@@ -2,7 +2,7 @@ import React from "react"
 import CommentBox from "./components/commentBox/Index"
 
 const App = () => {
-  const dummyProps = {
+  const dummyProps = { // for development purpose
     articleId: "ArticleId",
     currentUser: {
       currentUserId: "userID",

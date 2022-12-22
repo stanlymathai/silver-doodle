@@ -30,14 +30,14 @@ export const GlobalProvider = ({
     avatarUrl: string
     text: string
     replies?:
-      | Array<{
-          userId: string
-          comId: string
-          fullName: string
-          avatarUrl: string
-          text: string
-        }>
-      | undefined
+    | Array<{
+      userId: string
+      comId: string
+      fullName: string
+      avatarUrl: string
+      text: string
+    }>
+    | undefined
   }>
   onSubmitAction?: Function
   onReplyAction?: Function
@@ -52,14 +52,14 @@ export const GlobalProvider = ({
       avatarUrl: string
       text: string
       replies?:
-        | Array<{
-            userId: string
-            comId: string
-            fullName: string
-            avatarUrl: string
-            text: string
-          }>
-        | undefined
+      | Array<{
+        userId: string
+        comId: string
+        fullName: string
+        avatarUrl: string
+        text: string
+      }>
+      | undefined
     }>
   >([])
   const [replyArr, setReply] = useState<string[]>([])
