@@ -4,23 +4,22 @@ import _ from "lodash"
 export const GlobalContext = createContext({})
 
 export const GlobalProvider = ({
+  articleId,
   children,
   currentUser,
-  inputStyle,
   submitBtnStyle,
   cancelBtnStyle,
   commentData,
   onSubmitAction,
   onReplyAction,
-  currentData
 }: {
+  articleId: string
   children: any
   currentUser?: {
     currentUserId: string
     currentUserImg: string
     currentUserFullName: string
   } | null
-  inputStyle?: object
   submitBtnStyle?: object
   cancelBtnStyle?: object
   commentData?: Array<{
@@ -41,7 +40,6 @@ export const GlobalProvider = ({
   }>
   onSubmitAction?: Function
   onReplyAction?: Function
-  currentData?: Function
 }) => {
   const [currentUserData] = useState(currentUser)
   const [data, setData] = useState<
@@ -70,11 +68,6 @@ export const GlobalProvider = ({
     }
   }, [commentData])
 
-  useEffect(() => {
-    if (currentData) {
-      currentData(data)
-    }
-  }, [data])
 
   const handleReply = (id: string) => {
     let replyArrCopy: string[] = [...replyArr]
@@ -134,17 +127,16 @@ export const GlobalProvider = ({
       handleReply(comId)
     }
   }
-
   return (
     <GlobalContext.Provider
       value={{
+        articleId,
         currentUserData,
         data,
         onReply,
         handleReply,
         handleSubmit,
         replyArr,
-        inputStyle,
         submitBtnStyle,
         cancelBtnStyle,
         onSubmitAction,
