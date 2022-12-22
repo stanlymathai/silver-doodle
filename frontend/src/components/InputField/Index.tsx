@@ -12,7 +12,6 @@ interface InputFieldProps {
   parentId?: string
   mode?: string
   customImg?: string
-  inputStyle?: object
   cancelBtnStyle?: object
   submitBtnStyle?: object
   imgStyle?: object
@@ -26,7 +25,6 @@ const InputField = ({
   parentId,
   mode,
   customImg,
-  inputStyle,
   cancelBtnStyle,
   submitBtnStyle,
   imgStyle,
@@ -42,44 +40,20 @@ const InputField = ({
 
   const globalStore: any = useContext(GlobalContext)
 
-  const editMode = async (advText?: string) => {
-    const textToSend = advText ? advText : text
-
-    return (
-      await globalStore.onEdit(textToSend, comId, parentId),
-      globalStore.onEditAction &&
-        (await globalStore.onEditAction({
-          userId: globalStore.currentUserData.currentUserId,
-          comId: comId,
-          avatarUrl: globalStore.currentUserData.currentUserImg,
-          userProfile: globalStore.currentUserData.currentUserProfile
-            ? globalStore.currentUserData.currentUserProfile
-            : null,
-          fullName: globalStore.currentUserData.currentUserFullName,
-          text: textToSend,
-          parentOfEditedCommentId: parentId
-        }))
-    )
-  }
-
   const replyMode = async (replyUuid: string, advText?: string) => {
     const textToSend = advText ? advText : text
 
     return (
       await globalStore.onReply(textToSend, comId, parentId, replyUuid),
       globalStore.onReplyAction &&
-        (await globalStore.onReplyAction({
-          userId: globalStore.currentUserData.currentUserId,
-          repliedToCommentId: comId,
-          avatarUrl: globalStore.currentUserData.currentUserImg,
-          userProfile: globalStore.currentUserData.currentUserProfile
-            ? globalStore.currentUserData.currentUserProfile
-            : null,
-          fullName: globalStore.currentUserData.currentUserFullName,
-          text: textToSend,
-          parentOfRepliedCommentId: parentId,
-          comId: replyUuid
-        }))
+      (await globalStore.onReplyAction({
+        userId: globalStore.currentUserData.currentUserId,
+        avatarUrl: globalStore.currentUserData.currentUserImg,
+        fullName: globalStore.currentUserData.currentUserFullName,
+        repliedToCommentId: comId,
+        text: textToSend,
+        comId: replyUuid
+      }))
     )
   }
   const submitMode = async (createUuid: string, advText?: string) => {
@@ -88,17 +62,14 @@ const InputField = ({
     return (
       await globalStore.handleSubmit(textToSend, createUuid),
       globalStore.onSubmitAction &&
-        (await globalStore.onSubmitAction({
-          userId: globalStore.currentUserData.currentUserId,
-          comId: createUuid,
-          avatarUrl: globalStore.currentUserData.currentUserImg,
-          userProfile: globalStore.currentUserData.currentUserProfile
-            ? globalStore.currentUserData.currentUserProfile
-            : null,
-          fullName: globalStore.currentUserData.currentUserFullName,
-          text: textToSend,
-          replies: []
-        }))
+      (await globalStore.onSubmitAction({
+        userId: globalStore.currentUserData.currentUserId,
+        avatarUrl: globalStore.currentUserData.currentUserImg,
+        fullName: globalStore.currentUserData.currentUserFullName,
+        atricleId: globalStore.articleId,
+        text: textToSend,
+        comId: createUuid,
+      }))
     )
   }
 
@@ -106,9 +77,7 @@ const InputField = ({
     event.preventDefault()
     const createUuid = uuidv4()
     const replyUuid = uuidv4()
-    mode === "editMode"
-      ? editMode(advText)
-      : mode === "replyMode"
+    mode === "replyMode"
       ? replyMode(replyUuid, advText)
       : submitMode(createUuid, advText)
     setText("")
@@ -122,7 +91,6 @@ const InputField = ({
         imgStyle={imgStyle}
         customImg={customImg}
         mode={mode}
-        inputStyle={inputStyle}
         cancelBtnStyle={cancelBtnStyle}
         comId={comId}
         submitBtnStyle={submitBtnStyle}

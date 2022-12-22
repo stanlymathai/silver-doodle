@@ -1,15 +1,23 @@
-import http from "./http.service";
-import { ICommentData } from "./interface.service"
+import HTTP from "./http.service";
+import { ICommentData } from "./interface.service";
 
+const handleError = (error: any) => console.log(error)
 class CommentDataService {
-  getAll(articleId: string) {
-    return http.get<Array<ICommentData>>(`/comment/${articleId}`);
+  async getAll(articleId: string) {
+    try {
+      return await HTTP.get<Array<ICommentData>>(`/comment/${articleId}`);
+    } catch (e) {
+      return handleError(e);
+    }
   }
 
-  submit(data: ICommentData) {
-    console.log("check submit, ", data);
-
-    return http.post<ICommentData>("/comment", { payload: data });
+  async submit(payload: ICommentData) {
+    console.log("check submit payload, ", payload);
+    try {
+      return await HTTP.post<ICommentData>("/comment", { payload });
+    } catch (e) {
+      return handleError(e);
+    }
   }
 
   reply(data: ICommentData) {
@@ -17,19 +25,19 @@ class CommentDataService {
   }
 
   get(id: string) {
-    return http.get<ICommentData>(`/comment/${id}`);
+    return HTTP.get<ICommentData>(`/comment/${id}`);
   }
 
   create(data: ICommentData) {
-    return http.post<ICommentData>("/comment", data);
+    return HTTP.post<ICommentData>("/comment", data);
   }
 
   update(data: ICommentData, id: any) {
-    return http.put<any>(`/comment/${id}`, data);
+    return HTTP.put<any>(`/comment/${id}`, data);
   }
 
   findByArticle(article: string) {
-    return http.get<Array<ICommentData>>(`/comment?article=${article}`);
+    return HTTP.get<Array<ICommentData>>(`/comment?article=${article}`);
   }
 }
 

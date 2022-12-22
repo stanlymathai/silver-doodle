@@ -4,12 +4,7 @@ const addComment = (req, res) => {
   const comment = new Comment(req.body.payload);
   comment
     .save()
-    .then((res) => {
-      if (res)
-        res.json({
-          message: 'Comment Added',
-        });
-    })
+    .then(() => res.status(200).json({ message: 'Success' }))
     .catch((err) => res.status(500).json({ error: err }));
 };
 
@@ -19,7 +14,6 @@ const getComments = (req, res) => {
     .lean()
     .exec()
     .then((comments) => {
-
       return res.json(comments);
       let rec = (comment, threads) => {
         for (var thread in threads) {

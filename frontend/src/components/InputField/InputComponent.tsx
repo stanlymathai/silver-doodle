@@ -7,7 +7,6 @@ interface InputComponentProps {
   comId?: string
   mode?: string
   customImg?: string
-  inputStyle?: object
   cancelBtnStyle?: object
   submitBtnStyle?: object
   imgStyle?: object
@@ -68,7 +67,7 @@ const InputComponent = ({
           type='submit'
           disabled={text != "" ? false : true}
           style={globalStore.submitBtnStyle || submitBtnStyle}
-          onClick={(e) => (text ? handleSubmit(e) : null)}
+          onClick={(e) => handleSubmit(e)}
         >
           Post
         </button>

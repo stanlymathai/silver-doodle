@@ -1,28 +1,31 @@
 let mongoose = require('mongoose');
 
-let commentSchema = mongoose.Schema({
-  userId: {
-    type: String,
+let commentSchema = mongoose.Schema(
+  {
+    userId: {
+      type: String,
+    },
+    comId: {
+      type: String,
+    },
+    fullName: {
+      type: String,
+    },
+    text: {
+      type: String,
+    },
+    avatarUrl: {
+      type: String,
+    },
+    timeStamp: {
+      type: String,
+    },
+    atricleId: {
+      type: String,
+    },
   },
-  comId: {
-    type: String,
-  },
-  fullName: {
-    type: String,
-  },
-  text: {
-    type: String,
-  },
-  avatarUrl: {
-    type: String,
-  },
-  timeStamp: {
-    type: String,
-  },
-  replies: {
-    type: Array,
-  },
-});
+  { versionKey: false }
+);
 
 // for future ref
 // parentId: {

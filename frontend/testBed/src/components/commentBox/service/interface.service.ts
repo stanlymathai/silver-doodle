@@ -1,4 +1,5 @@
 interface ICommentData {
+  articleId: string;
   id?: any | null;
   userId: string;
   comId: string;
@@ -22,4 +23,4 @@ interface CommentBoxProps {
     currentUserImg: string
   }
 }
-export type {ICommentData, CommentBoxProps}
+export type { ICommentData, CommentBoxProps }
