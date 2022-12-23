@@ -3,7 +3,7 @@ import { CommentSection } from "discussion-box";
 import "discussion-box/dist/index.css";
 
 import style from "./customStyle";
-import apiHandler from "./service/api.service";
+import API from "./service/api.service";
 import { CommentBoxProps } from "./service/interface.service";
 
 const CommentBox = (props: CommentBoxProps) => {
@@ -12,10 +12,9 @@ const CommentBox = (props: CommentBoxProps) => {
 
   const getCommentData = () => {
     setLoading(true);
-    apiHandler
-      .getAll(props.articleId)
-      .then((res: any) => setComments(res.data));
-
+    API.fetchComments(props.articleId).then((res: any) =>
+      setComments(Object.values(res.data.threads))
+    );
     setLoading(false);
   };
 
@@ -29,8 +28,8 @@ const CommentBox = (props: CommentBoxProps) => {
           commentData={commentData}
           articleId={props.articleId}
           currentUser={props.currentUser}
-          onReplyAction={apiHandler.reply}
-          onSubmitAction={apiHandler.submit}
+          onReplyAction={API.handleAction}
+          onSubmitAction={API.handleAction}
           submitBtnStyle={style.submitButton}
           cancelBtnStyle={style.cancelButton}
         />

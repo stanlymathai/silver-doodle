@@ -1,55 +1,40 @@
 const Comment = require('../model/commentsModel');
 
-const addComment = (req, res) => {
-  const comment = new Comment(req.body.payload);
-  comment
-    .save()
-    .then(() => res.status(200).json({ message: 'Success' }))
-    .catch((err) => res.status(500).json({ error: err }));
-};
-
-const getComments = (req, res) => {
-  let articleId = req.params.articleId;
-  Comment.find({})
-    .lean()
-    .exec()
-    .then((comments) => {
-      return res.json(comments);
-      let rec = (comment, threads) => {
-        for (var thread in threads) {
-          value = threads[thread];
-
-          if (thread.toString() === comment.parentId.toString()) {
-            value.children[comment._id] = comment;
-            return;
-          }
-
-          if (value.children) {
-            rec(comment, value.children);
-          }
-        }
-      };
-      let threads = {},
-        comment;
-      for (let i = 0; i < comments.length; i++) {
-        comment = comments[i];
-        comment['children'] = {};
-        let parentId = comment.parentId;
-        if (!parentId) {
-          threads[comment._id] = comment;
-          continue;
-        }
-        rec(comment, threads);
-      }
-      res.json({
-        count: comments.length,
-        comments: threads,
-      });
-    })
-    .catch((err) => res.status(500).json({ error: err }));
-};
-
 module.exports = {
-  addComment,
-  getComments,
+  addComment(req, res) {
+    const comment = new Comment(req.body.payload);
+    comment
+      .save()
+      .then(() => res.json({ message: 'Success' }))
+      .catch((err) => res.status(500).json({ error: err }));
+  },
+
+  async getComments(req, res) {
+    try {
+      let threads = await Comment.find(
+        { repliedToCommentId: null, articleId: req.params.articleId },
+        { articleId: 0, _id: 0 }
+      )
+        .lean()
+        .exec();
+      let replies = await Comment.find(
+        {
+          repliedToCommentId: { $in: threads.map(({ comId }) => comId) },
+        },
+        { articleId: 0, _id: 0 }
+      )
+        .lean()
+        .exec();
+
+      threads.forEach((thread) => {
+        thread.replies = replies.filter(
+          (i) => i.repliedToCommentId == thread.comId
+        );
+      });
+
+      res.json({ threads });
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  },
 };

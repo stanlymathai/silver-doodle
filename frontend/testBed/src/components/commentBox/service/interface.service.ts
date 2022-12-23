@@ -13,6 +13,7 @@ interface ICommentData {
     avatarUrl: string;
     text: string;
   }> | undefined;
+  repliedToCommentId: string;
 }
 
 interface CommentBoxProps {

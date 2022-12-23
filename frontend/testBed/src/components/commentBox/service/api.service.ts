@@ -3,7 +3,7 @@ import { ICommentData } from "./interface.service";
 
 const handleError = (error: any) => console.log(error)
 class CommentDataService {
-  async getAll(articleId: string) {
+  async fetchComments(articleId: string) {
     try {
       return await HTTP.get<Array<ICommentData>>(`/comment/${articleId}`);
     } catch (e) {
@@ -11,17 +11,12 @@ class CommentDataService {
     }
   }
 
-  async submit(payload: ICommentData) {
-    console.log("check submit payload, ", payload);
+  async handleAction(payload: ICommentData) {
     try {
       return await HTTP.post<ICommentData>("/comment", { payload });
     } catch (e) {
       return handleError(e);
     }
-  }
-
-  reply(data: ICommentData) {
-    console.log("check reply, ", data);
   }
 
   get(id: string) {

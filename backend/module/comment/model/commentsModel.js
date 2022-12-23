@@ -20,9 +20,12 @@ let commentSchema = mongoose.Schema(
     timeStamp: {
       type: String,
     },
-    atricleId: {
+    articleId: {
       type: String,
     },
+    repliedToCommentId:{
+      type: String,
+    }
   },
   { versionKey: false }
 );

@@ -50,6 +50,7 @@ const InputField = ({
         userId: globalStore.currentUserData.currentUserId,
         avatarUrl: globalStore.currentUserData.currentUserImg,
         fullName: globalStore.currentUserData.currentUserFullName,
+        articleId: globalStore.articleId,
         repliedToCommentId: comId,
         text: textToSend,
         comId: replyUuid
@@ -66,7 +67,7 @@ const InputField = ({
         userId: globalStore.currentUserData.currentUserId,
         avatarUrl: globalStore.currentUserData.currentUserImg,
         fullName: globalStore.currentUserData.currentUserFullName,
-        atricleId: globalStore.articleId,
+        articleId: globalStore.articleId,
         text: textToSend,
         comId: createUuid,
       }))
