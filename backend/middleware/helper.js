@@ -1,21 +1,54 @@
+const passport = require("passport");
 const jwt = require("jsonwebtoken");
 
 module.exports = {
-  verifyToken: (req, res, next) => {
-    const token =
-      req.body.token || req.query.token || req.headers["x-access-token"];
-    if (!token) {
-      return res.status(403).send("A token is required for authentication");
-    }
-    try {
-      const decoded = jwt.verify(process.env.TOKEN_SECRET, token);
-      req.user = decoded;
-    } catch (err) {
-      return res.status(401).json({
-        message : "Auth Failed",
-        error: error,
-    });
-    }
-    return next();
+  verifyAuthentication: function (req, res, next) {
+    passport.authenticate("jwt", function (err, user, info) {
+      try {
+        let isTokenExpired = 0;
+        const payload = payloadFromRefreshToken(req.headers.refreshtoken);
+
+        if (info && info.name == "TokenExpiredError") {
+          isTokenExpired = 1;
+          const token = jwt.sign(
+            payload,
+            Buffer.from(process.env.AUTHENTICATION_KEY).toString("base64"),
+            { expiresIn: "30m" }
+          );
+          req.headers.authorization = "Bearer " + token;
+          res.setHeader("token", "Bearer " + token);
+          res.setHeader("isTokenExpired", isTokenExpired);
+          req.user = { id: payload.id };
+          next();
+        } else if (!err && user) {
+          req.user = { id: payload.id };
+          next();
+        } else if (!user || err) {
+          res.status(401);
+          res.end();
+          return;
+        }
+      } catch (err) {
+        if (err) next(err);
+        res.status(401);
+        res.end();
+        return;
+      }
+    })(req, res, next);
   },
+  payloadFromRefreshToken: payloadFromRefreshToken,
 };
+
+function payloadFromRefreshToken(token) {
+  return jwt.verify(
+    token,
+    Buffer.from(process.env.REFRESH_TOKEN_KEY).toString("base64"),
+    function (err, payload) {
+      if (payload) {
+        delete payload.iat;
+        delete payload.exp;
+        return payload;
+      }
+    }
+  );
+}
