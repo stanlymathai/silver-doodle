@@ -1,6 +1,6 @@
-var User = require("../model/userModel");
-var bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+var User = require('../../user/model/userModel');
+var bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const userSignUp = (req, res) => {
   console.log(`req.body knri `, req.body);
@@ -10,7 +10,7 @@ const userSignUp = (req, res) => {
       if (user.length >= 1) {
         return res.status(409).json({
           status: 409,
-          message: "Email exists",
+          message: 'Email exists',
         });
       } else {
         bcrypt.genSalt(parseInt(process.env.JWT_KEY), (err, salt) => {
@@ -40,12 +40,12 @@ const userSignUp = (req, res) => {
                     },
                     process.env.JWT_KEY,
                     {
-                      expiresIn: "1h",
+                      expiresIn: '1h',
                     }
                   );
                   console.log(token);
                   res.status(201).json({
-                    message: "User created",
+                    message: 'User created',
                     id: user._id,
                     name: user.name,
                     token: token,
@@ -77,13 +77,13 @@ const userLogIn = (req, res) => {
             },
             process.env.JWT_KEY,
             {
-              expiresIn: "1h",
+              expiresIn: '1h',
             }
           );
           if (resp) {
             return res.status(200).json({
               status: 200,
-              messsage: "Auth succ",
+              messsage: 'Auth succ',
               id: user._id,
               name: user.name,
               token: token,
@@ -91,7 +91,7 @@ const userLogIn = (req, res) => {
           } else {
             return res.status(401).json({
               status: 401,
-              message: "Auth failed",
+              message: 'Auth failed',
             });
           }
         })
@@ -99,7 +99,7 @@ const userLogIn = (req, res) => {
           if (err) {
             return res.status(401).json({
               status: 401,
-              message: "Auth failed",
+              message: 'Auth failed',
             });
           }
         });
