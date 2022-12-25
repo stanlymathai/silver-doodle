@@ -21,7 +21,6 @@ const App = () => {
     // eslint-disable-next-line
     ({ search, pathname } = window.location, { search, pathname })
     if (search) {
-      console.log(pathname)
       window.history.pushState('', '', pathname);
       userSearchHandler(search);
     }

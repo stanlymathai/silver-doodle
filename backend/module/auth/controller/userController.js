@@ -3,7 +3,6 @@ var bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const userSignUp = (req, res) => {
-  console.log(`req.body knri `, req.body);
   User.find({ name: req.body.name })
     .exec()
     .then((user) => {

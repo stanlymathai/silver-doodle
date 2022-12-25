@@ -1,5 +1,5 @@
-var mongoose = require('mongoose');
-var userSchema = mongoose.Schema(
+const mongoose = require('mongoose');
+const userSchema = mongoose.Schema(
   {
     userId: {
       type: String,
@@ -16,7 +16,7 @@ var userSchema = mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { versionKey: false }
 );
 
 module.exports = mongoose.model('Users', userSchema);
