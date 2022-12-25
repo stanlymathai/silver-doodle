@@ -2,7 +2,7 @@
 const passport = require('passport');
 const passportJWT = require('passport-jwt');
 
-// const authUserModel = require('../auth/model/authUserModel');
+const authController = require('../auth/controller/authController');
 
 // ExtractJwt to help extract the token
 let ExtractJwt = passportJWT.ExtractJwt;
@@ -16,13 +16,13 @@ jwtOptions.secretOrKey = Buffer.from(process.env.AUTHENTICATION_KEY).toString(
 );
 
 // lets create our strategy for web token
-// let strategy = new JwtStrategy(jwtOptions, function (jwt_payload, done) {
-//   authUserModel
-//     .authenticate(jwt_payload)
-//     .then((result) => done(null, result))
-//     .catch((err) => done(err, false));
-// });
-// // use the strategy
-// passport.use(strategy);
+let strategy = new JwtStrategy(jwtOptions, function (jwt_payload, done) {
+  authController
+    .authenticate(jwt_payload)
+    .then((result) => done(null, result))
+    .catch((err) => done(err, false));
+});
+// use the strategy
+passport.use(strategy);
 
 module.exports = passport;

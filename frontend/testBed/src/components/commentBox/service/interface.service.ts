@@ -6,22 +6,29 @@ interface ICommentData {
   fullName: string;
   avatarUrl: string;
   text: string;
-  replies?: Array<{
+  replies?:
+  | Array<{
     userId: string;
     comId: string;
     fullName: string;
     avatarUrl: string;
     text: string;
-  }> | undefined;
+  }>
+  | undefined;
   repliedToCommentId: string;
 }
 
 interface CommentBoxProps {
-  articleId: string,
+  articleId: string;
   currentUser: {
-    currentUserId: string,
-    currentUserFullName: string,
-    currentUserImg: string
-  }
+    currentUserId: string;
+    currentUserFullName: string;
+    currentUserImg: string;
+  };
 }
-export type { ICommentData, CommentBoxProps }
+
+interface IAxiosHeaders {
+  Authorization: string | any;
+  refreshToken: string | any;
+}
+export type { ICommentData, CommentBoxProps, IAxiosHeaders };

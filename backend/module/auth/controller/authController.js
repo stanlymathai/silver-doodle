@@ -1,7 +1,22 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const User = require('../model/userModel');
 
+const authenticate = async (payload) => {
+  return new Promise((resolve, reject) => {
+    User.find({
+      userId: payload.userId,
+      email: payload.email,
+    })
+      .lean()
+      .exec()
+      .then(function (dbUser) {
+        if (!dbUser) reject({ message: 'Unauthorized' });
+        if (dbUser) resolve(dbUser);
+      })
+      .catch((e) => reject(e));
+  });
+};
 const main = async (req, res) => {
   await User.find({
     userId: req.body.user_id,
@@ -49,4 +64,4 @@ const onboardUser = (req, res) => {
 
   res.json({ token: 'Bearer ' + token, refreshToken });
 };
-module.exports = { index: main };
+module.exports = { index: main, authenticate };
