@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require('uuid');
 const User = require('../model/userModel');
 
@@ -17,7 +18,7 @@ const main = async (req, res) => {
 };
 
 const registerUser = async (req, res) => {
-  let userParams = {
+  const userParams = {
     userId: req.body.user_id,
     email: req.body.user_email,
     authAccessToken: uuidv4(),
@@ -30,7 +31,22 @@ const registerUser = async (req, res) => {
 };
 
 const onboardUser = (req, res) => {
-  console.log(req.userObj, 'yes user');
-  res.json({ user: req.userObj });
+  const payload = {
+    userId: req.userObj.user_id,
+    email: req.userObj.user_email,
+    authAccessToken: req.userObj.authAccessToken,
+  };
+  const token = jwt.sign(
+    payload,
+    Buffer.from(process.env.AUTHENTICATION_KEY).toString('base64'),
+    { expiresIn: '30m' }
+  );
+  const refreshToken = jwt.sign(
+    payload,
+    Buffer.from(process.env.REFRESH_TOKEN_KEY).toString('base64'),
+    { expiresIn: '1y' }
+  );
+
+  res.json({ token: 'Bearer ' + token, refreshToken });
 };
 module.exports = { index: main };

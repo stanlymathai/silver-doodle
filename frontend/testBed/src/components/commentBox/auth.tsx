@@ -45,8 +45,8 @@ export const userSearchHandler = (slug: string) => {
         getCurrentUserInfo(payload[0], payload[1]).then((res) => {
             userAuthentication(res.data.id, res.data.EmailAddress).then(
                 (response) => {
-                    localStorage.setItem("token", response.data.token);
-                    localStorage.setItem("refreshToken", response.data.refreshToken);
+                    sessionStorage.setItem("token", response.data.token);
+                    sessionStorage.setItem("refreshToken", response.data.refreshToken);
                 }
             );
             const currentUser = {
