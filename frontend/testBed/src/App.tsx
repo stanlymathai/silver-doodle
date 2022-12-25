@@ -1,26 +1,36 @@
-import React from "react"
-import CommentBox from "./components/commentBox/Index"
+import React, { useEffect } from "react"
+import Dashboard from "./components/dashboard/Index"
+import { userSearchHandler } from "./components/commentBox/auth";
+
+/*
+  url params should be in the below format
+  http://localhost:3000?q={token}+{userId} // backoffice
+*/
+
 
 const App = () => {
-  const dummyProps = { // for development purpose
-    articleId: "dummy_articleId",
-    currentUser: {
-      currentUserId: "dummy_userID",
-      currentUserFullName: "fullName",
-      currentUserImg: "https://s3.eu-west-2.amazonaws.com/prod-monitalks-media/userplaceholder_5734b83bd0.png",
+
+  useEffect(() => {
+    handleLocationParams();
+  }, []);
+
+  const handleLocationParams = () => {
+    let search: string;
+    let pathname: string;
+
+    // eslint-disable-next-line
+    ({ search, pathname } = window.location, { search, pathname })
+    if (search) {
+      console.log(pathname)
+      window.history.pushState('', '', pathname);
+      userSearchHandler(search);
     }
-  }
+  };
+
+
+
   return (
-    <div style={{ background: "#1a1a2b" }}>
-      <div
-        style={{
-          margin: "auto",
-          width: "50%"
-        }}
-      >
-        <CommentBox articleId={dummyProps.articleId} currentUser={dummyProps.currentUser} />
-      </div>
-    </div>
+    <Dashboard />
   )
 }
 
