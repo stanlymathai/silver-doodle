@@ -8,7 +8,7 @@ db.connect()
   .then(() => console.log("DB connected"))
   .catch((e) => console.log("DB connection failed ", e));
 
-const passport = require("./modules/mytag/common/passport.js");
+const passport = require("./module/middleware/passport.js");
 
 // include routes
 const authRoute = require("./module/auth/router/auth");
