@@ -18,8 +18,10 @@ const CommentBox = (props: CommentBoxProps) => {
     setLoading(false);
   };
 
-  // eslint-disable-next-line
-  useEffect(() => getCommentData(), []);
+  useEffect(() => {
+    if (!!props.articleId) getCommentData()
+    // eslint-disable-next-line
+  }, [props.articleId]);
 
   return (
     <div style={{ width: "100%" }}>

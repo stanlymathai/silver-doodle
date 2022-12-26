@@ -1,8 +1,11 @@
 import "./InputField.scss"
 import { useContext, useEffect, useState } from "react"
 import { GlobalContext } from "../../context/Provider"
+
 import React from "react"
+import moment from "moment";
 const { v4: uuidv4 } = require("uuid")
+
 import InputComponent from "./InputComponent"
 
 interface InputFieldProps {
@@ -42,9 +45,10 @@ const InputField = ({
 
   const replyMode = async (replyUuid: string, advText?: string) => {
     const textToSend = advText ? advText : text
+    const timeStamp = moment().format()
 
     return (
-      await globalStore.onReply(textToSend, comId, parentId, replyUuid),
+      await globalStore.onReply(textToSend, comId, parentId, replyUuid, timeStamp),
       globalStore.onReplyAction &&
       (await globalStore.onReplyAction({
         userId: globalStore.currentUserData.currentUserId,
@@ -53,12 +57,14 @@ const InputField = ({
         articleId: globalStore.articleId,
         repliedToCommentId: comId,
         text: textToSend,
-        comId: replyUuid
+        comId: replyUuid,
+        timeStamp
       }))
     )
   }
   const submitMode = async (createUuid: string, advText?: string) => {
     const textToSend = advText ? advText : text
+    const timeStamp = moment().format()
 
     return (
       await globalStore.handleSubmit(textToSend, createUuid),
@@ -70,6 +76,7 @@ const InputField = ({
         articleId: globalStore.articleId,
         text: textToSend,
         comId: createUuid,
+        timeStamp
       }))
     )
   }

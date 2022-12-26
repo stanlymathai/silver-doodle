@@ -40,7 +40,7 @@ const Dashboard = () => {
                         </form>
                     </div>
                 )}
-                {showCommentBox && <CommentBox articleId={articleId} currentUser={currentUser} />}
+                {(showCommentBox && currentUser) && <CommentBox articleId={articleId} currentUser={currentUser} />}
             </div>
             {!currentUser && (
                 <div style={{ color: "red", padding: "20px" }}>

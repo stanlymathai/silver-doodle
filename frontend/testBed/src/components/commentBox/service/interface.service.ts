@@ -5,6 +5,7 @@ interface ICommentData {
   comId: string;
   fullName: string;
   avatarUrl: string;
+  timeStamp: string;
   text: string;
   replies?:
   | Array<{
@@ -12,6 +13,7 @@ interface ICommentData {
     comId: string;
     fullName: string;
     avatarUrl: string;
+    timeStamp: string;
     text: string;
   }>
   | undefined;

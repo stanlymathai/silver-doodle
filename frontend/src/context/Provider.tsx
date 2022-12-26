@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useState } from "react"
+
 import _ from "lodash"
 
 export const GlobalContext = createContext({})
@@ -27,6 +28,7 @@ export const GlobalProvider = ({
     comId: string
     fullName: string
     avatarUrl: string
+    timeStamp: string
     text: string
     replies?:
     | Array<{
@@ -34,6 +36,7 @@ export const GlobalProvider = ({
       comId: string
       fullName: string
       avatarUrl: string
+      timeStamp: string
       text: string
     }>
     | undefined
@@ -48,6 +51,7 @@ export const GlobalProvider = ({
       comId: string
       fullName: string
       avatarUrl: string
+      timeStamp: string
       text: string
       replies?:
       | Array<{
@@ -55,6 +59,7 @@ export const GlobalProvider = ({
         comId: string
         fullName: string
         avatarUrl: string
+        timeStamp: string
         text: string
       }>
       | undefined
@@ -63,9 +68,7 @@ export const GlobalProvider = ({
   const [replyArr, setReply] = useState<string[]>([])
 
   useEffect(() => {
-    if (commentData) {
-      setData(commentData)
-    }
+    if (commentData) setData(commentData)
   }, [commentData])
 
 
@@ -81,47 +84,50 @@ export const GlobalProvider = ({
     }
   }
 
-  const handleSubmit = (text: string, uuid: string) => {
+  const handleSubmit = (text: string, uuid: string, timeStamp: string) => {
     let copyData = [...data]
     copyData.push({
-      userId: currentUserData!.currentUserId,
+      text,
+      timeStamp,
+      replies: [],
       comId: uuid,
+      userId: currentUserData!.currentUserId,
       avatarUrl: currentUserData!.currentUserImg,
       fullName: currentUserData!.currentUserFullName,
-      text: text,
-      replies: []
+
     })
     setData(copyData)
   }
 
   const onReply = (
     text: string,
+    uuid: string,
     comId: string,
     parentId: string,
-    uuid: string
+    timeStamp: string
   ) => {
     let copyData = [...data]
     if (parentId) {
       const indexOfParent = _.findIndex(copyData, { comId: parentId })
       copyData[indexOfParent].replies!.push({
-        userId: currentUserData!.currentUserId,
+        text,
+        timeStamp,
         comId: uuid,
+        userId: currentUserData!.currentUserId,
         avatarUrl: currentUserData!.currentUserImg,
-        fullName: currentUserData!.currentUserFullName,
-        text: text
+        fullName: currentUserData!.currentUserFullName
       })
       setData(copyData)
       handleReply(comId)
     } else {
-      const indexOfId = _.findIndex(copyData, {
-        comId: comId
-      })
+      const indexOfId = _.findIndex(copyData, { comId })
       copyData[indexOfId].replies!.push({
-        userId: currentUserData!.currentUserId,
+        text,
+        timeStamp,
         comId: uuid,
+        userId: currentUserData!.currentUserId,
         avatarUrl: currentUserData!.currentUserImg,
-        fullName: currentUserData!.currentUserFullName,
-        text: text
+        fullName: currentUserData!.currentUserFullName
       })
       setData(copyData)
       handleReply(comId)
