@@ -2,7 +2,7 @@
   .comment-box {
     padding: 8px;
     font-family: neuzeit-grotesk, sans-serif;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   }
 
   .userInfo {
@@ -87,13 +87,14 @@
   }
 
   .replyBtn {
-    background-color: transparent;
     border: none;
     color: #1cf399;
     outline: none;
     font-weight: 600;
     font-size: 14px;
     line-height: 10px;
+    background-color: transparent;
+    font-family: neuzeit-grotesk, sans-serif;
 
     &:hover {
       outline: none;
@@ -141,7 +142,7 @@
     background-color: transparent;
     color: #f2f2f2;
     cursor: auto;
-    opacity: 0.9;
+    opacity: 0.999;
   }
 
   .vertical-line {

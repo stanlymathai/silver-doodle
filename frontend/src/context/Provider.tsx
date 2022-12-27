@@ -85,8 +85,7 @@ export const GlobalProvider = ({
   }
 
   const handleSubmit = (text: string, uuid: string, timeStamp: string) => {
-    let copyData = [...data]
-    copyData.push({
+    let commentData = {
       text,
       timeStamp,
       replies: [],
@@ -94,9 +93,8 @@ export const GlobalProvider = ({
       userId: currentUserData!.currentUserId,
       avatarUrl: currentUserData!.currentUserImg,
       fullName: currentUserData!.currentUserFullName,
-
-    })
-    setData(copyData)
+    }
+    setData([commentData, ...data])
   }
 
   const onReply = (
