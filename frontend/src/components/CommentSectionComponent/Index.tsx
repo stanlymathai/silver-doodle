@@ -12,6 +12,9 @@ const CommentSection = () => {
 
   return (
     <div className="overlay">
+
+      <InputField />
+
       {globalStore.data.length > 0 ? (
         globalStore.data.map(
           (i: {
@@ -58,7 +61,6 @@ const CommentSection = () => {
         <NoComments />
       )}
 
-      <InputField />
     </div>
   );
 };

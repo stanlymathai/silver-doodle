@@ -1,4 +1,3 @@
-import "./InputField.scss"
 import { useContext, useEffect, useState } from "react"
 import { GlobalContext } from "../../context/Provider"
 
@@ -6,6 +5,7 @@ import React from "react"
 import moment from "moment";
 const { v4: uuidv4 } = require("uuid")
 
+import "./InputField.scss"
 import InputComponent from "./InputComponent"
 
 interface InputFieldProps {
@@ -48,7 +48,7 @@ const InputField = ({
     const timeStamp = moment().format()
 
     return (
-      await globalStore.onReply(textToSend, comId, parentId, replyUuid, timeStamp),
+      await globalStore.onReply(textToSend, replyUuid, comId, parentId, timeStamp),
       globalStore.onReplyAction &&
       (await globalStore.onReplyAction({
         userId: globalStore.currentUserData.currentUserId,
