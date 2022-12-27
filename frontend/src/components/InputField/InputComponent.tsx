@@ -32,8 +32,7 @@ const InputComponent = ({
 
   return (
     <form
-      className='form'
-      style={{ backgroundColor: "#1a1a2b" }}
+      className='comment-session-form'
       onSubmit={() => handleSubmit}
     >
       <div className='userImg' style={imgDiv}>

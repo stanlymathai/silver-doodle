@@ -1,17 +1,21 @@
-import CommentStructure from "../CommentStructure/Index";
-import InputField from "../InputField/Index";
-import "./CommentSection.css";
-import { useContext } from "react";
-import { GlobalContext } from "../../context/Provider";
-import _ from "lodash";
 import React from "react";
+import { useContext } from "react";
+
+import _ from "lodash";
+import "./CommentSection.scss";
+
 import NoComments from "./NoComments";
+import InputField from "../InputField/Index";
+import { GlobalContext } from "../../context/Provider";
+import CommentStructure from "../CommentStructure/Index";
+
+
 
 const CommentSection = () => {
   const globalStore: any = useContext(GlobalContext);
 
   return (
-    <div className="overlay">
+    <div className="comment-session-overlay">
 
       <InputField />
 
@@ -60,7 +64,6 @@ const CommentSection = () => {
       ) : (
         <NoComments />
       )}
-
     </div>
   );
 };

@@ -190,7 +190,7 @@ const CommentStructure = ({
   );
 
   return (
-    <div className="comment-structure">
+    <div className="comment-session-structure">
       {replyMode ? commentBoxWithInput() : commentBox()}
       {1 + 1 == 1 && flagAction()}
     </div>
