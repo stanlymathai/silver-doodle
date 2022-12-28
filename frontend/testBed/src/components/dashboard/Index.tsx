@@ -13,7 +13,7 @@ const Dashboard = () => {
     }, []);
 
     return (
-        <div style={{ background: "#1a1a2b", minHeight: "250px" }}>
+        <div style={{ background: "#1a1a2b", minHeight: "650px" }}>
             <div
                 style={{
                     margin: "auto",

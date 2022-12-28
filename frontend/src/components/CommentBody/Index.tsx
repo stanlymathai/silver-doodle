@@ -9,12 +9,12 @@ import moment from "moment";
 import { Modal } from "react-responsive-modal";
 import { Menu, MenuItem } from "@szhsin/react-menu";
 
-import "./CommentStructure.scss";
+import "./Style.scss";
 import "@szhsin/react-menu/dist/index.css";
 import "react-responsive-modal/styles.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
 
-interface CommentStructureProps {
+interface ICommentBody {
   info: {
     userId: string;
     comId: string;
@@ -30,11 +30,11 @@ interface CommentStructureProps {
   replyMode: boolean;
 }
 
-const CommentStructure = ({
+const CommentBody = ({
   info,
   parentId,
   replyMode,
-}: CommentStructureProps) => {
+}: ICommentBody) => {
   const globalStore: any = useContext(GlobalContext);
   const currentUser = globalStore.currentUserData;
 
@@ -197,4 +197,4 @@ const CommentStructure = ({
   );
 };
 
-export default CommentStructure;
+export default CommentBody;

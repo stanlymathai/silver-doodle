@@ -1,31 +1,27 @@
 import React from "react";
 import { useContext } from "react";
 
+import "./Style.scss";
 import _ from "lodash";
-import "./CommentSection.scss";
 
+import Header from "../Header/Index";
 import InputField from "../InputField/Index";
-import InfiniteScroll from 'react-infinite-scroller'
-import { GlobalContext } from "../../context/Provider";
-import CommentStructure from "../CommentStructure/Index";
+import CommentBody from "../CommentBody/Index";
 
-const loadFunc = (offset: Number) => {
-  console.log(offset, "offset")
-}
+import InfiniteScroll from 'react-infinite-scroller';
+import { GlobalContext } from "../../context/Provider";
+
 const CommentSection = () => {
   const globalStore: any = useContext(GlobalContext);
 
   return (
-    <div className="comment-session-overlay">
-      <div className="session-header">
-        <div>View {globalStore.data.length} previous comments</div>
-        <div>All comments</div>
-      </div>
+    <div className="cs-overlay">
+      <Header />
+      <InputField />
       <InfiniteScroll
-        pageStart={0}
-        loadMore={loadFunc}
         hasMore={true || false}
-      // loader={<div className="loader" key={0}>...</div>}
+        loadMore={(e: any) => console.log(e)}
+        loader={<div className="loader" key={0} />}
       >
         {globalStore.data.map(
           (i: {
@@ -39,7 +35,7 @@ const CommentSection = () => {
           }) => {
             return (
               <div key={i.comId}>
-                <CommentStructure
+                <CommentBody
                   info={i}
                   replyMode={
                     _.indexOf(globalStore.replyArr, i.comId) === -1 ? false : true
@@ -50,7 +46,7 @@ const CommentSection = () => {
                   i.replies.map((j) => {
                     return (
                       <div className="reply-section" key={j.comId}>
-                        <CommentStructure
+                        <CommentBody
                           info={{ ...j, replyComponent: true }}
                           parentId={i.comId}
                           replyMode={
@@ -66,9 +62,7 @@ const CommentSection = () => {
             );
           }
         )}
-        <InputField />
       </InfiniteScroll>
-
     </div>
   );
 };
