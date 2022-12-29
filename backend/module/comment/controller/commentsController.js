@@ -6,7 +6,16 @@ module.exports = {
     comment
       .save()
       .then(() => res.json({ message: 'Success' }))
-      .catch((err) => res.status(500).json({ error: err }));
+      .catch((e) => res.status(500).json({ error: e }));
+  },
+
+  totalComments(req, res) {
+    Comment.find({ repliedToCommentId: null, articleId: req.params.articleId })
+      .count()
+      .lean()
+      .exec()
+      .then((count) => res.json({ count }))
+      .catch((e) => res.status(500).json({ error: e }));
   },
 
   async getComments(req, res) {
@@ -15,6 +24,8 @@ module.exports = {
         { repliedToCommentId: null, articleId: req.params.articleId },
         { articleId: 0, _id: 0 }
       )
+        .skip(req.params.skip)
+        .limit(req.params.limit)
         .sort({ _id: -1 })
         .lean()
         .exec();

@@ -67,7 +67,6 @@
     "@types/uuid": "^8.3.4",
     "microbundle-crl-with-assets": "^0.13.12",
     "moment": "^2.29.4",
-    "react-infinite-scroller": "^1.2.6",
     "react-responsive-modal": "^6.2.0",
     "sass": "^1.51.0"
   }

@@ -1,11 +1,13 @@
 import HTTP from "./http.service";
 import { ICommentData } from "./interface.service";
 
-const handleError = (error: any) => console.log(error)
+const handleError = (error: any) => console.log(error);
 class CommentDataService {
-  async fetchComments(articleId: string) {
+  async fetchComments(articleId: string, limit?: number, skip?: number) {
     try {
-      return await HTTP.get<Array<ICommentData>>(`/comment/${articleId}`);
+      return await HTTP.get<Array<ICommentData>>(
+        `/comment/${articleId}/${limit}/${skip}`
+      );
     } catch (e) {
       return handleError(e);
     }
@@ -14,6 +16,13 @@ class CommentDataService {
   async handleAction(payload: ICommentData) {
     try {
       return await HTTP.post<ICommentData>("/comment", { payload });
+    } catch (e) {
+      return handleError(e);
+    }
+  }
+  async totalCount(articleId: string) {
+    try {
+      return await HTTP.get(`/comment/count/${articleId}`);
     } catch (e) {
       return handleError(e);
     }

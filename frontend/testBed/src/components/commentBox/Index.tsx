@@ -7,6 +7,7 @@ import API from "./service/api.service";
 import { CommentBoxProps } from "./service/interface.service";
 
 const CommentBox = (props: CommentBoxProps) => {
+  const [count, setCount] = useState<number>(0);
   const [commentData, setComments] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -17,9 +18,16 @@ const CommentBox = (props: CommentBoxProps) => {
     );
     setLoading(false);
   };
+  const getCommentCount = () => {
+    API.totalCount(props.articleId).then((res: any) =>
+      setCount(res.data.count)
+    );
+  };
 
   useEffect(() => {
-    if (!!props.articleId) getCommentData()
+    if (!props.articleId) return;
+    getCommentData();
+    getCommentCount();
     // eslint-disable-next-line
   }, [props.articleId]);
 

@@ -10,11 +10,11 @@ interface CommentSectionProps {
     currentUserFullName: string
   } | null
   articleId: string
-  inputStyle?: object
-  submitBtnStyle?: object
+  totalCount?: Number
   cancelBtnStyle?: object
   onSubmitAction?: Function
   onReplyAction?: Function
+  loadMore?: Function
   commentData: Array<{
     userId: string
     comId: string
@@ -36,23 +36,25 @@ interface CommentSectionProps {
 }
 
 export const CommentSection = ({
+  loadMore,
   articleId,
-  currentUser,
-  submitBtnStyle,
-  cancelBtnStyle,
+  totalCount,
   commentData,
-  onSubmitAction,
+  currentUser,
   onReplyAction,
+  onSubmitAction,
+  cancelBtnStyle
 }: CommentSectionProps) => {
   return (
     <GlobalProvider
+      loadMore={loadMore}
       articleId={articleId}
-      currentUser={currentUser}
-      submitBtnStyle={submitBtnStyle}
-      cancelBtnStyle={cancelBtnStyle}
+      totalCount={totalCount}
       commentData={commentData}
-      onSubmitAction={onSubmitAction}
+      currentUser={currentUser}
       onReplyAction={onReplyAction}
+      onSubmitAction={onSubmitAction}
+      cancelBtnStyle={cancelBtnStyle}
     >
       <CommentSectionComponent />
     </GlobalProvider>
