@@ -170,7 +170,6 @@ const CommentBody = ({
         {commentBox()}
         <InputField
           comId={info.comId}
-          fillerText={""}
           mode={"replyMode"}
           parentId={parentId}
         />

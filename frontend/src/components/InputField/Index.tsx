@@ -1,45 +1,25 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import { GlobalContext } from "../../context/Provider"
 
 import React from "react"
 import moment from "moment";
 const { v4: uuidv4 } = require("uuid")
 
-import "./InputField.scss"
+import "./Style.scss"
 import InputComponent from "./InputComponent"
 
 interface InputFieldProps {
-  formStyle?: object
-  comId?: string
-  fillerText?: string
   parentId?: string
+  comId?: string
   mode?: string
-  customImg?: string
-  cancelBtnStyle?: object
-  submitBtnStyle?: object
-  imgStyle?: object
-  imgDiv?: object
 }
 
 const InputField = ({
-  formStyle,
-  comId,
-  fillerText,
-  parentId,
   mode,
-  customImg,
-  cancelBtnStyle,
-  submitBtnStyle,
-  imgStyle,
-  imgDiv
+  comId,
+  parentId,
 }: InputFieldProps) => {
   const [text, setText] = useState("")
-
-  useEffect(() => {
-    if (fillerText) {
-      setText(fillerText)
-    }
-  }, [fillerText])
 
   const globalStore: any = useContext(GlobalContext)
 
@@ -51,9 +31,9 @@ const InputField = ({
       await globalStore.onReply(textToSend, replyUuid, comId, parentId, timeStamp),
       globalStore.onReplyAction &&
       (await globalStore.onReplyAction({
-        userId: globalStore.currentUserData.currentUserId,
-        avatarUrl: globalStore.currentUserData.currentUserImg,
         fullName: globalStore.currentUserData.currentUserFullName,
+        avatarUrl: globalStore.currentUserData.currentUserImg,
+        userId: globalStore.currentUserData.currentUserId,
         articleId: globalStore.articleId,
         repliedToCommentId: comId,
         text: textToSend,
@@ -70,9 +50,9 @@ const InputField = ({
       await globalStore.handleSubmit(textToSend, createUuid),
       globalStore.onSubmitAction &&
       (await globalStore.onSubmitAction({
-        userId: globalStore.currentUserData.currentUserId,
-        avatarUrl: globalStore.currentUserData.currentUserImg,
         fullName: globalStore.currentUserData.currentUserFullName,
+        avatarUrl: globalStore.currentUserData.currentUserImg,
+        userId: globalStore.currentUserData.currentUserId,
         articleId: globalStore.articleId,
         text: textToSend,
         comId: createUuid,
@@ -83,8 +63,8 @@ const InputField = ({
 
   const handleSubmit = async (event: any, advText?: string) => {
     event.preventDefault()
-    const createUuid = uuidv4()
     const replyUuid = uuidv4()
+    const createUuid = uuidv4()
     mode === "replyMode"
       ? replyMode(replyUuid, advText)
       : submitMode(createUuid, advText)
@@ -94,17 +74,11 @@ const InputField = ({
   return (
     <div>
       <InputComponent
-        formStyle={formStyle}
-        imgDiv={imgDiv}
-        imgStyle={imgStyle}
-        customImg={customImg}
-        mode={mode}
-        cancelBtnStyle={cancelBtnStyle}
-        comId={comId}
-        submitBtnStyle={submitBtnStyle}
-        handleSubmit={handleSubmit}
         text={text}
+        mode={mode}
+        comId={comId}
         setText={setText}
+        handleSubmit={handleSubmit}
       />
     </div>
   )

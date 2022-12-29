@@ -32,7 +32,6 @@ const CommentBox = (props: CommentBoxProps) => {
           currentUser={props.currentUser}
           onReplyAction={API.handleAction}
           onSubmitAction={API.handleAction}
-          submitBtnStyle={style.submitButton}
           cancelBtnStyle={style.cancelButton}
         />
       ) : (
