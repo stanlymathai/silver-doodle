@@ -15,6 +15,7 @@ module.exports = {
         { repliedToCommentId: null, articleId: req.params.articleId },
         { articleId: 0, _id: 0 }
       )
+        .sort({ _id: -1 })
         .lean()
         .exec();
       let replies = await Comment.find(

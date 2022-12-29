@@ -1,7 +1,6 @@
   .session-form {
     display: flex;
-    background-color: #1a1a2b;
-    padding: 5px;
+    padding: 10px;
     margin-top: 10px;
 
     .userImg {
@@ -12,8 +11,9 @@
 
     .inputField {
       width: 100%;
+      padding: 4px;
       border: none;
-      font-weight: 400;
+      font-weight: 521;
       line-height: 1.5;
       margin-left: 6px;
       color: #f2f2f2;
@@ -23,10 +23,11 @@
     }
 
     .inputField::placeholder {
-      margin-top: -2px;
       color: #f2f2f2;
       font-weight: 500;
       line-height: 1.5;
+      margin-top: -2px;
+      margin-left: 10px;
       font-family: neuzeit-grotesk, sans-serif;
     }
 

@@ -30,37 +30,8 @@ interface ICommentBody {
   replyMode: boolean;
 }
 
-const CommentBody = ({
-  info,
-  parentId,
-  replyMode,
-}: ICommentBody) => {
+const CommentBody = ({ info, parentId, replyMode }: ICommentBody) => {
   const globalStore: any = useContext(GlobalContext);
-  const currentUser = globalStore.currentUserData;
-
-  const userInfo = () => {
-    return (
-      <div className="commentsTwo">
-        <a className="userLink" target="_blank" href={info.userProfile}>
-          <div>
-            <img
-              src={info.avatarUrl}
-              alt="userIcon"
-              className="imgdefault"
-              style={
-                globalStore.imgStyle || {
-                  position: "relative",
-                  borderRadius: "50%",
-                  top: 7,
-                }
-              }
-            />
-          </div>
-          <div className="fullName">{info.fullName} </div>
-        </a>
-      </div>
-    );
-  };
 
   const likeButton = () => {
     let hasThumbsUp = Math.random() < 0.5;
@@ -113,7 +84,7 @@ const CommentBody = ({
     );
   };
 
-  const reactionOverview = () => {
+  const reactions = () => {
     let reactionCount = Math.floor(Math.random() * 9 + 1) + "K";
     return (
       <div className="reactionGroup">
@@ -126,7 +97,6 @@ const CommentBody = ({
   };
 
   const replyButton = () => {
-    let d_fromNOw = moment(info.timeStamp).fromNow(true);
     return (
       <div className="replyBtn">
         <span className="vertical-line" />
@@ -138,28 +108,35 @@ const CommentBody = ({
             Reply
           </span>
         )}
-        <span className="published-time-text">{d_fromNOw}</span>
+        <span className="published-time-text">{moment(info.timeStamp).fromNow()}</span>
       </div>
     );
   };
 
+  const actionBar = () => {
+    return (
+      <div className="actionBar">
+        <div className="actions">
+          {likeButton()}
+          {reactions()}
+          {replyButton()}
+        </div>
+        <div className="flagBtn" onClick={onOpenModal} />
+      </div>
+    )
+  }
+
   const commentBox = () => {
     return (
       <div className="comment-box">
+        <div className="username">{info.fullName} </div>
         <div className="userInfo">
-          {userInfo()}
-          <div className="infoStyle">{info.text}</div>
-          {currentUser && (
-            <div className="actionDiv">
-              <div className="halfDiv">
-                {likeButton()}
-                {reactionOverview()}
-                {replyButton()}
-              </div>
-              <div className="float-right flagBtn" onClick={onOpenModal} />
-            </div>
-          )}
+          <div className="image">
+            <img alt="userIcon" className="avatar" src={info.avatarUrl} />
+          </div>
+          <div className="comment">{info.text}</div>
         </div>
+        {actionBar()}
       </div>
     );
   };
@@ -183,7 +160,7 @@ const CommentBody = ({
   const onCloseModal = () => setOpen(false);
 
   const flagAction = () => (
-    <Modal open={open} onClose={onCloseModal} center >
+    <Modal open={open} onClose={onCloseModal} center>
       <ReportAction />
     </Modal>
   );
