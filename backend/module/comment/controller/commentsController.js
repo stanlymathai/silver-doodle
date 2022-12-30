@@ -24,7 +24,6 @@ module.exports = {
         { repliedToCommentId: null, articleId: req.params.articleId },
         { articleId: 0, _id: 0 }
       )
-        .skip(req.params.skip)
         .limit(req.params.limit)
         .sort({ _id: -1 })
         .lean()

@@ -12,7 +12,7 @@ router.get(
 );
 router.post('/', verifyAuthentication, commentsController.addComment);
 router.get(
-  '/:articleId/:limit/:skip',
+  '/:articleId/:limit/',
   verifyAuthentication,
   commentsController.getComments
 );

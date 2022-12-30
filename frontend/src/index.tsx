@@ -10,7 +10,7 @@ interface CommentSectionProps {
     currentUserFullName: string
   } | null
   articleId: string
-  totalCount?: Number
+  totalCount?: number
   cancelBtnStyle?: object
   onSubmitAction?: Function
   onReplyAction?: Function

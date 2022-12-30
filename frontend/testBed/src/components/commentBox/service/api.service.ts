@@ -3,10 +3,10 @@ import { ICommentData } from "./interface.service";
 
 const handleError = (error: any) => console.log(error);
 class CommentDataService {
-  async fetchComments(articleId: string, limit?: number, skip?: number) {
+  async fetchComments(articleId: string, limit?: number) {
     try {
       return await HTTP.get<Array<ICommentData>>(
-        `/comment/${articleId}/${limit}/${skip}`
+        `/comment/${articleId}/${limit ?? 0}`
       );
     } catch (e) {
       return handleError(e);

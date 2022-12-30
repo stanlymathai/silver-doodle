@@ -7,36 +7,44 @@ import API from "./service/api.service";
 import { CommentBoxProps } from "./service/interface.service";
 
 const CommentBox = (props: CommentBoxProps) => {
-  const [count, setCount] = useState<number>(0);
+
+  const FETCH_LIMIT = 10;
+  const ARTICLE_ID = props.articleId;
+  
   const [commentData, setComments] = useState<any>();
+  const [totalCount, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
 
   const getCommentData = () => {
     setLoading(true);
-    API.fetchComments(props.articleId).then((res: any) =>
+    API.fetchComments(ARTICLE_ID, FETCH_LIMIT).then((res: any) =>
       setComments(Object.values(res.data.threads))
     );
     setLoading(false);
   };
-  const getCommentCount = () => {
-    API.totalCount(props.articleId).then((res: any) =>
-      setCount(res.data.count)
+
+  const getCommentCount = () =>
+    API.totalCount(ARTICLE_ID).then((res: any) => setTotal(res.data.count));
+  const loadMore = () =>
+    API.fetchComments(ARTICLE_ID).then((res: any) =>
+      setComments(Object.values(res.data.threads))
     );
-  };
 
   useEffect(() => {
-    if (!props.articleId) return;
+    if (!ARTICLE_ID) return;
     getCommentData();
     getCommentCount();
     // eslint-disable-next-line
-  }, [props.articleId]);
+  }, [ARTICLE_ID]);
 
   return (
     <div style={{ width: "100%" }}>
       {!loading ? (
         <CommentSection
+          loadMore={loadMore}
+          totalCount={totalCount}
           commentData={commentData}
-          articleId={props.articleId}
+          articleId={ARTICLE_ID}
           currentUser={props.currentUser}
           onReplyAction={API.handleAction}
           onSubmitAction={API.handleAction}

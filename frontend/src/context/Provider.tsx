@@ -5,8 +5,10 @@ import _ from "lodash"
 export const GlobalContext = createContext({})
 
 export const GlobalProvider = ({
+  loadMore,
   children,
   articleId,
+  totalCount,
   currentUser,
   commentData,
   onReplyAction,
@@ -14,6 +16,7 @@ export const GlobalProvider = ({
   onSubmitAction
 }: {
   articleId: string
+  totalCount?: number
   children: any
   currentUser?: {
     currentUserId: string
@@ -39,6 +42,7 @@ export const GlobalProvider = ({
     }>
     | undefined
   }>
+  loadMore?: Function
   onReplyAction?: Function
   onSubmitAction?: Function
 }) => {
@@ -136,6 +140,8 @@ export const GlobalProvider = ({
         data,
         replyArr,
         articleId,
+        totalCount,
+        loadMore,
         onReplyAction,
         cancelBtnStyle,
         onSubmitAction,
