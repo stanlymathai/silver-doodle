@@ -5,10 +5,11 @@ import { GlobalContext } from "../../context/Provider";
 import "./Style.scss"
 
 const Header = () => {
+    const INITIAL_FETCH = 10
     const globalStore: any = useContext(GlobalContext);
-    const previosComments = globalStore.totalCount - 10;
+    const previosComments: number = globalStore.totalCount - INITIAL_FETCH;
     const showLoadMore =
-        previosComments > 0 && globalStore.data.length != globalStore.totalCount;
+        previosComments > 0 && globalStore.data.length < globalStore.totalCount;
 
     return (
         <div className="session-header">

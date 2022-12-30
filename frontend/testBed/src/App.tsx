@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import Dashboard from "./components/dashboard/Index"
-import { userSearchHandler } from "./components/commentBox/auth";
+import { userSearchHandler } from "./components/commentBox/helper";
 
 /*
   url params should be in the below format

@@ -9,7 +9,7 @@ interface IInfo {
     replyComponent?: boolean | undefined;
 }
 
-const replyButton = (info: IInfo) => {
+const ReplyButton = (info: IInfo) => {
     const globalStore: any = useContext(GlobalContext);
 
     return (
@@ -30,4 +30,4 @@ const replyButton = (info: IInfo) => {
     );
 };
 
-export default replyButton;
+export default ReplyButton;

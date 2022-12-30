@@ -10,7 +10,7 @@ const CommentBox = (props: CommentBoxProps) => {
 
   const FETCH_LIMIT = 10;
   const ARTICLE_ID = props.articleId;
-  
+
   const [commentData, setComments] = useState<any>();
   const [totalCount, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
@@ -39,19 +39,17 @@ const CommentBox = (props: CommentBoxProps) => {
 
   return (
     <div style={{ width: "100%" }}>
-      {!loading ? (
+      {!loading && (
         <CommentSection
           loadMore={loadMore}
+          articleId={ARTICLE_ID}
           totalCount={totalCount}
           commentData={commentData}
-          articleId={ARTICLE_ID}
           currentUser={props.currentUser}
           onReplyAction={API.handleAction}
           onSubmitAction={API.handleAction}
           cancelBtnStyle={style.cancelButton}
         />
-      ) : (
-        "loading..."
       )}
     </div>
   );
