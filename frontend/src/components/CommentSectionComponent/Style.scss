@@ -1,12 +1,18 @@
-.cs-overlay {
+.cs-wrapper {
   display: flex;
+  color: #f2f2f2;
   background: #1a1a2b;
   flex-direction: column;
   font-family: neuzeit-grotesk, sans-serif;
 
-  .reply-section {
-    margin-left: 25px;
-    padding: 0px 0px 0px 15px;
-  }
+  .cs-overlay {
+    display: flex;
+    flex-direction: column;
 
+    .reply-section {
+      margin-left: 25px;
+      padding: 0px 0px 0px 15px;
+    }
+
+  }
 }

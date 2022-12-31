@@ -22,8 +22,7 @@ interface CommentSectionProps {
     avatarUrl: string
     timeStamp: string;
     text: string
-    replies?:
-    | Array<{
+    replies: Array<{
       userId: string
       comId: string
       fullName: string
@@ -31,7 +30,6 @@ interface CommentSectionProps {
       timeStamp: string;
       text: string
     }>
-    | undefined
   }>
 }
 

@@ -7,7 +7,7 @@ import "./Style.scss";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
 
-const Header = () => {
+const CommentHeader = () => {
   const INITIAL_FETCH = 6;
   const labels = [
     {
@@ -80,4 +80,4 @@ const Header = () => {
     </div>
   );
 };
-export default Header;
+export default CommentHeader;
