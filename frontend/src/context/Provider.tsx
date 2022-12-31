@@ -31,8 +31,7 @@ export const GlobalProvider = ({
     avatarUrl: string
     timeStamp: string
     text: string
-    replies?:
-    | Array<{
+    replies: Array<{
       userId: string
       comId: string
       fullName: string
@@ -40,7 +39,6 @@ export const GlobalProvider = ({
       timeStamp: string
       text: string
     }>
-    | undefined
   }>
   loadMore?: Function
   onReplyAction?: Function
@@ -55,8 +53,7 @@ export const GlobalProvider = ({
       avatarUrl: string
       timeStamp: string
       text: string
-      replies?:
-      | Array<{
+      replies: Array<{
         userId: string
         comId: string
         fullName: string
@@ -64,7 +61,6 @@ export const GlobalProvider = ({
         timeStamp: string
         text: string
       }>
-      | undefined
     }>
   >([])
   const [replyArr, setReply] = useState<string[]>([])
@@ -96,6 +92,36 @@ export const GlobalProvider = ({
     }
     setData([commentData, ...data])
   }
+
+  const handleSort = (el: { value: string }) => {
+    let arrCopy = data
+
+    switch (el.value) {
+      case "oldest":
+        arrCopy.sort(function (a, b) {
+          return a.timeStamp > b.timeStamp ? 1
+            : a.timeStamp < b.timeStamp ? -1 : 0
+        })
+        break;
+      case "newest":
+        arrCopy.sort(function (a, b) {
+          return a.timeStamp < b.timeStamp ? 1
+            : a.timeStamp > b.timeStamp ? -1 : 0
+        })
+        break;
+      case "engaged":
+        arrCopy.sort(function (a, b) {
+          return a.replies.length < b.replies?.length ? 1
+            : a.replies.length > b.replies.length ? -1 : 0
+        })
+        break;
+
+      default:
+        break;
+    }
+    setData([...arrCopy])
+  }
+
 
   const onReply = (
     text: string,
@@ -135,6 +161,7 @@ export const GlobalProvider = ({
     <GlobalContext.Provider
       value={{
         onReply,
+        handleSort,
         handleReply,
         handleSubmit,
         data,

@@ -4,7 +4,7 @@
     font-weight: 600;
     color: #f2f2f2;
     margin-top: 10px;
-    line-height: 10px;
+    line-height: 5px;
     flex-direction: row;
     justify-content: space-between;
 
@@ -24,13 +24,20 @@
     }
 
     .all-comments {
+        border: none;
         display: flex;
+        font-size: 14px;
+        font-weight: 600;
+        color: #f2f2f2;
+        line-height: 10px;
         flex-direction: row;
+        background: #1a1a2b;
+        font-family: neuzeit-grotesk, sans-serif;
 
         .chev-down {
             width: 16px;
             height: 16px;
-            margin-top: 0px;
+            margin-top: -2px;
             margin-left: 7px;
             transform: scale(0.9);
             background-image: url("../../assets/chevron-down.svg");
@@ -43,6 +50,44 @@
 
         &:focus {
             outline: 0;
+        }
+
+        .chev-rotate {
+            transform: rotate(180deg);
+        }
+    }
+
+    .sort-box {
+        width: 100%;
+        color: #f2f2f2;
+        font-family: neuzeit-grotesk, sans-serif;
+
+        .sort-title {
+            font-size: small;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .sort-desc {
+            margin-left: 10px;
+            margin-right: 10px;
+            font-size: smaller;
+        }
+    }
+
+    .box-border {
+        border-bottom: 2px solid #1cf39c;
+    }
+
+    .sort-box:hover {
+        background-color: #1a1a2b;
+    }
+
+    .szh-menu {
+        background-color: #474756;
+
+        .szh-menu__item:hover {
+            background-color: transparent;
         }
     }
 }
