@@ -23,7 +23,7 @@ const ReplyButton = (info: IInfo) => {
                     Reply
                 </span>
             )}
-            <span className="published-time-text">
+            <span className="time-from-now">
                 {moment(info.timeStamp).fromNow()}
             </span>
         </div>

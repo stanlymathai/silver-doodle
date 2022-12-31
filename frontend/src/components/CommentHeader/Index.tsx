@@ -70,7 +70,13 @@ const CommentHeader = () => {
   return (
     <div className="session-header">
       {showLoadMore ? (
-        <div className="prev-comments" onClick={globalStore.loadMore}>
+        <div
+          onClick={() => {
+            globalStore.loadMore();
+            setDisplayLabel(labels[0].title)
+          }}
+          className="prev-comments"
+        >
           View {previosComments} previous comments
         </div>
       ) : (

@@ -1,7 +1,6 @@
 import React from "react";
 import { useContext } from "react";
 
-import "./Style.scss";
 import _ from "lodash";
 
 import InputField from "../InputField/Index";

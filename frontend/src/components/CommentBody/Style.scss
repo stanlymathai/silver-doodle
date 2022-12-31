@@ -167,12 +167,14 @@
     margin-left: 10px;
   }
 
-  .published-time-text {
-    line-height: 10px;
-    margin-left: 8px;
-    background-color: transparent;
+  .time-from-now {
     cursor: auto;
     opacity: 0.999;
+    margin-left: 8px;
+    color: #f2f2f2;
+    line-height: 10px;
+    background-color: transparent;
+
   }
 
   .vertical-line {
