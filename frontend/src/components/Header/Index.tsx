@@ -5,7 +5,7 @@ import { GlobalContext } from "../../context/Provider";
 import "./Style.scss"
 
 const Header = () => {
-    const INITIAL_FETCH = 10
+    const INITIAL_FETCH = 6
     const globalStore: any = useContext(GlobalContext);
     const previosComments: number = globalStore.totalCount - INITIAL_FETCH;
     const showLoadMore =
@@ -20,7 +20,7 @@ const Header = () => {
             ) : (
                 <div>{""}</div>
             )}
-            <div className="all-comments">All comments</div>
+            <div className="all-comments">All comments<div className="chev-down" /></div>
         </div>
     );
 };

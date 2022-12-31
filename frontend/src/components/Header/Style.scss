@@ -1,11 +1,16 @@
 .session-header {
+    display: flex;
+    font-size: 14px;
+    font-weight: 600;
+    color: #f2f2f2;
+    margin-top: 10px;
+    line-height: 10px;
+    flex-direction: row;
+    justify-content: space-between;
+
     .prev-comments {
         border: none;
-        color: #f2f2f2;
         outline: none;
-        font-weight: 600;
-        font-size: 14px;
-        line-height: 10px;
         background-color: transparent;
 
         &:hover {
@@ -19,7 +24,25 @@
     }
 
     .all-comments {
-        font-weight: 600;
-        color: #f2f2f2;
+        display: flex;
+        flex-direction: row;
+
+        .chev-down {
+            width: 16px;
+            height: 16px;
+            margin-top: 0px;
+            margin-left: 7px;
+            transform: scale(0.9);
+            background-image: url("../../assets/chevron-down.svg");
+        }
+
+        &:hover {
+            outline: none;
+            cursor: pointer;
+        }
+
+        &:focus {
+            outline: 0;
+        }
     }
 }

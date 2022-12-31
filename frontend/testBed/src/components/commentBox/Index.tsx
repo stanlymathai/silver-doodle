@@ -8,7 +8,7 @@ import { CommentBoxProps } from "./service/interface.service";
 
 const CommentBox = (props: CommentBoxProps) => {
 
-  const FETCH_LIMIT = 10;
+  const FETCH_LIMIT = 6;
   const ARTICLE_ID = props.articleId;
 
   const [commentData, setComments] = useState<any>();

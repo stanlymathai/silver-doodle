@@ -1,15 +1,8 @@
 .cs-overlay {
   display: flex;
-  flex-direction: column;
   background: #1a1a2b;
+  flex-direction: column;
   font-family: neuzeit-grotesk, sans-serif;
-
-  .session-header {
-    display: flex;
-    margin-top: 4px;
-    flex-direction: row;
-    justify-content: space-between;
-  }
 
   .reply-section {
     margin-left: 25px;
