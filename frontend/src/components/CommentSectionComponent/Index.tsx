@@ -1,19 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import "./Style.scss";
 
 import DiscussionBox from "./DiscussionBox";
-import ReactionBox from "../ReactionBox/Index";
+import ReactionBar from "../ReactionBar/Index";
 import ArticleOverview from "../ArticleOverview/Index";
+import { GlobalContext } from "../../context/Provider";
 
 
 const CommentSection = () => {
+  const globalStore: any = useContext(GlobalContext);
 
   return (
     <div className="cs-wrapper">
       <ArticleOverview />
-      <ReactionBox />
-      <DiscussionBox />
+      <ReactionBar />
+      {globalStore.showDiscussionBox && <DiscussionBox />}
     </div>
   );
 };

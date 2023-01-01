@@ -64,6 +64,7 @@ export const GlobalProvider = ({
     }>
   >([])
   const [replyArr, setReply] = useState<string[]>([])
+  const [showDiscussionBox, setDiscussionVisibility] = useState<Boolean>(false)
 
   useEffect(() => { if (commentData) setData(commentData) }, [commentData])
 
@@ -122,6 +123,7 @@ export const GlobalProvider = ({
     setData([...arrCopy])
   }
 
+  const toggleDisscusionbox = () => setDiscussionVisibility(!showDiscussionBox)
 
   const onReply = (
     text: string,
@@ -164,16 +166,17 @@ export const GlobalProvider = ({
         handleSort,
         handleReply,
         handleSubmit,
+        toggleDisscusionbox,
         data,
+        loadMore,
         replyArr,
         articleId,
         totalCount,
-        loadMore,
         onReplyAction,
         cancelBtnStyle,
         onSubmitAction,
         currentUserData,
-
+        showDiscussionBox,
       }}
     >
       {children}
