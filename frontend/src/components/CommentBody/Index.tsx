@@ -1,16 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 
 import likeButton from "../Action/Like";
 import replyButton from "../Action/Reply";
 
 import InputField from "../InputField/Index";
 import reactionView from "../Action/Overview";
-import ReportAction from "../ReportAction/Index";
 
-import { Modal } from "react-responsive-modal";
 
 import "./Style.scss";
-import "react-responsive-modal/styles.css";
 
 interface ICommentBody {
   info: {
@@ -28,59 +25,54 @@ interface ICommentBody {
   replyMode: boolean;
 }
 
+const handleClickTest = (e: any) => {
+  console.log(e, "e")
+
+  let el = document.getElementById("rpt-btn")
+  console.log(el, "el")
+  el?.click()
+}
+
 const CommentBody = ({ info, parentId, replyMode }: ICommentBody) => {
-  const actionBar = () => {
-    return (
-      <div className="actionBar">
-        <div className="actions">
-          {likeButton()}
-          {reactionView()}
-          {replyButton(info)}
-        </div>
-        <div className="flagBtn" onClick={onOpenModal} />
+  const actionBar = () => (
+    <div className="actionBar">
+      <div className="actions">
+        {likeButton()}
+        {reactionView()}
+        {replyButton(info)}
       </div>
-    );
-  };
-
-  const commentBox = () => {
-    return (
-      <div className="comment-box">
-        <div className="username">{info.fullName} </div>
-        <div className="userInfo">
-          <div className="image">
-            <img alt="userIcon" className="avatar" src={info.avatarUrl} />
-          </div>
-          <div className="comment">{info.text}</div>
-        </div>
-        {actionBar()}
-      </div>
-    );
-  };
-
-  const commentBoxWithInput = () => {
-    return (
-      <div className="replysection">
-        {commentBox()}
-        <InputField comId={info.comId} mode={"replyMode"} parentId={parentId} />
-      </div>
-    );
-  };
-
-  // report action modal
-  const [open, setOpen] = useState(false);
-  const onOpenModal = () => setOpen(true);
-  const onCloseModal = () => setOpen(false);
-
-  const flagAction = () => (
-    <Modal open={open} onClose={onCloseModal} center>
-      <ReportAction />
-    </Modal>
+      <div className="flagBtn" onClick={() => handleClickTest(info)} />
+    </div>
   );
+
+  const commentBox = () => (
+    <div className="comment-box">
+      <div className="username">{info.fullName} </div>
+      <div className="userInfo">
+        <div className="image">
+          <img alt="userIcon" className="avatar" src={info.avatarUrl} />
+        </div>
+        <div className="comment">{info.text}</div>
+      </div>
+      {actionBar()}
+    </div>
+  );
+
+  const commentBoxWithInput = () => (
+    <div className="replysection">
+      {commentBox()}
+      <InputField
+        mode={"replyMode"}
+        comId={info.comId}
+        parentId={parentId}
+      />
+    </div>
+  );
+
 
   return (
     <div className="comment-session-structure">
       {replyMode ? commentBoxWithInput() : commentBox()}
-      {1 + 1 == 1 && flagAction()}
     </div>
   );
 };

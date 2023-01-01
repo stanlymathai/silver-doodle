@@ -72,15 +72,13 @@ const InputField = ({
   }
 
   return (
-    <div>
-      <InputComponent
-        text={text}
-        mode={mode}
-        comId={comId}
-        setText={setText}
-        handleSubmit={handleSubmit}
-      />
-    </div>
+    <InputComponent
+      text={text}
+      mode={mode}
+      comId={comId}
+      setText={setText}
+      handleSubmit={handleSubmit}
+    />
   )
 }
 export default InputField

@@ -35,7 +35,8 @@ const CommentBox = (props: CommentBoxProps) => {
   }
 
   const onSubmitAction = (data: ICommentData) => {
-    API.handleAction(data).then(() => setTotal(totalCount + 1))
+    setTotal(totalCount + 1)
+    API.handleAction(data)
   }
 
   useEffect(() => {
@@ -46,17 +47,19 @@ const CommentBox = (props: CommentBoxProps) => {
   }, [ARTICLE_ID]);
 
   return (
-    <CommentSection
-      loading={loading}
-      loadMore={loadMore}
-      articleId={ARTICLE_ID}
-      totalCount={totalCount}
-      commentData={commentData}
-      currentUser={props.currentUser}
-      onReplyAction={API.handleAction}
-      onSubmitAction={onSubmitAction}
-      cancelBtnStyle={style.cancelButton}
-    />
+    <div style={style.main}>
+      <CommentSection
+        loading={loading}
+        loadMore={loadMore}
+        articleId={ARTICLE_ID}
+        totalCount={totalCount}
+        commentData={commentData}
+        currentUser={props.currentUser}
+        onReplyAction={API.handleAction}
+        onSubmitAction={onSubmitAction}
+        cancelBtnStyle={style.cancelButton}
+      />
+    </div>
   );
 };
 

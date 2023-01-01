@@ -1,7 +1,8 @@
   .session-form {
     display: flex;
     padding: 10px;
-    
+    font-family: neuzeit-grotesk, sans-serif;
+
     .userImg {
       width: 38px;
       height: 38px;
@@ -12,22 +13,20 @@
       width: 100%;
       padding: 4px;
       border: none;
-      font-weight: 521;
       line-height: 1.5;
       margin-left: 6px;
       color: #f2f2f2;
+      font-weight: normal;
       text-decoration: none;
       background-color: #1a1a2b;
-      font-family: neuzeit-grotesk, sans-serif;
     }
 
     .inputField::placeholder {
       color: #f2f2f2;
-      font-weight: 500;
       line-height: 1.5;
       margin-top: -2px;
-      margin-left: 10px;
-      font-family: neuzeit-grotesk, sans-serif;
+      margin-left: 15px;
+      font-weight: bolder;
     }
 
     .inputField:focus {
