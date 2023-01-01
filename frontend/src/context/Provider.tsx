@@ -5,6 +5,7 @@ import _ from "lodash"
 export const GlobalContext = createContext({})
 
 export const GlobalProvider = ({
+  loading,
   loadMore,
   children,
   articleId,
@@ -15,6 +16,7 @@ export const GlobalProvider = ({
   cancelBtnStyle,
   onSubmitAction
 }: {
+  loading: boolean
   articleId: string
   totalCount?: number
   children: any
@@ -168,6 +170,7 @@ export const GlobalProvider = ({
         handleSubmit,
         toggleDisscusionbox,
         data,
+        loading,
         loadMore,
         replyArr,
         articleId,

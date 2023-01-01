@@ -1,0 +1,32 @@
+.cs-loader {
+    margin: auto;
+    margin-top: 16px;
+    border-radius: 50%;
+    border: 16px solid transparent;
+    border-top: 16px solid #1cf39c;
+
+    -webkit-animation: spin 1.65s linear infinite;
+    /* Safari */
+    animation: spin 1.65s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

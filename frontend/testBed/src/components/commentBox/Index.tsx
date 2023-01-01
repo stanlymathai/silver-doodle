@@ -4,7 +4,7 @@ import "discussion-box/dist/index.css";
 
 import style from "./customStyle";
 import API from "./service/api.service";
-import { CommentBoxProps } from "./service/interface.service";
+import { CommentBoxProps, ICommentData } from "./service/interface.service";
 
 const CommentBox = (props: CommentBoxProps) => {
 
@@ -19,16 +19,24 @@ const CommentBox = (props: CommentBoxProps) => {
     setLoading(true);
     API.fetchComments(ARTICLE_ID, FETCH_LIMIT).then((res: any) =>
       setComments(Object.values(res.data.threads))
-    );
+    )
     setLoading(false);
   };
 
   const getCommentCount = () =>
-    API.totalCount(ARTICLE_ID).then((res: any) => setTotal(res.data.count));
-  const loadMore = () =>
+    API.totalCount(ARTICLE_ID).then((res: any) => setTotal(res.data.count))
+
+  const loadMore = () => {
+    setLoading(true);
     API.fetchComments(ARTICLE_ID).then((res: any) =>
       setComments(Object.values(res.data.threads))
-    );
+    )
+    setLoading(false);
+  }
+
+  const onSubmitAction = (data: ICommentData) => {
+    API.handleAction(data).then(() => setTotal(totalCount + 1))
+  }
 
   useEffect(() => {
     if (!ARTICLE_ID) return;
@@ -38,20 +46,17 @@ const CommentBox = (props: CommentBoxProps) => {
   }, [ARTICLE_ID]);
 
   return (
-    <div style={{ width: "100%" }}>
-      {!loading && (
-        <CommentSection
-          loadMore={loadMore}
-          articleId={ARTICLE_ID}
-          totalCount={totalCount}
-          commentData={commentData}
-          currentUser={props.currentUser}
-          onReplyAction={API.handleAction}
-          onSubmitAction={API.handleAction}
-          cancelBtnStyle={style.cancelButton}
-        />
-      )}
-    </div>
+    <CommentSection
+      loading={loading}
+      loadMore={loadMore}
+      articleId={ARTICLE_ID}
+      totalCount={totalCount}
+      commentData={commentData}
+      currentUser={props.currentUser}
+      onReplyAction={API.handleAction}
+      onSubmitAction={onSubmitAction}
+      cancelBtnStyle={style.cancelButton}
+    />
   );
 };
 

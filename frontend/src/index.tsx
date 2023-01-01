@@ -1,6 +1,7 @@
 import * as React from "react"
-import CommentSectionComponent from "./components/CommentSectionComponent/Index"
 import GlobalProvider from "./context/Provider"
+import CommentSectionComponent from "./components/CommentSectionComponent/Index"
+
 import "./Index.scss"
 
 interface CommentSectionProps {
@@ -9,6 +10,7 @@ interface CommentSectionProps {
     currentUserImg: string
     currentUserFullName: string
   } | null
+  loading: boolean
   articleId: string
   totalCount?: number
   cancelBtnStyle?: object
@@ -34,6 +36,7 @@ interface CommentSectionProps {
 }
 
 export const CommentSection = ({
+  loading,
   loadMore,
   articleId,
   totalCount,
@@ -45,6 +48,7 @@ export const CommentSection = ({
 }: CommentSectionProps) => {
   return (
     <GlobalProvider
+      loading={loading}
       loadMore={loadMore}
       articleId={articleId}
       totalCount={totalCount}
