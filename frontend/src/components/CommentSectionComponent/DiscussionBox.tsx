@@ -26,7 +26,7 @@ const DiscussionBox = () => {
                     replies: Array<any> | undefined;
                 }) => {
                     return (
-                        <div key={i.comId}>
+                        <div className="main-thread" key={i.comId}>
                             <CommentBody
                                 info={i}
                                 replyMode={

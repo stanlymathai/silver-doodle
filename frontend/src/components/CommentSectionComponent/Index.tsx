@@ -12,7 +12,7 @@ import { GlobalContext } from "../../context/Provider";
 const CommentSection = () => {
   const globalStore: any = useContext(GlobalContext);
   const showDiscussionBox =
-    globalStore.showDiscussionBox || !globalStore.loading
+    globalStore.showDiscussionBox && !globalStore.loading
 
   return (
     <div className="cs-wrapper">

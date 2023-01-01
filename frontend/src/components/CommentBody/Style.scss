@@ -79,9 +79,9 @@
     border: none;
     color: #1cf399;
     outline: none;
-    font-weight: 600;
     font-size: 14px;
     line-height: 10px;
+    font-weight: bolder;
 
     &:hover {
       outline: none;
@@ -124,9 +124,9 @@
     border: none;
     color: #1cf399;
     outline: none;
-    font-weight: 600;
     font-size: 14px;
     line-height: 10px;
+    font-weight: bolder;
     background-color: transparent;
 
     &:hover {
@@ -159,8 +159,8 @@
   .reaction-count-text {
     padding: 2px;
     margin-left: 8px;
-    font-weight: 600;
     line-height: 10px;
+    font-weight: bolder;
   }
 
   .reply-btn-text {

@@ -15,7 +15,7 @@ const ArticleOverview = () => {
     return (
         <div className="article-overview">
             {totalCount > 0 && <div className="reactions-count">{reactionView()}</div>}
-            {totalCount > 0 && <div className="comments-count">{totalCount} comment{totalCount != 1 && "s"}</div>}
+            {totalCount > 0 && <div className="comments-count">{totalCount} Comment{totalCount != 1 && "s"}</div>}
         </div>
     )
 }

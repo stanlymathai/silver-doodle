@@ -1,5 +1,5 @@
 .reaction-bar {
-    padding: 15px;
+    padding: 25px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -9,15 +9,18 @@
     .reaction-wrap {
         display: flex;
         cursor: pointer;
+        color: #f2f2f2;
         font-size: smaller;
+        font-weight: bolder;
         flex-direction: row;
     }
 
 
     .svgBtn {
-        width: 16px;
+        width: 15px;
         height: 16px;
-        margin-right: 10px;
+        margin-right: 14px;
+        transform: scale(1.6);
 
         &:hover {
             outline: none;
@@ -35,6 +38,7 @@
 
     .svgChat {
         background-image: url("../../assets/chat-bubble.svg");
+        height: 13px;
     }
 
     .svgShare {

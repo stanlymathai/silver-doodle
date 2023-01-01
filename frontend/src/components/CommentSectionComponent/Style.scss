@@ -9,6 +9,22 @@
     display: flex;
     flex-direction: column;
 
+    .main-thread {
+      animation: fadeInAnimation ease 1.5s;
+      animation-iteration-count: 1;
+      animation-fill-mode: forwards;
+
+      @keyframes fadeInAnimation {
+        0% {
+          opacity: 0;
+        }
+
+        100% {
+          opacity: 1;
+        }
+      }
+    }
+
     .reply-section {
       margin-left: 25px;
       padding: 0px 0px 0px 15px;
