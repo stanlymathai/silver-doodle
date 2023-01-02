@@ -50,7 +50,6 @@ module.exports = {
   },
   reportComment(req, res) {
     let reportData = req.body.payload 
-    console.log(reportData)
     res.json({ reportData })
   }
 };
