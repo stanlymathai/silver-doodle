@@ -100,81 +100,8 @@
         }
     }
 
+
     .hidden {
         visibility: hidden !important;
-    }
-
-    .report-comment {
-        cursor: auto;
-        color: #f2f2f2;
-        font-family: neuzeit-grotesk, sans-serif;
-
-
-        hr {
-            border: 1px solid rgba(255, 255, 255, 0.12)
-        }
-
-        .report-box {
-            width: 100%;
-
-            .box-header {
-                display: flex;
-                color: #f2f2f2;
-                justify-content: space-between;
-
-                .title {
-                    padding: 4px;
-                    color: #1cf39c;
-                    margin-bottom: 10px;
-                }
-
-                .close {
-                    padding: 4px;
-                    cursor: pointer;
-                    color: #1a1a2b;
-                    border-radius: 50%;
-                    margin-right: 10px;
-                    margin-bottom: 10px;
-                    background-color: #1cf39c;
-                }
-            }
-
-            .info {
-                margin: 10px;
-                color: #f2f2f2;
-                padding-bottom: 10px;
-                font-family: neuzeit-grotesk, sans-serif;
-
-                span {
-                    font-weight: normal;
-                }
-            }
-        }
-
-        .szh-menu {
-            background-color: #1a1a2b;
-            border: 2px solid #1cf39c;
-
-            .szh-menu__item {
-                cursor: pointer;
-                color: #f2f2f2;
-                padding: 10px;
-                margin: 10px;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.12)
-            }
-
-            .szh-menu__item::after {
-                content: "❯";
-                position: absolute;
-                right: 1rem;
-                color: #1cf39c;
-            }
-
-            .szh-menu__item--hover {
-                background-color: #ffffff21 !important;
-            }
-        }
-
-
     }
 }

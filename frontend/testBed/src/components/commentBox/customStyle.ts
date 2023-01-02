@@ -1,5 +1,8 @@
 export default {
-    main: { width: "100%" },
+    main: {
+        width: "100%",
+        minHeight: "650px"
+    },
     cancelButton: {
         color: "#f8f8ff",
         fontSize: "12px",

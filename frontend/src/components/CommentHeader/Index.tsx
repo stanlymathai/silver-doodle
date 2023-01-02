@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 
+import ReportMenu from "../Action/Report"
 import { GlobalContext } from "../../context/Provider";
 
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
@@ -27,14 +28,6 @@ const CommentHeader = () => {
       desc: "Show the most engaging  comment first",
     },
   ];
-  const reportReasons = [
-    "False Information",
-    "Bully & Harassment",
-    "Offensive",
-    "Terrorism",
-    "Scam or Fraud",
-    "Something else"
-  ]
 
   const globalStore: any = useContext(GlobalContext);
   const [displayLabel, setDisplayLabel] = useState(labels[0].title);
@@ -54,18 +47,19 @@ const CommentHeader = () => {
   );
 
 
-  const sortComments = () => (
+  const sortMenu = () => (
     <Menu
-      transition
       menuButton={
         ({ open }) =>
           <MenuButton className="all-comments">
             {displayLabel} <div className={`chev-down ${open && "chev-rotate"}`} />
           </MenuButton>
       }
-      align={"end"}
+      transition
       offsetY={10}
-      viewScroll={"close"}
+      align={"end"}
+
+
     >
       {labels.map((el, idx) => (
         <MenuItem key={idx} value={el.value} onClick={globalStore.handleSort}>
@@ -73,35 +67,6 @@ const CommentHeader = () => {
         </MenuItem>
       ))}
     </Menu>
-  );
-
-  const reportComments = () => (
-    <div className="report-comment">
-      <Menu
-        transition
-        offsetY={25}
-        align={"center"}
-        viewScroll={"close"}
-        menuButton={<MenuButton id='rpt-btn' className="hidden" />}
-      >
-        <div className="report-box">
-          <div className="box-header">
-            <div>&nbsp;</div>
-            <div className="title">REPORT</div>
-            <div className="close">X</div>
-          </div>
-          <hr />
-          <div className="info">
-            <h4>Report comment</h4>
-            <span>You can report the comment after selecting a problem.</span>
-          </div>
-          <hr />
-          {reportReasons.map((el: any) => (
-            <MenuItem key={el}>{el}</MenuItem>
-          ))}
-        </div>
-      </Menu>
-    </div>
   );
 
   return (
@@ -119,8 +84,8 @@ const CommentHeader = () => {
       ) : (
         <div />
       )}
-      {!!globalStore.data.length && reportComments()}
-      {!!globalStore.data.length && sortComments()}
+      {!!globalStore.data.length && ReportMenu()}
+      {!!globalStore.data.length && sortMenu()}
     </div>
   );
 };
