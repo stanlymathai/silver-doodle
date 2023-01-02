@@ -6,6 +6,7 @@ import replyButton from "../Action/Reply";
 import InputField from "../InputField/Index";
 import reactionView from "../Action/Overview";
 
+import { ReportFlag } from "../Action/Report"
 
 import "./Style.scss";
 
@@ -25,13 +26,6 @@ interface ICommentBody {
   replyMode: boolean;
 }
 
-const handleClickTest = (e: any) => {
-  console.log(e, "e")
-
-  let el = document.getElementById("rpt-btn")
-  console.log(el, "el")
-  el?.click()
-}
 
 const CommentBody = ({ info, parentId, replyMode }: ICommentBody) => {
   const actionBar = () => (
@@ -41,7 +35,7 @@ const CommentBody = ({ info, parentId, replyMode }: ICommentBody) => {
         {reactionView()}
         {replyButton(info)}
       </div>
-      <div className="flagBtn" onClick={() => handleClickTest(info)} />
+      <ReportFlag info={info} />
     </div>
   );
 

@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
+
+import { GlobalContext } from "../../context/Provider";
 
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 
 import "./Style.scss";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
+
+
+const ReportFlag = (info: any) => {
+    const store: any = useContext(GlobalContext);
+
+    return (<div className="flagBtn" onClick={() => store.report.open(info)} />)
+}
 
 const ReportMenu = () => {
     const reportReasons = [
@@ -15,32 +24,23 @@ const ReportMenu = () => {
         "Scam or Fraud",
         "Something else"
     ]
-    const Community_standard_url = "https://monitalks.xyz/en/about"
-    // handlers
+    const store: any = useContext(GlobalContext);
 
-    const handleClose = () => {
-        document.getElementById("close-menu-btn")?.click()
-    }
-    const handleMenuClick = () => {
-        document.getElementById("rpt-cnfrm")?.click()
-    }
-    const handleSubmit = () => {
-        document.getElementById("rpt-fdbk")?.click()
-    }
+    const Community_standard_url = "https://monitalks.xyz/en/about" // temp placeholder
+
     const reportConfirm = () => (
         <div className="report-confirm">
             {reportFeedback()}
             <Menu
                 transition
-                offsetY={25}
-                align={"center"}
-                menuButton={<MenuButton id='rpt-cnfrm' className="hidden" />}
+                offsetY={10}
+                menuButton={<MenuButton id='report-menu' className="hidden" />}
             >
                 <div className="report-box">
                     <div className="box-header">
                         <div>&nbsp;</div>
                         <div className="title">REPORT</div>
-                        <div className="close" onClick={handleClose}>X</div>
+                        <div className="close" onClick={store.report.close}>X</div>
                     </div>
                     <hr />
                     <div className="info">
@@ -53,7 +53,7 @@ const ReportMenu = () => {
                             </a>
                         </p>
                     </div>
-                    <MenuItem onClick={handleSubmit} />
+                    <MenuItem onClick={store.report.submit} />
                 </div>
             </Menu>
         </div>
@@ -63,14 +63,13 @@ const ReportMenu = () => {
             <Menu
                 transition
                 offsetY={25}
-                align={"center"}
-                menuButton={<MenuButton id='rpt-fdbk' className="hidden" />}
+                menuButton={<MenuButton id='feedback' className="hidden" />}
             >
                 <div className="report-box">
                     <div className="box-header">
                         <div>&nbsp;</div>
                         <div className="title">Thanks for letting us know</div>
-                        <div className="close" onClick={handleClose}>X</div>
+                        <div className="close" onClick={store.report.close}>X</div>
                     </div>
                     <hr />
                     <div className="info">
@@ -86,25 +85,23 @@ const ReportMenu = () => {
         <div className="modal-close">
             <Menu
                 viewScroll={"close"}
-                menuButton={<MenuButton className="hidden" id="close-menu-btn" />}
+                menuButton={<MenuButton className="hidden" id="close-menu" />}
             />
         </div>
     );
     return (
         <div className="report-comment">
-            {closeModal()}
             {reportConfirm()}
+            {closeModal()}
             <Menu
                 transition
-                offsetY={25}
-                align={"center"}
-                menuButton={<MenuButton id='rpt-btn' className="hidden" />}
+                menuButton={<MenuButton id='report-main' className="hidden" />}
             >
                 <div className="report-box">
                     <div className="box-header">
                         <div>&nbsp;</div>
                         <div className="title">REPORT</div>
-                        <div className="close" onClick={handleClose}>X</div>
+                        <div className="close" onClick={store.report.close}>X</div>
                     </div>
                     <hr />
                     <div className="info">
@@ -112,8 +109,11 @@ const ReportMenu = () => {
                         <p>You can report the comment after selecting a problem.</p>
                     </div>
                     <hr />
-                    {reportReasons.map((el: any) => (
-                        <MenuItem key={el} onClick={handleMenuClick}>{el}</MenuItem>
+                    {reportReasons.map((reson: any) => (
+                        <MenuItem
+                            key={reson}
+                            onClick={() => store.report.menu(reson)}
+                        >{reson}</MenuItem>
                     ))}
                 </div>
             </Menu>
@@ -121,4 +121,4 @@ const ReportMenu = () => {
     )
 };
 
-export default ReportMenu
+export { ReportFlag, ReportMenu }

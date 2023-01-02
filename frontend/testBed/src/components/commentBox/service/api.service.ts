@@ -20,6 +20,13 @@ class CommentDataService {
       return handleError(e, "handleAction");
     }
   }
+  async handleReport(payload: any) {
+    try {
+      return await HTTP.post<ICommentData>("/comment/report", { payload });
+    } catch (e) {
+      return handleError(e, "handleReport");
+    }
+  }
   async totalCount(articleId: string) {
     try {
       return await HTTP.get(`/comment/count/${articleId}`);

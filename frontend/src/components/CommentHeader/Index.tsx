@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 
-import ReportMenu from "../Action/Report"
+import { ReportMenu } from "../Action/Report"
 import { GlobalContext } from "../../context/Provider";
 
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
@@ -58,8 +58,6 @@ const CommentHeader = () => {
       transition
       offsetY={10}
       align={"end"}
-
-
     >
       {labels.map((el, idx) => (
         <MenuItem key={idx} value={el.value} onClick={globalStore.handleSort}>

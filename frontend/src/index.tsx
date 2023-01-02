@@ -14,8 +14,9 @@ interface CommentSectionProps {
   articleId: string
   totalCount?: number
   cancelBtnStyle?: object
-  onSubmitAction?: Function
+  onReportAction: Function
   onReplyAction?: Function
+  onSubmitAction?: Function
   loadMore?: Function
   commentData: Array<{
     userId: string
@@ -44,6 +45,7 @@ export const CommentSection = ({
   currentUser,
   onReplyAction,
   onSubmitAction,
+  onReportAction,
   cancelBtnStyle
 }: CommentSectionProps) => {
   return (
@@ -56,6 +58,7 @@ export const CommentSection = ({
       currentUser={currentUser}
       onReplyAction={onReplyAction}
       onSubmitAction={onSubmitAction}
+      onReportAction={onReportAction}
       cancelBtnStyle={cancelBtnStyle}
     >
       <CommentSectionComponent />

@@ -13,6 +13,7 @@ export const GlobalProvider = ({
   currentUser,
   commentData,
   onReplyAction,
+  onReportAction,
   cancelBtnStyle,
   onSubmitAction
 }: {
@@ -43,6 +44,7 @@ export const GlobalProvider = ({
     }>
   }>
   loadMore?: Function
+  onReportAction: Function
   onReplyAction?: Function
   onSubmitAction?: Function
 }) => {
@@ -65,6 +67,7 @@ export const GlobalProvider = ({
       }>
     }>
   >([])
+  const [reportData, setReport] = useState<any>({})
   const [replyArr, setReply] = useState<string[]>([])
   const [showDiscussionBox, setDiscussionVisibility] = useState<Boolean>(false)
 
@@ -125,7 +128,33 @@ export const GlobalProvider = ({
     setData([...arrCopy])
   }
 
+  const report = {
+    open: (commentData: any) => {
+      switchComponent("report-main")
+      setReport(commentData)
+    },
+    menu: (reson: string) => {
+      switchComponent("report-menu")
+      setReport({
+        reson, ...reportData,
+        reportedUser: currentUser?.currentUserId
+      })
+    },
+    submit: () => {
+      switchComponent("feedback")
+      onReportAction(reportData)
+      setReport({})
+    },
+    close: () => {
+      setReport({})
+      switchComponent("close-menu")
+    }
+  }
+  const switchComponent = (id: string) =>
+    setTimeout(() => document.getElementById(id)?.click())
+
   const toggleDisscusionbox = () => setDiscussionVisibility(!showDiscussionBox)
+
 
   const onReply = (
     text: string,
@@ -170,6 +199,7 @@ export const GlobalProvider = ({
         handleSubmit,
         toggleDisscusionbox,
         data,
+        report,
         loading,
         loadMore,
         replyArr,
@@ -178,6 +208,7 @@ export const GlobalProvider = ({
         onReplyAction,
         cancelBtnStyle,
         onSubmitAction,
+        onReportAction,
         currentUserData,
         showDiscussionBox,
       }}

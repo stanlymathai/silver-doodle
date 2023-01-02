@@ -4,9 +4,11 @@ export default {
         minHeight: "650px"
     },
     cancelButton: {
+        margin: "0.4",
+        opacity: "0.5",
         color: "#f8f8ff",
-        fontSize: "12px",
-        borderRadius: "8px",
+        cursor: "pointer",
+        borderRadius: "10%",
         backgroundColor: "transparent",
         border: "1px solid rgb(208 208 208)",
     },

@@ -11,6 +11,7 @@ router.get(
   commentsController.totalComments
 );
 router.post('/', verifyAuthentication, commentsController.addComment);
+router.post('/report', verifyAuthentication, commentsController.reportComment);
 router.get(
   '/:articleId/:limit/',
   verifyAuthentication,
