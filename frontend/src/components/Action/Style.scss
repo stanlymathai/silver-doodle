@@ -35,12 +35,14 @@
 
         .info {
             margin: 10px;
+            padding: 2px;
+            line-height: 0;
             color: #f2f2f2;
-            padding-bottom: 10px;
             font-family: neuzeit-grotesk, sans-serif;
 
-            span {
+            p {
                 font-weight: normal;
+                margin-top: 25px;
             }
         }
     }
@@ -50,10 +52,10 @@
         border: 2px solid #1cf39c;
 
         .szh-menu__item {
+            margin: 12px;
+            padding: 15px;
             cursor: pointer;
             color: #f2f2f2;
-            padding: 10px;
-            margin: 10px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.12)
         }
 
@@ -82,4 +84,44 @@
         }
 
     }
+
+    .report-confirm {
+        .info {
+
+
+            p {
+                line-height: 0;
+                font-weight: normal;
+
+                a {
+                    color: #1cf39c;
+                    margin-top: 2px;
+                }
+            }
+
+        }
+
+        .szh-menu__item {
+            margin: 20px;
+            padding: 20px;
+            color: #1cf39c;
+            border-radius: 25px;
+            cursor: pointer !important;
+            border: 1px solid #1cf39c;
+        }
+
+        .szh-menu__item::after {
+            position: absolute;
+            color: #1cf39c;
+            content: "SUBMIT";
+            right: 45%;
+        }
+    }
+
+    .report-feedback {
+        .szh-menu__item::after {
+            content: "DONE";
+        }
+    }
+
 }
