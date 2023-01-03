@@ -31,7 +31,7 @@ const CommentBody = ({ info, parentId, replyMode }: ICommentBody) => {
   const actionBar = () => (
     <div className="actionBar">
       <div className="actions">
-        {likeButton()}
+        {likeButton(info)}
         {reactionView()}
         {replyButton(info)}
       </div>

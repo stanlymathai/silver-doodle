@@ -150,9 +150,7 @@ export const GlobalProvider = ({
       switchComponent("close-menu")
     }
   }
-  const switchComponent = (id: string) =>
-    setTimeout(() => document.getElementById(id)?.click())
-
+  const switchComponent = (id: string) => document.getElementById(id)?.click()
   const toggleDisscusionbox = () => setDiscussionVisibility(!showDiscussionBox)
 
 

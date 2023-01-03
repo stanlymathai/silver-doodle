@@ -125,3 +125,90 @@
     }
 
 }
+
+.likeBtn {
+    background-color: transparent;
+    border: none;
+    color: #1cf399;
+    outline: none;
+    font-size: 14px;
+    line-height: 10px;
+    font-weight: bolder;
+
+    &:hover {
+        outline: none;
+        cursor: pointer;
+    }
+
+    &:focus {
+        outline: 0;
+    }
+
+    .szh-menu {
+        border-radius: 5px;
+        background-color: #474756;
+        font-size: 0.925rem;
+        box-shadow: 1px 1px 20px 1px rgba(0, 0, 0, 0.1);
+        min-width: 7rem;
+        min-height: 2.925rem;
+
+        .szh-menu__arrow {
+            box-sizing: border-box;
+            width: 0.75rem;
+            height: 0.75rem;
+            background-color: #474756;
+            right: 96px;
+            position: absolute;
+            z-index: -1;
+        }
+
+        .szh-menu__item {
+            padding: 5px;
+        }
+
+        .szh-menu__item:hover {
+            background-color: transparent;
+        }
+    }
+}
+
+.svg-icn {
+    &:hover {
+        outline: none;
+        cursor: pointer;
+    }
+
+    &:focus {
+        outline: 0;
+    }
+}
+
+.thumpsup-blue {
+    width: 15px;
+    height: 16px;
+    background-image: url("../../assets/blue-thumbs-up.svg");
+}
+
+.thought-full {
+    width: 15px;
+    height: 16px;
+    background-image: url("../../assets/thoughtful.svg");
+}
+
+.emoji-selected {
+    transform: scale(2);
+    margin-top: 0.25rem;
+    margin-left: 0.925rem;
+    margin-right: 0.925rem;
+}
+
+.emoji-un-selected {
+    margin-top: 0.25rem;
+    margin-left: 0.925rem;
+    margin-right: 0.925rem;
+    transform: scale(1.5);
+
+    &:hover {
+        transform: scale(2.5);
+    }
+}
