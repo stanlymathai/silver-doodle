@@ -23,15 +23,25 @@ interface CommentSectionProps {
     comId: string
     fullName: string
     avatarUrl: string
-    timeStamp: string;
+    timeStamp: string
     text: string
+    reaction: {
+      like: boolean
+      brilliant: boolean
+      thoughtful: boolean
+    }
     replies: Array<{
+      text: string
       userId: string
       comId: string
       fullName: string
       avatarUrl: string
-      timeStamp: string;
-      text: string
+      timeStamp: string
+      reaction: {
+        like: false,
+        brilliant: false,
+        thoughtful: false
+      },
     }>
   }>
 }

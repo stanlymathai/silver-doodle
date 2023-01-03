@@ -28,6 +28,7 @@ module.exports = {
         .sort({ _id: -1 })
         .lean()
         .exec();
+        
       let replies = await Comment.find(
         {
           repliedToCommentId: { $in: threads.map(({ comId }) => comId) },
@@ -36,11 +37,24 @@ module.exports = {
       )
         .lean()
         .exec();
+      
+      replies.forEach((thread) => {
+        thread.reaction = {
+          like: Math.random() < 0.5,
+          brilliant: Math.random() < 0.5,
+          thoughtful: Math.random() < 0.5
+        }
+      })
 
       threads.forEach((thread) => {
         thread.replies = replies.filter(
           (i) => i.repliedToCommentId == thread.comId
         );
+        thread.reaction = {
+          like: Math.random() < 0.5,
+          brilliant: Math.random() < 0.5,
+          thoughtful: Math.random() < 0.5
+        }
       });
 
       res.json({ threads });

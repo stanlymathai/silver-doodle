@@ -28,19 +28,29 @@ export const GlobalProvider = ({
   } | null
   cancelBtnStyle?: object
   commentData?: Array<{
-    userId: string
+    text: string
     comId: string
+    userId: string
     fullName: string
     avatarUrl: string
     timeStamp: string
-    text: string
+    reaction: {
+      like: boolean
+      brilliant: boolean
+      thoughtful: boolean
+    }
     replies: Array<{
+      text: string
       userId: string
       comId: string
       fullName: string
       avatarUrl: string
       timeStamp: string
-      text: string
+      reaction: {
+        like: boolean
+        brilliant: boolean
+        thoughtful: boolean
+      }
     }>
   }>
   loadMore?: Function
@@ -51,19 +61,29 @@ export const GlobalProvider = ({
   const [currentUserData] = useState(currentUser)
   const [data, setData] = useState<
     Array<{
-      userId: string
+      text: string
       comId: string
+      userId: string
       fullName: string
       avatarUrl: string
       timeStamp: string
-      text: string
+      reaction: {
+        like: boolean
+        brilliant: boolean
+        thoughtful: boolean
+      };
       replies: Array<{
-        userId: string
+        text: string
         comId: string
+        userId: string
         fullName: string
         avatarUrl: string
         timeStamp: string
-        text: string
+        reaction: {
+          like: boolean
+          brilliant: boolean
+          thoughtful: boolean
+        }
       }>
     }>
   >([])
@@ -90,8 +110,13 @@ export const GlobalProvider = ({
     let commentData = {
       text,
       timeStamp,
-      replies: [],
       comId: uuid,
+      replies: [],
+      reaction: {
+        like: false,
+        brilliant: false,
+        thoughtful: false
+      },
       userId: currentUserData!.currentUserId,
       avatarUrl: currentUserData!.currentUserImg,
       fullName: currentUserData!.currentUserFullName,
@@ -165,6 +190,11 @@ export const GlobalProvider = ({
     if (parentId) {
       const indexOfParent = _.findIndex(copyData, { comId: parentId })
       copyData[indexOfParent].replies!.push({
+        reaction: {
+          like: false,
+          brilliant: false,
+          thoughtful: false
+        },
         text,
         timeStamp,
         comId: uuid,
@@ -177,6 +207,11 @@ export const GlobalProvider = ({
     } else {
       const indexOfId = _.findIndex(copyData, { comId })
       copyData[indexOfId].replies!.push({
+        reaction: {
+          like: false,
+          brilliant: false,
+          thoughtful: false
+        },
         text,
         timeStamp,
         comId: uuid,
@@ -191,11 +226,6 @@ export const GlobalProvider = ({
   return (
     <GlobalContext.Provider
       value={{
-        onReply,
-        handleSort,
-        handleReply,
-        handleSubmit,
-        toggleDisscusionbox,
         data,
         report,
         loading,
@@ -209,6 +239,11 @@ export const GlobalProvider = ({
         onReportAction,
         currentUserData,
         showDiscussionBox,
+        onReply,
+        handleSort,
+        handleReply,
+        handleSubmit,
+        toggleDisscusionbox,
       }}
     >
       {children}

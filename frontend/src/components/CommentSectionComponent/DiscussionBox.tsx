@@ -17,13 +17,18 @@ const DiscussionBox = () => {
             <InputField />
             {globalStore.data.map(
                 (i: {
-                    userId: string;
+                    text: string;
                     comId: string;
+                    userId: string;
                     fullName: string;
                     avatarUrl: string;
-                    text: string;
                     timeStamp: string;
-                    replies: Array<any> | undefined;
+                    replies: Array<any>;
+                    reaction: {
+                        like: boolean;
+                        brilliant: boolean;
+                        thoughtful: boolean;
+                    };
                 }) => {
                     return (
                         <div className="main-thread" key={i.comId}>

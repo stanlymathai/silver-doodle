@@ -19,6 +19,11 @@ interface ICommentBody {
     text: string;
     timeStamp?: string;
     userProfile?: string;
+    reaction?: {
+      like: boolean;
+      brilliant: boolean;
+      thoughtful: boolean;
+    };
     replies?: Array<object> | undefined;
     replyComponent?: boolean | undefined;
   };
@@ -31,7 +36,7 @@ const CommentBody = ({ info, parentId, replyMode }: ICommentBody) => {
   const actionBar = () => (
     <div className="actionBar">
       <div className="actions">
-        {likeButton(info)}
+        {likeButton(info.reaction)}
         {reactionView()}
         {replyButton(info)}
       </div>
