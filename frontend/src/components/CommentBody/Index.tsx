@@ -55,11 +55,13 @@ const CommentBody = ({ info, parentId, replyMode }: ICommentBody) => {
   const commentBoxWithInput = () => (
     <div className="replysection">
       {commentBox()}
-      <InputField
-        mode={"replyMode"}
-        comId={info.comId}
-        parentId={parentId}
-      />
+      <div className="replyInput">
+        <InputField
+          mode={"replyMode"}
+          comId={info.comId}
+          parentId={parentId}
+        />
+      </div>
     </div>
   );
 

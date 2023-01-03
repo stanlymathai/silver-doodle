@@ -167,7 +167,11 @@
         }
 
         .szh-menu__item:hover {
-            background-color: transparent;
+            background-color: transparent !important;
+        }
+
+        .szh-menu__item--hover {
+            background-color: transparent !important;
         }
     }
 }

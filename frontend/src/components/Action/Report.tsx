@@ -73,8 +73,8 @@ const ReportMenu = () => {
                     </div>
                     <hr />
                     <div className="info">
-                        <p>We'll use this information to improve our process. Indepen-</p>
-                        <p>dent fact-checkers may review the content.</p>
+                        <h4>We'll use this information to improve our process. Indepen-</h4>
+                        <h4>dent fact-checkers may review the content.</h4>
                     </div>
                     <MenuItem />
                 </div>

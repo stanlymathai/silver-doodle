@@ -151,5 +151,10 @@
   .replysection {
     display: flex;
     flex-direction: column;
+
+    .replyInput {
+      margin-top: 10px;
+      margin-left: 40px;
+    }
   }
 }

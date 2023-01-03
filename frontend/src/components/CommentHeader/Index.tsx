@@ -56,7 +56,6 @@ const CommentHeader = () => {
           </MenuButton>
       }
       transition
-      offsetY={10}
       align={"end"}
     >
       {labels.map((el, idx) => (
