@@ -2,11 +2,11 @@ import React, { useContext } from "react";
 
 import "./Style.scss";
 
-import Loader from "../Loader/Index"
-import DiscussionBox from "./DiscussionBox";
+import { Loader } from "../Loader/Index"
+import { DiscussionBox } from "./DiscussionBox";
 import { ReactionBar } from "../ReactionBar/Index";
-import ArticleOverview from "../ArticleOverview/Index";
-import { GlobalContext } from "../../context/Provider";
+import { GlobalContext } from "../../context/Index";
+import { ArticleOverview } from "../ArticleOverview/Index";
 
 
 export const SessionBox = () => {

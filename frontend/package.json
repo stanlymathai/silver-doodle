@@ -63,7 +63,6 @@
   ],
   "dependencies": {
     "@szhsin/react-menu": "^3.0.1",
-    "@types/lodash": "^4.14.182",
     "@types/uuid": "^8.3.4",
     "microbundle-crl-with-assets": "^0.13.12",
     "moment": "^2.29.4",

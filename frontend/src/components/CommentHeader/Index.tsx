@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 
 import { ReportMenu } from "../Action/Report"
-import { GlobalContext } from "../../context/Provider";
+import { GlobalContext } from "../../context/Index";
 
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 
@@ -68,19 +68,15 @@ const CommentHeader = () => {
 
   return (
     <div className="session-header">
-      {showLoadMore ? (
-        <div
-          onClick={() => {
-            globalStore.loadMore();
-            setDisplayLabel(labels[0].title)
-          }}
-          className="prev-comments"
-        >
-          View {previosComments} previous comments
-        </div>
-      ) : (
-        <div />
-      )}
+      <div
+        onClick={() => {
+          globalStore.loadMore();
+          setDisplayLabel(labels[0].title)
+        }}
+        className={showLoadMore ? "prev-comments" : "hidden"}
+      >
+        View {previosComments} previous comments
+      </div>
       {!!globalStore.data.length && ReportMenu()}
       {!!globalStore.data.length && sortMenu()}
     </div>

@@ -1,6 +1,6 @@
 import React from "react"
 import { useContext } from "react"
-import { GlobalContext } from "../../context/Provider"
+import { GlobalContext } from "../../context/Index"
 
 interface InputComponentProps {
   text: string

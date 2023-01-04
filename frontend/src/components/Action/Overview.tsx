@@ -1,6 +1,6 @@
 import React from "react";
 
-const ReactionView = () => {
+export const ReactionView = () => {
     let reactionCount = Math.floor(Math.random() * 9 + 1) + "K";
     return (
         <div className="reactionGroup">
@@ -11,5 +11,3 @@ const ReactionView = () => {
         </div>
     );
 };
-
-export default ReactionView

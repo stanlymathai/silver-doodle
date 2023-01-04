@@ -1,5 +1,5 @@
 import * as React from "react"
-import GlobalProvider from "./context/Provider"
+import { Provider } from "./context/Index"
 import { SessionBox } from "./components/SessionBox/Index"
 
 import "./Index.scss"
@@ -66,7 +66,7 @@ export const CommentSection = ({
   cancelBtnStyle
 }: IProps) => {
   return (
-    <GlobalProvider
+    <Provider
       loading={loading}
       loadMore={loadMore}
       totalCount={totalCount}
@@ -79,6 +79,6 @@ export const CommentSection = ({
       cancelBtnStyle={cancelBtnStyle}
     >
       <SessionBox />
-    </GlobalProvider>
+    </Provider>
   )
 }

@@ -1,14 +1,13 @@
 import React from "react";
 import { useContext } from "react";
 
-import _ from "lodash";
+import { GlobalContext } from "../../context/Index";
 
 import InputField from "../InputField/Index";
-import CommentBody from "../CommentBody/Index";
+import { CommentBody } from "../CommentBody/Index";
 import CommentHeader from "../CommentHeader/Index";
-import { GlobalContext } from "../../context/Provider";
 
-const DiscussionBox = () => {
+export const DiscussionBox = () => {
     const globalStore: any = useContext(GlobalContext);
 
     return (
@@ -34,9 +33,7 @@ const DiscussionBox = () => {
                         <div className="main-thread" key={i.comId}>
                             <CommentBody
                                 info={i}
-                                replyMode={
-                                    _.indexOf(globalStore.replyArr, i.comId) === -1 ? false : true
-                                }
+                                replyMode={globalStore.replyThreadId == i.comId}
                             />
                             {i.replies &&
                                 i.replies.length > 0 &&
@@ -44,13 +41,8 @@ const DiscussionBox = () => {
                                     return (
                                         <div className="reply-section" key={j.comId}>
                                             <CommentBody
-                                                info={{ ...j, replyComponent: true }}
+                                                info={j}
                                                 parentId={i.comId}
-                                                replyMode={
-                                                    _.indexOf(globalStore.replyArr, j.comId) === -1
-                                                        ? false
-                                                        : true
-                                                }
                                             />
                                         </div>
                                     );
@@ -61,6 +53,4 @@ const DiscussionBox = () => {
             )}
         </div>
     );
-};
-
-export default DiscussionBox;
+}; 

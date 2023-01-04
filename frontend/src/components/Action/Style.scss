@@ -130,7 +130,6 @@
     background-color: transparent;
     border: none;
     color: #1cf399;
-    outline: none;
     font-size: 14px;
     line-height: 10px;
     font-weight: bolder;
@@ -176,7 +175,7 @@
     }
 }
 
-.svg-icn {
+.icn-dft {
     &:hover {
         outline: none;
         cursor: pointer;
@@ -221,4 +220,18 @@
     &:hover {
         transform: scale(2.5);
     }
+}
+
+.reply-btn {
+    color: #1cf399;
+    font-size: 14px;
+    font-weight: bolder;
+}
+
+
+.time-stamp {
+    cursor: auto;
+    opacity: 0.999;
+    margin-left: 8px;
+    color: #f2f2f2;
 }

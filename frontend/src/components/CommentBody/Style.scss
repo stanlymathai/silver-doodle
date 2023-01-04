@@ -73,24 +73,6 @@
     }
   }
 
-  .replyBtn {
-    border: none;
-    color: #1cf399;
-    outline: none;
-    font-size: 14px;
-    line-height: 10px;
-    font-weight: bolder;
-    background-color: transparent;
-
-    &:hover {
-      outline: none;
-      cursor: pointer;
-    }
-
-    &:focus {
-      outline: 0;
-    }
-  }
 
   .reactionGroup {
     border: none;
@@ -118,16 +100,6 @@
 
   .reply-btn-text {
     margin-left: 10px;
-  }
-
-  .time-from-now {
-    cursor: auto;
-    opacity: 0.999;
-    margin-left: 8px;
-    color: #f2f2f2;
-    line-height: 10px;
-    background-color: transparent;
-
   }
 
   .vertical-line {

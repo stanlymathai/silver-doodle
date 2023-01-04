@@ -1,21 +1,21 @@
 import React, { useContext } from "react";
-import { GlobalContext } from "../../context/Provider";
+import { GlobalContext } from "../../context/Index";
 
 import moment from "moment";
 
 interface IInfo {
     comId: string;
-    timeStamp?: string;
-    replyComponent?: boolean | undefined;
+    timeStamp: string;
+    replies?: Array<any>
 }
 
-const ReplyButton = (info: IInfo) => {
+export const ReplyButton = (info: IInfo) => {
     const globalStore: any = useContext(GlobalContext);
 
     return (
-        <div className="replyBtn">
+        <div className="reply-btn icn-dft">
             <span className="vertical-line" />
-            {!info.replyComponent && (
+            {info.replies && (
                 <span
                     className="reply-btn-text"
                     onClick={() => globalStore.handleReply(info.comId)}
@@ -23,11 +23,9 @@ const ReplyButton = (info: IInfo) => {
                     Reply
                 </span>
             )}
-            <span className="time-from-now">
+            <span className="time-stamp">
                 {moment(info.timeStamp).fromNow()}
             </span>
         </div>
     );
 };
-
-export default ReplyButton;

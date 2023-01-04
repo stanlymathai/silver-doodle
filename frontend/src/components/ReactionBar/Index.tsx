@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 
-import { GlobalContext } from "../../context/Provider";
+import { GlobalContext } from "../../context/Index";
 import { LikeButton } from "../Action/Like"
 import "./Style.scss"
 

@@ -1,9 +1,9 @@
 import React from "react";
 
-import replyButton from "../Action/Reply";
-
 import InputField from "../InputField/Index";
-import reactionView from "../Action/Overview";
+
+import { ReplyButton } from "../Action/Reply";
+import { ReactionView } from "../Action/Overview";
 
 import { LikeButton } from "../Action/Like";
 import { ReportFlag } from "../Action/Report"
@@ -28,17 +28,17 @@ interface ICommentBody {
     replyComponent?: boolean | undefined;
   };
   parentId?: string;
-  replyMode: boolean;
+  replyMode?: boolean;
 }
 
 
-const CommentBody = ({ info, parentId, replyMode }: ICommentBody) => {
+export const CommentBody = ({ info, parentId, replyMode }: ICommentBody) => {
   const actionBar = () => (
     <div className="actionBar">
       <div className="actions">
         {LikeButton(info)}
-        {reactionView()}
-        {replyButton(info)}
+        {ReactionView()}
+        {ReplyButton(info)}
       </div>
       <ReportFlag info={info} />
     </div>
@@ -77,5 +77,3 @@ const CommentBody = ({ info, parentId, replyMode }: ICommentBody) => {
     </div>
   );
 };
-
-export default CommentBody;

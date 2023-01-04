@@ -1,10 +1,10 @@
 import React, { createContext, useEffect, useState } from "react"
 
-import _ from "lodash"
+import { IArticleData, ICommentData, ICurrentUser } from "./Interface"
 
 export const GlobalContext = createContext({})
 
-export const GlobalProvider = ({
+export const Provider = ({
   loading,
   loadMore,
   children,
@@ -18,91 +18,21 @@ export const GlobalProvider = ({
   onSubmitAction
 }: {
   loading: boolean
-  articleData?: {
-    articleId: string
-    reaction: {
-      like: boolean
-      brilliant: boolean
-      thoughtful: boolean
-    }
-  }
+  articleData?: IArticleData
   totalCount?: number
   children: any
-  currentUser?: {
-    currentUserId: string
-    currentUserImg: string
-    currentUserFullName: string
-  }
+  currentUser?: ICurrentUser
   cancelBtnStyle?: object
-  commentData?: Array<{
-    text: string
-    comId: string
-    userId: string
-    fullName: string
-    avatarUrl: string
-    timeStamp: string
-    reaction: {
-      like: boolean
-      brilliant: boolean
-      thoughtful: boolean
-    }
-    replies: Array<{
-      text: string
-      userId: string
-      comId: string
-      fullName: string
-      avatarUrl: string
-      timeStamp: string
-      reaction: {
-        like: boolean
-        brilliant: boolean
-        thoughtful: boolean
-      }
-    }>
-  }>
+  commentData?: Array<ICommentData>
   loadMore?: Function
   onReportAction: Function
   onReplyAction?: Function
   onSubmitAction?: Function
 }) => {
   const [currentUserData] = useState(currentUser)
-  const [data, setData] = useState<
-    Array<{
-      text: string
-      comId: string
-      userId: string
-      fullName: string
-      avatarUrl: string
-      timeStamp: string
-      reaction: {
-        like: boolean
-        brilliant: boolean
-        thoughtful: boolean
-      };
-      replies: Array<{
-        text: string
-        comId: string
-        userId: string
-        fullName: string
-        avatarUrl: string
-        timeStamp: string
-        reaction: {
-          like: boolean
-          brilliant: boolean
-          thoughtful: boolean
-        }
-      }>
-    }>
-  >([])
+  const [data, setData] = useState<Array<ICommentData>>([])
   const [reportData, setReport] = useState<any>({})
-  const [article, setArticle] = useState<{
-    articleId: string
-    reaction: {
-      like: boolean
-      brilliant: boolean
-      thoughtful: boolean
-    }
-  }>({
+  const [article, setArticle] = useState<IArticleData>({
     articleId: '###',
     reaction: {
       like: false,
@@ -110,24 +40,13 @@ export const GlobalProvider = ({
       thoughtful: false
     }
   })
-  const [replyArr, setReply] = useState<string[]>([])
+  const [replyThreadId, setReplyThread] = useState<string>("")
   const [showDiscussionBox, setDiscussionVisibility] = useState<Boolean>(false)
 
   useEffect(() => { if (commentData) setData(commentData) }, [commentData])
   useEffect(() => { if (articleData) setArticle(articleData) }, [articleData])
 
-
-  const handleReply = (id: string) => {
-    let replyArrCopy: string[] = [...replyArr]
-    let indexOfId = _.indexOf(replyArrCopy, id)
-    if (_.includes(replyArr, id)) {
-      replyArrCopy.splice(indexOfId, 1)
-      setReply(replyArrCopy)
-    } else {
-      replyArrCopy.push(id)
-      setReply(replyArrCopy)
-    }
-  }
+  const handleReply = (id: string) => setReplyThread(id)
 
   const handleSubmit = (text: string, uuid: string, timeStamp: string) => {
     let commentData = {
@@ -175,27 +94,35 @@ export const GlobalProvider = ({
     }
     setData([...arrCopy])
   }
-  const handleReaction = (reaction: any, info: any) => {
-    console.log(reaction, "reaction from provider")
-    console.log(info, "info from provider")
 
+  const handleReaction = (event: string, info: any) => {
     const ref = info.comId ?? info.articleId
     const type = info.comId ? "COMMENT" : "ARTICLE"
-    const action = info[reaction] ? "REMOVE" : "ADD"
-    const payload = { ref, type, action, reaction }
+    const action = info.reaction[event] ? "REMOVE" : "ADD"
+    const payload = { ref, type, action, event }
 
     switch (type) {
       case "COMMENT":
         let copyData = [...data]
 
-        const targetIndex = copyData.findIndex((i) => i.comId == info.comId)
+        if (info.repliedToCommentId) {
+          const parentIdx = copyData.findIndex((i) => i.comId == info.repliedToCommentId)
+          const childIdx = copyData[parentIdx].replies.findIndex(i => i.comId == info.comId)
 
-        copyData[targetIndex].reaction[reaction] = !copyData[targetIndex].reaction[reaction]
+          copyData[parentIdx].replies[childIdx].reaction[event] = !copyData[parentIdx].replies[childIdx].reaction[event]
+        } else {
+          const targetIdx = copyData.findIndex((i) => i.comId == info.comId)
 
+          copyData[targetIdx].reaction[event] = !copyData[targetIdx].reaction[event]
+        }
         setData(copyData)
         break;
-      case "ARTICLE":
 
+      case "ARTICLE":
+        let articleCopy = article
+        articleCopy.reaction[event] = !articleCopy.reaction[event]
+
+        setArticle(articleCopy)
         break;
 
       default:
@@ -217,8 +144,8 @@ export const GlobalProvider = ({
       })
     },
     submit: () => {
-      switchComponent("feedback")
       onReportAction(reportData)
+      switchComponent("feedback")
       setReport({})
     },
     close: () => {
@@ -226,6 +153,7 @@ export const GlobalProvider = ({
       switchComponent("close-menu")
     }
   }
+
   const switchComponent = (id: string) => document.getElementById(id)?.click()
   const toggleDisscusionbox = () => setDiscussionVisibility(!showDiscussionBox)
 
@@ -234,45 +162,25 @@ export const GlobalProvider = ({
     text: string,
     uuid: string,
     comId: string,
-    parentId: string,
     timeStamp: string
   ) => {
+    handleReply("")
     let copyData = [...data]
-    if (parentId) {
-      const indexOfParent = _.findIndex(copyData, { comId: parentId })
-      copyData[indexOfParent].replies!.push({
-        reaction: {
-          like: false,
-          brilliant: false,
-          thoughtful: false
-        },
-        text,
-        timeStamp,
-        comId: uuid,
-        userId: currentUserData!.currentUserId,
-        avatarUrl: currentUserData!.currentUserImg,
-        fullName: currentUserData!.currentUserFullName
-      })
-      setData(copyData)
-      handleReply(comId)
-    } else {
-      const indexOfId = _.findIndex(copyData, { comId })
-      copyData[indexOfId].replies!.push({
-        reaction: {
-          like: false,
-          brilliant: false,
-          thoughtful: false
-        },
-        text,
-        timeStamp,
-        comId: uuid,
-        userId: currentUserData!.currentUserId,
-        avatarUrl: currentUserData!.currentUserImg,
-        fullName: currentUserData!.currentUserFullName
-      })
-      setData(copyData)
-      handleReply(comId)
-    }
+    const targetIdx = copyData.findIndex((i) => i.comId == comId)
+    copyData[targetIdx].replies!.push({
+      text,
+      timeStamp,
+      comId: uuid,
+      reaction: {
+        like: false,
+        brilliant: false,
+        thoughtful: false
+      },
+      userId: currentUserData!.currentUserId,
+      avatarUrl: currentUserData!.currentUserImg,
+      fullName: currentUserData!.currentUserFullName
+    })
+    setData(copyData)
   }
   return (
     <GlobalContext.Provider
@@ -282,8 +190,8 @@ export const GlobalProvider = ({
         article,
         loading,
         loadMore,
-        replyArr,
         totalCount,
+        replyThreadId,
         onReplyAction,
         cancelBtnStyle,
         onSubmitAction,
@@ -302,5 +210,3 @@ export const GlobalProvider = ({
     </GlobalContext.Provider>
   )
 }
-
-export default GlobalProvider

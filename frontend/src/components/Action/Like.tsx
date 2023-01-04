@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 
 import { Menu, MenuItem } from "@szhsin/react-menu";
-import { GlobalContext } from "../../context/Provider";
+import { GlobalContext } from "../../context/Index";
 
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
@@ -21,7 +21,7 @@ export const LikeButton = (info: ILike) => {
     const globalStore: any = useContext(GlobalContext);
 
     const emojiClass = (hasOne: any) =>
-        `svg-icn ${!!hasOne ? 'emoji-selected' : 'emoji-un-selected'}`
+        `icn-dft ${!!hasOne ? 'emoji-selected' : 'emoji-un-selected'}`
 
     const emoji = {
         like: `thumpsup-blue ${emojiClass(info.reaction.like)}`,
@@ -52,7 +52,7 @@ export const LikeButton = (info: ILike) => {
                                 <span
                                     key={el[0]}
                                     className={el[1]}
-                                    onClick={() => globalStore.handleReaction(el[0], info)}
+                                    onClick={() => globalStore.handleReaction(el[0], { ...info })}
                                 />))}
                     </MenuItem>
                 </Menu>

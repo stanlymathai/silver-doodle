@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 
-import { GlobalContext } from "../../context/Provider";
+import { GlobalContext } from "../../context/Index";
 
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 
@@ -34,6 +34,7 @@ const ReportMenu = () => {
             <Menu
                 transition
                 offsetY={10}
+                align={"center"}
                 menuButton={<MenuButton id='report-menu' className="hidden" />}
             >
                 <div className="report-box">
@@ -63,6 +64,7 @@ const ReportMenu = () => {
             <Menu
                 transition
                 offsetY={25}
+                align={"center"}
                 menuButton={<MenuButton id='feedback' className="hidden" />}
             >
                 <div className="report-box">
@@ -95,6 +97,7 @@ const ReportMenu = () => {
             {closeModal()}
             <Menu
                 transition
+                align={"center"}
                 menuButton={<MenuButton id='report-main' className="hidden" />}
             >
                 <div className="report-box">

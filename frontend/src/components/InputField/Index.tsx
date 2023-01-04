@@ -1,5 +1,5 @@
 import { useContext, useState } from "react"
-import { GlobalContext } from "../../context/Provider"
+import { GlobalContext } from "../../context/Index"
 
 import React from "react"
 import moment from "moment";
