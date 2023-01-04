@@ -1,12 +1,12 @@
 import { useContext, useState } from "react"
-import { GlobalContext } from "../../context/Index"
 
 import React from "react"
 import moment from "moment";
 const { v4: uuidv4 } = require("uuid")
 
 import "./Style.scss"
-import InputComponent from "./InputComponent"
+import { InputComponent } from "./InputComponent"
+import { GlobalContext } from "../../context/Index"
 
 interface InputFieldProps {
   parentId?: string
@@ -75,7 +75,6 @@ const InputField = ({
     <InputComponent
       text={text}
       mode={mode}
-      comId={comId}
       setText={setText}
       handleSubmit={handleSubmit}
     />

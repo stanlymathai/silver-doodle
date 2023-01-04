@@ -17,7 +17,7 @@ interface ICommentBody {
     fullName: string;
     avatarUrl: string;
     text: string;
-    timeStamp?: string;
+    timeStamp: string;
     userProfile?: string;
     reaction: {
       like: boolean;

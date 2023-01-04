@@ -5,25 +5,20 @@ import { GlobalContext } from "../../context/Index"
 interface InputComponentProps {
   text: string
   mode?: string
-  comId?: string
   setText: Function
   handleSubmit: Function
 }
 
-const InputComponent = ({
+export const InputComponent = ({
   text,
   mode,
-  comId,
   setText,
   handleSubmit,
 }: InputComponentProps) => {
   const globalStore: any = useContext(GlobalContext)
-
   return (
     <form
-      className='session-form'
-      onSubmit={() => handleSubmit}
-    >
+      className='session-form'>
       <img
         alt='userIcon'
         className='userImg'
@@ -49,7 +44,7 @@ const InputComponent = ({
         <button
           type='button'
           style={globalStore.cancelBtnStyle}
-          onClick={() => globalStore.handleReply(comId)}
+          onClick={() => globalStore.handleReply("")}
         >
           Cancel
         </button>
@@ -57,5 +52,3 @@ const InputComponent = ({
     </form>
   )
 }
-
-export default InputComponent
