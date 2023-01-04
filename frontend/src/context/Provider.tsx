@@ -8,24 +8,31 @@ export const GlobalProvider = ({
   loading,
   loadMore,
   children,
-  articleId,
   totalCount,
   currentUser,
   commentData,
+  articleData,
   onReplyAction,
   onReportAction,
   cancelBtnStyle,
   onSubmitAction
 }: {
   loading: boolean
-  articleId: string
+  articleData?: {
+    articleId: string
+    reaction: {
+      like: boolean
+      brilliant: boolean
+      thoughtful: boolean
+    }
+  }
   totalCount?: number
   children: any
   currentUser?: {
     currentUserId: string
     currentUserImg: string
     currentUserFullName: string
-  } | null
+  }
   cancelBtnStyle?: object
   commentData?: Array<{
     text: string
@@ -88,10 +95,26 @@ export const GlobalProvider = ({
     }>
   >([])
   const [reportData, setReport] = useState<any>({})
+  const [article, setArticle] = useState<{
+    articleId: string
+    reaction: {
+      like: boolean
+      brilliant: boolean
+      thoughtful: boolean
+    }
+  }>({
+    articleId: '###',
+    reaction: {
+      like: false,
+      brilliant: false,
+      thoughtful: false
+    }
+  })
   const [replyArr, setReply] = useState<string[]>([])
   const [showDiscussionBox, setDiscussionVisibility] = useState<Boolean>(false)
 
   useEffect(() => { if (commentData) setData(commentData) }, [commentData])
+  useEffect(() => { if (articleData) setArticle(articleData) }, [articleData])
 
 
   const handleReply = (id: string) => {
@@ -151,6 +174,34 @@ export const GlobalProvider = ({
         break;
     }
     setData([...arrCopy])
+  }
+  const handleReaction = (reaction: any, info: any) => {
+    console.log(reaction, "reaction from provider")
+    console.log(info, "info from provider")
+
+    const ref = info.comId ?? info.articleId
+    const type = info.comId ? "COMMENT" : "ARTICLE"
+    const action = info[reaction] ? "REMOVE" : "ADD"
+    const payload = { ref, type, action, reaction }
+
+    switch (type) {
+      case "COMMENT":
+        let copyData = [...data]
+
+        const targetIndex = copyData.findIndex((i) => i.comId == info.comId)
+
+        copyData[targetIndex].reaction[reaction] = !copyData[targetIndex].reaction[reaction]
+
+        setData(copyData)
+        break;
+      case "ARTICLE":
+
+        break;
+
+      default:
+        return
+    }
+    console.log(payload, "payload")
   }
 
   const report = {
@@ -228,10 +279,10 @@ export const GlobalProvider = ({
       value={{
         data,
         report,
+        article,
         loading,
         loadMore,
         replyArr,
-        articleId,
         totalCount,
         onReplyAction,
         cancelBtnStyle,
@@ -243,6 +294,7 @@ export const GlobalProvider = ({
         handleSort,
         handleReply,
         handleSubmit,
+        handleReaction,
         toggleDisscusionbox,
       }}
     >

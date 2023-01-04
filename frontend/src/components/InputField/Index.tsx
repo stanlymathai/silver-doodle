@@ -34,7 +34,7 @@ const InputField = ({
         fullName: globalStore.currentUserData.currentUserFullName,
         avatarUrl: globalStore.currentUserData.currentUserImg,
         userId: globalStore.currentUserData.currentUserId,
-        articleId: globalStore.articleId,
+        articleId: globalStore.article.articleId,
         repliedToCommentId: comId,
         text: textToSend,
         comId: replyUuid,
@@ -53,7 +53,7 @@ const InputField = ({
         fullName: globalStore.currentUserData.currentUserFullName,
         avatarUrl: globalStore.currentUserData.currentUserImg,
         userId: globalStore.currentUserData.currentUserId,
-        articleId: globalStore.articleId,
+        articleId: globalStore.article.articleId,
         text: textToSend,
         comId: createUuid,
         timeStamp

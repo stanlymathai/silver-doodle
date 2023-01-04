@@ -13,12 +13,15 @@ const CommentBox = (props: CommentBoxProps) => {
 
   const [commentData, setComments] = useState<any>();
   const [totalCount, setTotal] = useState<number>(0);
+  const [articleData, setArticleData] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
 
   const getCommentData = () => {
     setLoading(true);
-    API.fetchComments(ARTICLE_ID, FETCH_LIMIT).then((res: any) =>
+    API.fetchComments(ARTICLE_ID, FETCH_LIMIT).then((res: any) => {
       setComments(Object.values(res.data.threads))
+      setArticleData(res.data.articleData)
+    }
     )
     setLoading(false);
   };
@@ -28,8 +31,10 @@ const CommentBox = (props: CommentBoxProps) => {
 
   const loadMore = () => {
     setLoading(true);
-    API.fetchComments(ARTICLE_ID).then((res: any) =>
+    API.fetchComments(ARTICLE_ID).then((res: any) => {
       setComments(Object.values(res.data.threads))
+      setArticleData(res.data.articleData)
+    }
     )
     setLoading(false);
   }
@@ -51,13 +56,13 @@ const CommentBox = (props: CommentBoxProps) => {
       <CommentSection
         loading={loading}
         loadMore={loadMore}
-        articleId={ARTICLE_ID}
         totalCount={totalCount}
         commentData={commentData}
+        articleData={articleData}
         currentUser={props.currentUser}
+        onSubmitAction={onSubmitAction}
         onReplyAction={API.handleAction}
         onReportAction={API.handleReport}
-        onSubmitAction={onSubmitAction}
         cancelBtnStyle={style.cancelButton}
       />
     </div>

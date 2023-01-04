@@ -1,23 +1,29 @@
 import * as React from "react"
 import GlobalProvider from "./context/Provider"
-import CommentSectionComponent from "./components/CommentSectionComponent/Index"
+import { SessionBox } from "./components/SessionBox/Index"
 
 import "./Index.scss"
 
-interface CommentSectionProps {
+interface IProps {
+  loading: boolean
+  cancelBtnStyle?: object
+  onReportAction: Function
+  onReplyAction: Function
+  onSubmitAction: Function
+  loadMore?: Function
   currentUser: {
     currentUserId: string
     currentUserImg: string
     currentUserFullName: string
-  } | null
-  loading: boolean
-  articleId: string
-  totalCount?: number
-  cancelBtnStyle?: object
-  onReportAction: Function
-  onReplyAction?: Function
-  onSubmitAction?: Function
-  loadMore?: Function
+  }
+  articleData: {
+    articleId: string
+    reaction: {
+      like: boolean
+      brilliant: boolean
+      thoughtful: boolean
+    }
+  }
   commentData: Array<{
     userId: string
     comId: string
@@ -44,34 +50,35 @@ interface CommentSectionProps {
       },
     }>
   }>
+  totalCount?: number
 }
 
 export const CommentSection = ({
   loading,
   loadMore,
-  articleId,
   totalCount,
   commentData,
   currentUser,
+  articleData,
   onReplyAction,
   onSubmitAction,
   onReportAction,
   cancelBtnStyle
-}: CommentSectionProps) => {
+}: IProps) => {
   return (
     <GlobalProvider
       loading={loading}
       loadMore={loadMore}
-      articleId={articleId}
       totalCount={totalCount}
       commentData={commentData}
       currentUser={currentUser}
+      articleData={articleData}
       onReplyAction={onReplyAction}
       onSubmitAction={onSubmitAction}
       onReportAction={onReportAction}
       cancelBtnStyle={cancelBtnStyle}
     >
-      <CommentSectionComponent />
+      <SessionBox />
     </GlobalProvider>
   )
 }

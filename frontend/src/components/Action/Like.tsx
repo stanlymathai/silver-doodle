@@ -1,25 +1,36 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { Menu, MenuItem } from "@szhsin/react-menu";
+import { GlobalContext } from "../../context/Provider";
 
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
 
-const LikeButton = (info: any) => {
-    let hasThumbsUp = !!info.like;
-    let hasBrilliant = !!info.brilliant;
-    let hasThoughtFul = !!info.thoughtful;
-    let hasArticleLike = !!info.article?.like
 
-
-    const emojiStyle = {
-        articleLike: `svgBtn ${hasArticleLike ? 'thumpsup-blue' : 'svgLike'}`,
-        lightBulb: `svg-icn ${hasBrilliant ? 'emoji-selected' : 'emoji-un-selected'}`,
-        thumbsUp: `svg-icn thumpsup-blue ${hasThumbsUp ? 'emoji-selected' : 'emoji-un-selected'}`,
-        thoughtFull: `svg-icn thought-full ${hasThoughtFul ? 'emoji-selected' : 'emoji-un-selected'}`
+interface ILike {
+    articleId?: string
+    reaction: {
+        like: boolean
+        brilliant: boolean
+        thoughtful: boolean
     }
-    const menuButton = () => info.article ?
-        (<div className={emojiStyle.articleLike} id="artLike" />)
+}
+
+export const LikeButton = (info: ILike) => {
+
+    const globalStore: any = useContext(GlobalContext);
+
+    const emojiClass = (hasOne: any) =>
+        `svg-icn ${!!hasOne ? 'emoji-selected' : 'emoji-un-selected'}`
+
+    const emoji = {
+        like: `thumpsup-blue ${emojiClass(info.reaction.like)}`,
+        brilliant: `light-bulb ${emojiClass(info.reaction.brilliant)}`,
+        thoughtful: `thought-full ${emojiClass(info.reaction.thoughtful)}`
+    }
+
+    const menuButton = () => info.articleId ?
+        (<div className={`svgBtn ${info.reaction.like ? 'thumpsup-blue' : 'svgLike'}`} id="artLike" />)
         : (<button className="likeBtn">Like</button>)
 
     return (
@@ -35,14 +46,17 @@ const LikeButton = (info: any) => {
                     menuButton={menuButton}
                 >
                     <MenuItem>
-                        <span className={emojiStyle.thumbsUp} />
-                        <span className={emojiStyle.lightBulb} >&#128161;</span>
-                        <span className={emojiStyle.thoughtFull} />
+                        {Object
+                            .entries(emoji)
+                            .map(el => (
+                                <span
+                                    key={el[0]}
+                                    className={el[1]}
+                                    onClick={() => globalStore.handleReaction(el[0], info)}
+                                />))}
                     </MenuItem>
                 </Menu>
             </span>
         </div>
     );
 };
-
-export default LikeButton;

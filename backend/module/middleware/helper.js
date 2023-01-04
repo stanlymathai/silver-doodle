@@ -1,23 +1,23 @@
-const passport = require("passport");
-const jwt = require("jsonwebtoken");
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
 module.exports = {
   verifyAuthentication: function (req, res, next) {
-    passport.authenticate("jwt", function (err, user, info) {
+    passport.authenticate('jwt', function (err, user, info) {
       try {
         let isTokenExpired = 0;
         const payload = payloadFromRefreshToken(req.headers.refreshtoken);
 
-        if (info && info.name == "TokenExpiredError") {
+        if (info && info.name == 'TokenExpiredError') {
           isTokenExpired = 1;
           const token = jwt.sign(
             payload,
-            Buffer.from(process.env.AUTHENTICATION_KEY).toString("base64"),
-            { expiresIn: "30m" }
+            Buffer.from(process.env.AUTHENTICATION_KEY).toString('base64'),
+            { expiresIn: '30m' }
           );
-          req.headers.authorization = "Bearer " + token;
-          res.setHeader("token", "Bearer " + token);
-          res.setHeader("isTokenExpired", isTokenExpired);
+          req.headers.authorization = 'Bearer ' + token;
+          res.setHeader('token', 'Bearer ' + token);
+          res.setHeader('isTokenExpired', isTokenExpired);
           req.user = { id: payload.id };
           next();
         } else if (!err && user) {
@@ -42,8 +42,8 @@ module.exports = {
 function payloadFromRefreshToken(token) {
   return jwt.verify(
     token,
-    Buffer.from(process.env.REFRESH_TOKEN_KEY).toString("base64"),
-    function (err, payload) {
+    Buffer.from(process.env.REFRESH_TOKEN_KEY).toString('base64'),
+    function (_, payload) {
       if (payload) {
         delete payload.iat;
         delete payload.exp;

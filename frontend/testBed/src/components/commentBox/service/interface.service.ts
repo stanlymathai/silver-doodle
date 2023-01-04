@@ -1,6 +1,4 @@
 interface ICommentData {
-  articleId: string;
-  id?: any | null;
   userId: string;
   comId: string;
   fullName: string;

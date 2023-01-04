@@ -1,23 +1,16 @@
 import React, { useContext } from "react";
 
 import { GlobalContext } from "../../context/Provider";
-import LikeButton from "../Action/Like"
-
+import { LikeButton } from "../Action/Like"
 import "./Style.scss"
 
-const ReactionBar = () => {
+export const ReactionBar = () => {
     const globalStore: any = useContext(GlobalContext);
 
-    const info = {
-        article: {
-            id: "test",
-            liked: Math.random() < 0.5
-        }
-    }
     return (
-        <div className="reaction-bar">
+        <div className="reaction-bar" >
             <div className="reaction-wrap">
-                {LikeButton(info)}
+                {LikeButton(globalStore.article)}
                 <div
                     onClick={() => document.getElementById("artLike")?.click()}>
                     Like</div></div>
@@ -32,5 +25,3 @@ const ReactionBar = () => {
         </div >
     )
 }
-
-export default ReactionBar

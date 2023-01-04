@@ -4,24 +4,23 @@ import "./Style.scss";
 
 import Loader from "../Loader/Index"
 import DiscussionBox from "./DiscussionBox";
-import ReactionBar from "../ReactionBar/Index";
+import { ReactionBar } from "../ReactionBar/Index";
 import ArticleOverview from "../ArticleOverview/Index";
 import { GlobalContext } from "../../context/Provider";
 
 
-const CommentSection = () => {
+export const SessionBox = () => {
   const globalStore: any = useContext(GlobalContext);
+  const loading = globalStore.loading
   const showDiscussionBox =
-    globalStore.showDiscussionBox && !globalStore.loading
+    globalStore.showDiscussionBox && !loading
 
   return (
     <div className="cs-wrapper">
       <ArticleOverview />
       <ReactionBar />
-      {globalStore.loading && <Loader />}
+      {loading && <Loader />}
       {showDiscussionBox && <DiscussionBox />}
     </div>
   );
 };
-
-export default CommentSection;

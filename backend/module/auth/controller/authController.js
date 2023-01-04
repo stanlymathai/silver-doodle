@@ -46,11 +46,7 @@ const registerUser = async (req, res) => {
 };
 
 const onboardUser = (req, res) => {
-  const payload = {
-    userId: req.userObj.user_id,
-    email: req.userObj.user_email,
-    authAccessToken: req.userObj.authAccessToken,
-  };
+  const payload = { id: req.userObj.userId };
   const token = jwt.sign(
     payload,
     Buffer.from(process.env.AUTHENTICATION_KEY).toString('base64'),

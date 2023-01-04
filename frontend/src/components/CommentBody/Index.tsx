@@ -1,11 +1,11 @@
 import React from "react";
 
-import likeButton from "../Action/Like";
 import replyButton from "../Action/Reply";
 
 import InputField from "../InputField/Index";
 import reactionView from "../Action/Overview";
 
+import { LikeButton } from "../Action/Like";
 import { ReportFlag } from "../Action/Report"
 
 import "./Style.scss";
@@ -19,7 +19,7 @@ interface ICommentBody {
     text: string;
     timeStamp?: string;
     userProfile?: string;
-    reaction?: {
+    reaction: {
       like: boolean;
       brilliant: boolean;
       thoughtful: boolean;
@@ -36,7 +36,7 @@ const CommentBody = ({ info, parentId, replyMode }: ICommentBody) => {
   const actionBar = () => (
     <div className="actionBar">
       <div className="actions">
-        {likeButton(info.reaction)}
+        {LikeButton(info)}
         {reactionView()}
         {replyButton(info)}
       </div>
