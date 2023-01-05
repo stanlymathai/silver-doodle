@@ -30,6 +30,7 @@ interface ICommentData {
             brilliant: boolean
             thoughtful: boolean
         }
+        repliedToCommentId?: string
     }>
 }
 interface ICurrentUser {

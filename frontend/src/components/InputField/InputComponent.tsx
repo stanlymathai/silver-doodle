@@ -26,6 +26,7 @@ export const InputComponent = ({
 
       />
       <input
+        autoFocus
         type='text'
         value={text}
         className='inputField'

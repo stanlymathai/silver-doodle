@@ -31,4 +31,13 @@
     }
 
   }
+
+  .report-menu {
+    height: 0;
+    margin: auto;
+
+    .hidden {
+      visibility: hidden !important;
+    }
+  }
 }

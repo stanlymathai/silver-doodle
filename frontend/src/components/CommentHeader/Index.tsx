@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 
-import { ReportMenu } from "../Action/Report"
 import { GlobalContext } from "../../context/Index";
 
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
@@ -32,9 +31,10 @@ const CommentHeader = () => {
   const globalStore: any = useContext(GlobalContext);
   const [displayLabel, setDisplayLabel] = useState(labels[0].title);
 
+  const commentsLength: number = globalStore.data.length
   const previosComments: number = globalStore.totalCount - INITIAL_FETCH;
   const showLoadMore =
-    previosComments > 0 && globalStore.data.length < globalStore.totalCount;
+    previosComments > 0 && commentsLength < globalStore.totalCount;
 
   const renderSortMenu = (el: { title: string; desc: string }, idx: number) => (
     <div
@@ -77,8 +77,7 @@ const CommentHeader = () => {
       >
         View {previosComments} previous comments
       </div>
-      {!!globalStore.data.length && ReportMenu()}
-      {!!globalStore.data.length && sortMenu()}
+      {commentsLength > 1 && sortMenu()}
     </div>
   );
 };

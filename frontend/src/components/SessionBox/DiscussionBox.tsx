@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { GlobalContext } from "../../context/Index";
 
 import InputField from "../InputField/Index";
+import { ReportMenu } from "../Action/Report"
 import { CommentBody } from "../CommentBody/Index";
 import CommentHeader from "../CommentHeader/Index";
 
@@ -14,6 +15,9 @@ export const DiscussionBox = () => {
         <div className="cs-overlay">
             <CommentHeader />
             <InputField />
+            <div className="report-menu">
+                {ReportMenu()}
+            </div>
             {globalStore.data.map(
                 (i: {
                     text: string;
@@ -40,10 +44,7 @@ export const DiscussionBox = () => {
                                 i.replies.map((j) => {
                                     return (
                                         <div className="reply-section" key={j.comId}>
-                                            <CommentBody
-                                                info={j}
-                                                parentId={i.comId}
-                                            />
+                                            <CommentBody info={j} />
                                         </div>
                                     );
                                 })}

@@ -27,12 +27,11 @@ interface ICommentBody {
     replies?: Array<object> | undefined;
     replyComponent?: boolean | undefined;
   };
-  parentId?: string;
   replyMode?: boolean;
 }
 
 
-export const CommentBody = ({ info, parentId, replyMode }: ICommentBody) => {
+export const CommentBody = ({ info, replyMode }: ICommentBody) => {
   const actionBar = () => (
     <div className="actionBar">
       <div className="actions">
@@ -64,7 +63,6 @@ export const CommentBody = ({ info, parentId, replyMode }: ICommentBody) => {
         <InputField
           mode={"replyMode"}
           comId={info.comId}
-          parentId={parentId}
         />
       </div>
     </div>

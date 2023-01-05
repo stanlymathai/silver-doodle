@@ -26,8 +26,8 @@ export const Provider = ({
   commentData?: Array<ICommentData>
   loadMore?: Function
   onReportAction: Function
-  onReplyAction?: Function
-  onSubmitAction?: Function
+  onReplyAction: Function
+  onSubmitAction: Function
 }) => {
   const [currentUserData] = useState(currentUser)
   const [data, setData] = useState<Array<ICommentData>>([])
@@ -48,20 +48,15 @@ export const Provider = ({
 
   const handleReply = (id: string) => setReplyThread(id)
 
-  const handleSubmit = (text: string, uuid: string, timeStamp: string) => {
+  const handleSubmit = (payload: any) => {
     let commentData = {
-      text,
-      timeStamp,
-      comId: uuid,
+      ...payload,
       replies: [],
       reaction: {
         like: false,
         brilliant: false,
         thoughtful: false
       },
-      userId: currentUserData!.currentUserId,
-      avatarUrl: currentUserData!.currentUserImg,
-      fullName: currentUserData!.currentUserFullName,
     }
     setData([commentData, ...data])
   }
@@ -112,7 +107,6 @@ export const Provider = ({
           copyData[parentIdx].replies[childIdx].reaction[event] = !copyData[parentIdx].replies[childIdx].reaction[event]
         } else {
           const targetIdx = copyData.findIndex((i) => i.comId == info.comId)
-
           copyData[targetIdx].reaction[event] = !copyData[targetIdx].reaction[event]
         }
         setData(copyData)
@@ -159,26 +153,20 @@ export const Provider = ({
 
 
   const onReply = (
-    text: string,
-    uuid: string,
-    comId: string,
-    timeStamp: string
+    payload: any
   ) => {
     handleReply("")
     let copyData = [...data]
-    const targetIdx = copyData.findIndex((i) => i.comId == comId)
+    const targetIdx = copyData.
+      findIndex((i) => i.comId == payload.repliedToCommentId)
+
     copyData[targetIdx].replies!.push({
-      text,
-      timeStamp,
-      comId: uuid,
+      ...payload,
       reaction: {
         like: false,
         brilliant: false,
         thoughtful: false
-      },
-      userId: currentUserData!.currentUserId,
-      avatarUrl: currentUserData!.currentUserImg,
-      fullName: currentUserData!.currentUserFullName
+      }
     })
     setData(copyData)
   }
