@@ -180,6 +180,8 @@
 }
 
 .icn-dft {
+    user-select: none;
+
     &:hover {
         outline: none;
         cursor: pointer;

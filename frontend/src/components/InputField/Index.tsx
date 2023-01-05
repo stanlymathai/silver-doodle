@@ -37,7 +37,7 @@ const InputField = ({ mode, comId }: InputFieldProps) => {
     if (mode) {
       return (
         await globalStore.onReply({ ...formData, repliedToCommentId }),
-        await globalStore.onReplyAction({ ...formData, articleId })
+        await globalStore.onReplyAction({ ...formData, articleId, repliedToCommentId })
       )
     } else {
       return (

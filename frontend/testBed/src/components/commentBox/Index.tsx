@@ -62,6 +62,7 @@ const CommentBox = (props: CommentBoxProps) => {
         currentUser={props.currentUser}
         onSubmitAction={onSubmitAction}
         onReplyAction={API.handleAction}
+        onUserRection={API.handleRection}
         onReportAction={API.handleReport}
         cancelBtnStyle={style.cancelButton}
       />

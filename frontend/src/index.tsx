@@ -7,9 +7,10 @@ import "./Index.scss"
 interface IProps {
   loading: boolean
   cancelBtnStyle?: object
-  onReportAction: Function
+  onUserRection: Function
   onReplyAction: Function
   onSubmitAction: Function
+  onReportAction: Function
   loadMore?: Function
   currentUser: {
     currentUserId: string
@@ -60,6 +61,7 @@ export const CommentSection = ({
   commentData,
   currentUser,
   articleData,
+  onUserRection,
   onReplyAction,
   onSubmitAction,
   onReportAction,
@@ -70,9 +72,10 @@ export const CommentSection = ({
       loading={loading}
       loadMore={loadMore}
       totalCount={totalCount}
+      articleData={articleData}
       commentData={commentData}
       currentUser={currentUser}
-      articleData={articleData}
+      onUserRection={onUserRection}
       onReplyAction={onReplyAction}
       onSubmitAction={onSubmitAction}
       onReportAction={onReportAction}

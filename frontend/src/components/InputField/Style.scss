@@ -15,7 +15,7 @@
       border: none;
       margin-left: 10px;
       color: #f2f2f2;
-      background-color: #1a1a2b;
+      background-color: transparent;
     }
 
     .inputField:focus {
@@ -24,5 +24,18 @@
 
     .submitBtn {
       visibility: hidden;
+    }
+
+    animation: fadeInAnimation ease .5s;
+    animation-fill-mode: forwards;
+
+    @keyframes fadeInAnimation {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
     }
   }

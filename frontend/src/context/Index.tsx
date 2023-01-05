@@ -12,6 +12,7 @@ export const Provider = ({
   currentUser,
   commentData,
   articleData,
+  onUserRection,
   onReplyAction,
   onReportAction,
   cancelBtnStyle,
@@ -25,9 +26,10 @@ export const Provider = ({
   cancelBtnStyle?: object
   commentData?: Array<ICommentData>
   loadMore?: Function
-  onReportAction: Function
+  onUserRection: Function
   onReplyAction: Function
   onSubmitAction: Function
+  onReportAction: Function
 }) => {
   const [currentUserData] = useState(currentUser)
   const [data, setData] = useState<Array<ICommentData>>([])
@@ -46,7 +48,7 @@ export const Provider = ({
   useEffect(() => { if (commentData) setData(commentData) }, [commentData])
   useEffect(() => { if (articleData) setArticle(articleData) }, [articleData])
 
-  const handleReply = (id: string) => setReplyThread(id)
+  const handleReply = (id: string) => setReplyThread(replyThreadId == id ? "" : id)
 
   const handleSubmit = (payload: any) => {
     let commentData = {
@@ -122,7 +124,7 @@ export const Provider = ({
       default:
         return
     }
-    console.log(payload, "payload")
+    onUserRection(payload)
   }
 
   const report = {
@@ -181,9 +183,10 @@ export const Provider = ({
         totalCount,
         replyThreadId,
         onReplyAction,
-        cancelBtnStyle,
+        onUserRection,
         onSubmitAction,
         onReportAction,
+        cancelBtnStyle,
         currentUserData,
         showDiscussionBox,
         onReply,
