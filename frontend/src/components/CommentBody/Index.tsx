@@ -24,6 +24,7 @@ interface ICommentBody {
       brilliant: boolean;
       thoughtful: boolean;
     };
+    reactionCount: number;
     replies?: Array<object> | undefined;
     replyComponent?: boolean | undefined;
   };
@@ -36,7 +37,7 @@ export const CommentBody = ({ info, replyMode }: ICommentBody) => {
     <div className="actionBar">
       <div className="actions">
         {LikeButton(info)}
-        {ReactionView()}
+        {ReactionView(info.reactionCount)}
         {ReplyButton(info)}
       </div>
       <ReportFlag info={info} />

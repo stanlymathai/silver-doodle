@@ -31,10 +31,10 @@ export const LikeButton = (info: ILike) => {
 
     const menuButton = () => info.articleId ?
         (<div className={`svgBtn ${info.reaction.like ? 'thumpsup-blue' : 'svgLike'}`} id="artLike" />)
-        : (<button className="likeBtn">Like</button>)
+        : (<button className="like-btn">Like</button>)
 
     return (
-        <div className="likeBtn">
+        <div className="like-btn">
             <span>
                 <Menu
                     transition

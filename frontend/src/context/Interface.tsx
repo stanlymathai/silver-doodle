@@ -5,6 +5,7 @@ interface IArticleData {
         brilliant: boolean
         thoughtful: boolean
     }
+    reactionCount: number
 }
 interface ICommentData {
     text: string
@@ -18,6 +19,7 @@ interface ICommentData {
         brilliant: boolean
         thoughtful: boolean
     }
+    reactionCount: number
     replies: Array<{
         text: string
         userId: string
@@ -30,6 +32,7 @@ interface ICommentData {
             brilliant: boolean
             thoughtful: boolean
         }
+        reactionCount: number
         repliedToCommentId?: string
     }>
 }

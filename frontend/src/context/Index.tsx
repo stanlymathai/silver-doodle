@@ -40,7 +40,8 @@ export const Provider = ({
       like: false,
       brilliant: false,
       thoughtful: false
-    }
+    },
+    reactionCount: 0
   })
   const [replyThreadId, setReplyThread] = useState<string>("")
   const [showDiscussionBox, setDiscussionVisibility] = useState<Boolean>(false)
@@ -59,6 +60,7 @@ export const Provider = ({
         brilliant: false,
         thoughtful: false
       },
+      reactionCount: 0
     }
     setData([commentData, ...data])
   }
@@ -106,10 +108,20 @@ export const Provider = ({
           const parentIdx = copyData.findIndex((i) => i.comId == info.repliedToCommentId)
           const childIdx = copyData[parentIdx].replies.findIndex(i => i.comId == info.comId)
 
-          copyData[parentIdx].replies[childIdx].reaction[event] = !copyData[parentIdx].replies[childIdx].reaction[event]
+          copyData[parentIdx].replies[childIdx].reaction[event]
+            = !copyData[parentIdx].replies[childIdx].reaction[event]
+
+          if (action == "REMOVE") {
+            copyData[parentIdx].replies[childIdx].reactionCount--
+          } else
+            copyData[parentIdx].replies[childIdx].reactionCount++
         } else {
           const targetIdx = copyData.findIndex((i) => i.comId == info.comId)
           copyData[targetIdx].reaction[event] = !copyData[targetIdx].reaction[event]
+
+          if (action == "REMOVE") {
+            copyData[targetIdx].reactionCount--
+          } else copyData[targetIdx].reactionCount++
         }
         setData(copyData)
         break;
@@ -117,6 +129,10 @@ export const Provider = ({
       case "ARTICLE":
         let articleCopy = article
         articleCopy.reaction[event] = !articleCopy.reaction[event]
+
+        if (action == "REMOVE") {
+          articleCopy.reactionCount--
+        } else articleCopy.reactionCount++
 
         setArticle(articleCopy)
         break;
@@ -168,7 +184,8 @@ export const Provider = ({
         like: false,
         brilliant: false,
         thoughtful: false
-      }
+      },
+      reactionCount: 0
     })
     setData(copyData)
   }

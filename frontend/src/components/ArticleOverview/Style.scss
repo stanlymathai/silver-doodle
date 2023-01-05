@@ -8,22 +8,4 @@
     flex-direction: row;
     font-weight: bolder;
     justify-content: space-between;
-
-    .reactions-count {
-        border: none;
-        outline: none;
-        background-color: transparent;
-
-        &:hover {
-            outline: none;
-            cursor: pointer;
-        }
-
-        &:focus {
-            outline: 0;
-        }
-    }
-
-
-
 }

@@ -23,9 +23,9 @@ export const ReplyButton = (info: IInfo) => {
                     Reply
                 </span>
             )}
-            <span className="time-stamp">
+            <small className="time-stamp">
                 {moment(info.timeStamp).fromNow()}
-            </span>
+            </small>
         </div>
     );
 };

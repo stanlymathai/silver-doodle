@@ -1,16 +1,9 @@
 .report-comment {
-    cursor: auto;
-    color: #f2f2f2;
-    font-family: neuzeit-grotesk, sans-serif;
-
-
     hr {
         border: 1px solid rgba(255, 255, 255, 0.12)
     }
 
     .report-box {
-        width: 100%;
-
         .box-header {
             display: flex;
             color: #f2f2f2;
@@ -54,12 +47,10 @@
 
         .szh-menu__item {
             margin: 12px;
-            cursor: pointer;
+            padding: 12px;
             color: #f2f2f2;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-            height: 25px;
             font-size: 17px;
-            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         .szh-menu__item::after {
@@ -105,37 +96,38 @@
         }
 
         .szh-menu__item {
+            width: 75%;
             margin: auto;
-            width: 50%;
+            padding: 10px;
             color: #1cf39c;
             border-radius: 25px;
             margin-bottom: 10px;
-            cursor: pointer !important;
             border: 1px solid #1cf39c;
+
+            b {
+                margin: auto;
+            }
         }
 
         .szh-menu__item::after {
-            position: absolute;
-            color: #1cf39c;
-            content: "SUBMIT";
-            right: 45%;
+            content: none;
         }
     }
 
     .report-feedback {
         .szh-menu__item::after {
-            content: "DONE";
+            content: none;
         }
     }
 
 }
 
-.likeBtn {
+.like-btn {
     background-color: transparent;
     border: none;
     color: #1cf399;
     font-size: 14px;
-    line-height: 10px;
+    line-height: normal;
     font-weight: bolder;
 
     &:hover {
@@ -180,8 +172,6 @@
 }
 
 .icn-dft {
-    user-select: none;
-
     &:hover {
         outline: none;
         cursor: pointer;
@@ -240,4 +230,25 @@
     opacity: 0.999;
     margin-left: 8px;
     color: #f2f2f2;
+}
+
+.reaction-group {
+    display: flex;
+    transform: scale(0.8);
+
+    .side-margin {
+        margin-left: 3px;
+        margin-right: 3px;
+    }
+
+    .count {
+        margin-left: 6px;
+        line-height: normal;
+        font-weight: bolder;
+    }
+}
+
+
+.hidden {
+    visibility: hidden;
 }

@@ -31,6 +31,7 @@ module.exports = {
           brilliant: Math.random() < 0.5,
           thoughtful: Math.random() < 0.5,
         },
+        reactionCount: Math.floor(Math.random() * 99),
       };
       let threads = await Comment.find(
         { repliedToCommentId: null, articleId: req.params.articleId },
@@ -56,6 +57,7 @@ module.exports = {
           brilliant: Math.random() < 0.5,
           thoughtful: Math.random() < 0.5,
         };
+        thread.reactionCount = Math.floor(Math.random() * 9999);
       });
 
       threads.forEach((thread) => {
@@ -67,6 +69,7 @@ module.exports = {
           brilliant: Math.random() < 0.5,
           thoughtful: Math.random() < 0.5,
         };
+        thread.reactionCount = Math.floor(Math.random() * 99);
       });
 
       res.json({ threads, articleData });
