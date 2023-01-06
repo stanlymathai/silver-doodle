@@ -1,0 +1,238 @@
+.cs-overlay {
+    display: flex;
+    flex-direction: column;
+
+    .main-thread {
+        animation: fadeInAnimation ease 1s;
+        animation-fill-mode: forwards;
+
+        @keyframes fadeInAnimation {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+    }
+
+    .session-header {
+        padding: 10px;
+        display: flex;
+        font-size: 14px;
+        font-weight: bolder;
+        justify-content: space-between;
+
+        .prev-comments {
+            border: none;
+            outline: none;
+            margin-bottom: 1px;
+            background-color: transparent;
+
+            &:hover {
+                outline: none;
+                cursor: pointer;
+            }
+
+            &:focus {
+                outline: 0;
+            }
+        }
+
+        .all-comments {
+            border: none;
+            display: flex;
+            font-size: 14px;
+            color: #f2f2f2;
+            line-height: 10px;
+            flex-direction: row;
+            font-weight: bolder;
+            background: #1a1a2b;
+            font-family: neuzeit-grotesk, sans-serif;
+
+            .chev-down {
+                width: 16px;
+                height: 16px;
+                margin-top: -2px;
+                margin-left: 7px;
+                transform: scale(0.9);
+                background-image: url("../../../assets/chevron-down.svg");
+            }
+
+            &:hover {
+                outline: none;
+                cursor: pointer;
+            }
+
+            &:focus {
+                outline: 0;
+            }
+
+            .chev-rotate {
+                transform: rotate(180deg);
+            }
+        }
+
+        .sort-box {
+            width: 100%;
+            color: #f2f2f2;
+            cursor: auto;
+            font-family: neuzeit-grotesk, sans-serif;
+
+            .sort-title {
+                font-size: small;
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+
+            .sort-desc {
+                margin-left: 10px;
+                margin-right: 10px;
+                font-size: smaller;
+            }
+        }
+
+        .box-border {
+            border-bottom: 2px solid #1cf39c;
+        }
+
+        .sort-box:hover {
+            background-color: #1a1a2b;
+        }
+
+        .szh-menu {
+            background-color: #474756;
+
+            .szh-menu__item {
+                cursor: auto;
+            }
+
+            .szh-menu__item:hover {
+                background-color: transparent;
+            }
+
+            .szh-menu__item--hover {
+                background-color: transparent !important;
+            }
+        }
+
+
+        .hidden {
+            visibility: hidden !important;
+        }
+    }
+
+    .session-body {
+        .comment-box {
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+
+            .username {
+                font-size: 17px;
+                color: #1cf39c;
+                text-align: left;
+                font-weight: 700;
+                margin-top: 10px;
+                line-height: 17px;
+                margin-left: 50px;
+                letter-spacing: 0px;
+                text-transform: capitalize;
+            }
+
+            .userInfo {
+                display: flex;
+                margin-top: 10px;
+                margin-left: 10px;
+                flex-direction: row;
+
+                .image {
+                    float: left;
+
+                    .avatar {
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 50%;
+                    }
+                }
+
+                .comment {
+                    font-size: 17px;
+                    text-align: left;
+                    margin-left: 12px;
+                    margin-bottom: 12px;
+                    font-weight: bolder;
+                    overflow-wrap: break-word !important;
+                }
+            }
+
+            .actionBar {
+                display: flex;
+                margin-left: 45px;
+                margin-bottom: 10px;
+                justify-content: space-between;
+
+                .actions {
+                    display: flex;
+                    justify-content: flex-start !important;
+                }
+
+                .flagBtn {
+                    width: 16px;
+                    height: 16px;
+                    transform: scale(0.9);
+                    float: right !important;
+                    background-image: url("../../../assets/report-flag.svg");
+                    filter: invert(21%) sepia(100%) saturate(7414%) hue-rotate(359deg) brightness(84%) contrast(73%);
+
+                    &:hover {
+                        outline: none;
+                        cursor: pointer;
+                    }
+
+                    &:focus {
+                        outline: 0;
+                    }
+                }
+            }
+        }
+
+        .reply-btn-text {
+            margin-left: 10px;
+        }
+
+        .vertical-line {
+            border-left: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .userLink {
+            display: flex;
+            text-decoration: none;
+            color: inherit;
+            align-items: center;
+
+            .imgdefault {
+                width: 28px;
+                height: 28px;
+                border-radius: 34px;
+            }
+        }
+
+        .replysection {
+            display: flex;
+            flex-direction: column;
+
+            .replyInput {
+                margin-top: 10px;
+                margin-left: 40px;
+            }
+        }
+    }
+
+    .reply-section {
+        margin-left: 25px;
+        padding: 0px 0px 0px 15px;
+    }
+
+}

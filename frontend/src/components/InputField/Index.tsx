@@ -5,7 +5,7 @@ import moment from "moment";
 const { v4: uuidv4 } = require("uuid")
 
 import "./Style.scss"
-import { InputComponent } from "./InputComponent"
+import { InputComponent } from "./InputForm"
 import { GlobalContext } from "../../context/Index"
 
 interface InputFieldProps {
@@ -13,7 +13,7 @@ interface InputFieldProps {
   mode?: string
 }
 
-const InputField = ({ mode, comId }: InputFieldProps) => {
+export const InputField = ({ mode, comId }: InputFieldProps) => {
   const [text, setText] = useState("")
 
   const globalStore: any = useContext(GlobalContext)
@@ -36,7 +36,7 @@ const InputField = ({ mode, comId }: InputFieldProps) => {
 
     if (mode) {
       return (
-        await globalStore.onReply({ ...formData, repliedToCommentId }),
+        await globalStore.handleReply({ ...formData, repliedToCommentId }),
         await globalStore.onReplyAction({ ...formData, articleId, repliedToCommentId })
       )
     } else {
@@ -55,4 +55,3 @@ const InputField = ({ mode, comId }: InputFieldProps) => {
     />
   )
 }
-export default InputField

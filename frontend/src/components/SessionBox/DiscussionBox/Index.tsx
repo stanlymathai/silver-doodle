@@ -1,19 +1,21 @@
 import React from "react";
 import { useContext } from "react";
 
-import { GlobalContext } from "../../context/Index";
+import "./Style.scss";
 
-import InputField from "../InputField/Index";
-import { ReportMenu } from "../Action/Report"
-import { CommentBody } from "../CommentBody/Index";
-import CommentHeader from "../CommentHeader/Index";
+import { Header } from "./Header";
+import { CommentBody } from "./CommentBody";
+import { ReportMenu } from "../../Action/Report"
+import { InputField } from "../../InputField/Index";
+
+import { GlobalContext } from "../../../context/Index";
 
 export const DiscussionBox = () => {
     const globalStore: any = useContext(GlobalContext);
 
     return (
         <div className="cs-overlay">
-            <CommentHeader />
+            <Header />
             <InputField />
             <div className="report-menu">
                 {ReportMenu()}
@@ -32,6 +34,7 @@ export const DiscussionBox = () => {
                         brilliant: boolean;
                         thoughtful: boolean;
                     };
+                    reactionCount: number
                 }) => {
                     return (
                         <div className="main-thread" key={i.comId}>

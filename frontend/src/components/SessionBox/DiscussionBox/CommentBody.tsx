@@ -1,14 +1,11 @@
 import React from "react";
 
-import InputField from "../InputField/Index";
-
-import { ReplyButton } from "../Action/Reply";
-import { ReactionView } from "../Action/Overview";
-
-import { LikeButton } from "../Action/Like";
-import { ReportFlag } from "../Action/Report"
-
 import "./Style.scss";
+import { LikeButton } from "../../Action/Like";
+import { ReportFlag } from "../../Action/Report"
+import { ReplyButton } from "../../Action/Reply";
+import { ReactionView } from "../../Action/Overview";
+import { InputField } from "../../InputField/Index";
 
 interface ICommentBody {
   info: {
@@ -71,7 +68,7 @@ export const CommentBody = ({ info, replyMode }: ICommentBody) => {
 
 
   return (
-    <div className="comment-session-structure">
+    <div className="session-body">
       {replyMode ? commentBoxWithInput() : commentBox()}
     </div>
   );

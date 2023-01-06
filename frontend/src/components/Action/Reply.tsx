@@ -18,7 +18,7 @@ export const ReplyButton = (info: IInfo) => {
             {info.replies && (
                 <span
                     className="reply-btn-text"
-                    onClick={() => globalStore.handleReply(info.comId)}
+                    onClick={() => globalStore.onReplyThread(info.comId)}
                 >
                     Reply
                 </span>

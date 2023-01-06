@@ -24,6 +24,7 @@ interface IProps {
       brilliant: boolean
       thoughtful: boolean
     }
+    reactionCount: number
   }
   commentData: Array<{
     userId: string
@@ -37,6 +38,7 @@ interface IProps {
       brilliant: boolean
       thoughtful: boolean
     }
+    reactionCount: number
     replies: Array<{
       text: string
       userId: string
@@ -49,6 +51,7 @@ interface IProps {
         brilliant: false,
         thoughtful: false
       },
+      reactionCount: number
     }>
   }>
   totalCount?: number

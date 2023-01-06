@@ -49,7 +49,7 @@ export const Provider = ({
   useEffect(() => { if (commentData) setData(commentData) }, [commentData])
   useEffect(() => { if (articleData) setArticle(articleData) }, [articleData])
 
-  const handleReply = (id: string) => setReplyThread(replyThreadId == id ? "" : id)
+  const onReplyThread = (id: string) => setReplyThread(replyThreadId == id ? "" : id)
 
   const handleSubmit = (payload: any) => {
     let commentData = {
@@ -170,10 +170,10 @@ export const Provider = ({
   const toggleDisscusionbox = () => setDiscussionVisibility(!showDiscussionBox)
 
 
-  const onReply = (
+  const handleReply = (
     payload: any
   ) => {
-    handleReply("")
+    onReplyThread("")
     let copyData = [...data]
     const targetIdx = copyData.
       findIndex((i) => i.comId == payload.repliedToCommentId)
@@ -206,10 +206,10 @@ export const Provider = ({
         cancelBtnStyle,
         currentUserData,
         showDiscussionBox,
-        onReply,
         handleSort,
         handleReply,
         handleSubmit,
+        onReplyThread,
         handleReaction,
         toggleDisscusionbox,
       }}

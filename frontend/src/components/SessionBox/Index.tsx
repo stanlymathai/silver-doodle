@@ -3,21 +3,20 @@ import React, { useContext } from "react";
 import "./Style.scss";
 
 import { Loader } from "../Loader/Index"
-import { DiscussionBox } from "./DiscussionBox";
-import { ReactionBar } from "../ReactionBar/Index";
+import { ReactionBar } from "./ReactionBar";
+import { DiscussionBox } from "./DiscussionBox/Index";
+import { ArticleOverview } from "./ArticleOverview";
 import { GlobalContext } from "../../context/Index";
-import { ArticleOverview } from "../ArticleOverview/Index";
-
 
 export const SessionBox = () => {
   const globalStore: any = useContext(GlobalContext);
-  const loading = globalStore.loading
+  const loading = globalStore.isLoading
   const showDiscussionBox =
     globalStore.showDiscussionBox && !loading
 
   return (
     <div className="cs-wrapper">
-      <ArticleOverview />
+      {!loading && <ArticleOverview />}
       <ReactionBar />
       {loading && <Loader />}
       {showDiscussionBox && <DiscussionBox />}

@@ -21,7 +21,7 @@ export const InputComponent = ({
       className='session-form'>
       <img
         alt='userIcon'
-        className='userImg'
+        className='user-img'
         src={globalStore.currentUserData.currentUserImg}
 
       />
@@ -29,14 +29,14 @@ export const InputComponent = ({
         autoFocus
         type='text'
         value={text}
-        className='inputField'
+        className='input-field'
         placeholder='Write a comment....'
         onChange={(e) => setText(e.target.value)}
       />
 
       <button
         type='submit'
-        className='submitBtn'
+        className='hidden'
         onClick={(e) => handleSubmit(e)}
         disabled={text != "" ? false : true}
       />
@@ -45,7 +45,7 @@ export const InputComponent = ({
         <button
           type='button'
           style={globalStore.cancelBtnStyle}
-          onClick={() => globalStore.handleReply("")}
+          onClick={() => globalStore.onReplyThread("")}
         >
           Cancel
         </button>

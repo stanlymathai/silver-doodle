@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 
-import { GlobalContext } from "../../context/Index";
+import { GlobalContext } from "../../../context/Index";
 
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 
@@ -8,7 +8,7 @@ import "./Style.scss";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
 
-const CommentHeader = () => {
+export const Header = () => {
   const INITIAL_FETCH = 6;
   const labels = [
     {
@@ -81,4 +81,3 @@ const CommentHeader = () => {
     </div>
   );
 };
-export default CommentHeader;
