@@ -3,19 +3,19 @@ const router = express.Router();
 
 const verifyAuthentication =
   require('../../middleware/helper').verifyAuthentication;
-const commentsController = require('../controller/commentsController');
+const controller = require('../controller.action/comment.controller');
 
 router.get(
   '/count/:articleId',
   verifyAuthentication,
-  commentsController.totalComments
+  controller.totalComments
 );
-router.post('/', verifyAuthentication, commentsController.addComment);
-router.post('/report', verifyAuthentication, commentsController.reportComment);
+router.post('/', verifyAuthentication, controller.addComment);
+router.post('/report', verifyAuthentication, controller.reportComment);
 router.get(
   '/:articleId/:limit/',
   verifyAuthentication,
-  commentsController.getComments
+  controller.getComments
 );
 
 module.exports = router;

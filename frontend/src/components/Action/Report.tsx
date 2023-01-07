@@ -40,7 +40,6 @@ const ReportMenu = () => {
             {reportFeedback()}
             <Menu
                 transition
-                offsetY={10}
                 align={"center"}
                 menuButton={<MenuButton id='report-menu' className="hidden" />}
             >

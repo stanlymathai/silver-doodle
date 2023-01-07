@@ -34,15 +34,7 @@ export const Provider = ({
   const [currentUserData] = useState(currentUser)
   const [data, setData] = useState<Array<ICommentData>>([])
   const [reportData, setReport] = useState<any>({})
-  const [article, setArticle] = useState<IArticleData>({
-    articleId: '###',
-    reaction: {
-      like: false,
-      brilliant: false,
-      thoughtful: false
-    },
-    reactionCount: 0
-  })
+  const [article, setArticle] = useState<IArticleData>()
   const [replyThreadId, setReplyThread] = useState<string>("")
   const [showDiscussionBox, setDiscussionVisibility] = useState<Boolean>(false)
 
@@ -95,52 +87,32 @@ export const Provider = ({
   }
 
   const handleReaction = (event: string, info: any) => {
-    const ref = info.comId ?? info.articleId
-    const type = info.comId ? "COMMENT" : "ARTICLE"
     const action = info.reaction[event] ? "REMOVE" : "ADD"
-    const payload = { ref, type, action, event }
+    const ref: string = info.comId
 
-    switch (type) {
-      case "COMMENT":
-        let copyData = [...data]
+    let copyData = [...data]
 
-        if (info.repliedToCommentId) {
-          const parentIdx = copyData.findIndex((i) => i.comId == info.repliedToCommentId)
-          const childIdx = copyData[parentIdx].replies.findIndex(i => i.comId == info.comId)
+    if (info.repliedToCommentId) {
+      const parentIdx = copyData.findIndex((i) => i.comId == info.repliedToCommentId)
+      const childIdx = copyData[parentIdx].replies.findIndex(i => i.comId == info.comId)
 
-          copyData[parentIdx].replies[childIdx].reaction[event]
-            = !copyData[parentIdx].replies[childIdx].reaction[event]
+      copyData[parentIdx].replies[childIdx].reaction[event]
+        = !copyData[parentIdx].replies[childIdx].reaction[event]
 
-          if (action == "REMOVE") {
-            copyData[parentIdx].replies[childIdx].reactionCount--
-          } else
-            copyData[parentIdx].replies[childIdx].reactionCount++
-        } else {
-          const targetIdx = copyData.findIndex((i) => i.comId == info.comId)
-          copyData[targetIdx].reaction[event] = !copyData[targetIdx].reaction[event]
+      if (action == "REMOVE") {
+        copyData[parentIdx].replies[childIdx].reactionCount--
+      } else
+        copyData[parentIdx].replies[childIdx].reactionCount++
+    } else {
+      const targetIdx = copyData.findIndex((i) => i.comId == info.comId)
+      copyData[targetIdx].reaction[event] = !copyData[targetIdx].reaction[event]
 
-          if (action == "REMOVE") {
-            copyData[targetIdx].reactionCount--
-          } else copyData[targetIdx].reactionCount++
-        }
-        setData(copyData)
-        break;
-
-      case "ARTICLE":
-        let articleCopy = article
-        articleCopy.reaction[event] = !articleCopy.reaction[event]
-
-        if (action == "REMOVE") {
-          articleCopy.reactionCount--
-        } else articleCopy.reactionCount++
-
-        setArticle(articleCopy)
-        break;
-
-      default:
-        return
+      if (action == "REMOVE") {
+        copyData[targetIdx].reactionCount--
+      } else copyData[targetIdx].reactionCount++
     }
-    onUserRection(payload)
+    setData(copyData)
+    onUserRection({ ref, action, event, type: "COMMENT" })
   }
 
   const report = {

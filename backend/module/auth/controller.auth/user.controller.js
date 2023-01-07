@@ -1,6 +1,6 @@
-const User = require('../model/userModel');
-var bcrypt = require('bcrypt');
+const User = require('../model.auth/user.model');
 const jwt = require('jsonwebtoken');
+let bcrypt = require('bcrypt');
 
 const userSignUp = (req, res) => {
   User.find({ name: req.body.name })
@@ -156,6 +156,6 @@ const getUser = (req, res) => {
 module.exports = {
   userSignUp: userSignUp,
   userLogIn: userLogIn,
-  users: users,
   getUser: getUser,
+  users: users,
 };

@@ -6,69 +6,6 @@
   flex-direction: column;
   font-family: neuzeit-grotesk, sans-serif;
 
-  .reaction-bar {
-    padding: 25px;
-    display: flex;
-    justify-content: space-around;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-
-    .reaction-wrap {
-      display: flex;
-      cursor: pointer;
-      color: #f2f2f2;
-      font-size: smaller;
-      font-weight: bolder;
-      flex-direction: row;
-    }
-
-
-    .svgBtn {
-      width: 15px;
-      height: 16px;
-      margin-right: 14px;
-      transform: scale(1.6);
-
-      &:hover {
-        outline: none;
-        cursor: pointer;
-      }
-
-      &:focus {
-        outline: 0;
-      }
-    }
-
-    .svgLike {
-      background-image: url("../../assets/thumps-up.svg");
-    }
-
-    .svgChat {
-      background-image: url("../../assets/chat-bubble.svg");
-      height: 13px;
-    }
-
-    .svgShare {
-      background-image: url("../../assets/share.svg");
-    }
-
-    .vertical-line {
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-  }
-
-  .article-overview {
-    padding: 10px;
-    display: flex;
-    font-size: 14px;
-    color: #f2f2f2;
-    margin-top: 10px;
-    line-height: 10px;
-    flex-direction: row;
-    font-weight: bolder;
-    justify-content: space-between;
-  }
-
   .report-menu {
     height: 0;
     margin: auto;

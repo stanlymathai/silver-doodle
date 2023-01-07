@@ -10,10 +10,12 @@ db.connect()
   .then(() => console.log('DB connected'))
   .catch((e) => console.log('DB connection failed ', e));
 
-// include routes.
-const authRoute = require('./module/auth/router/auth');
-const userRoute = require('./module/auth/router/users');
-const commentRoute = require('./module/comment/router/comments');
+//  routes.
+
+const authRoute = require('./module/auth/router.auth/auth.router');
+const userRoute = require('./module/auth/router.auth/user.router');
+const commentRoute = require('./module/action/router.action/comment.router');
+const reactionRoute = require('./module/action/router.action/reaction.router');
 
 // Creating an Express application.
 const app = express();
@@ -33,5 +35,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(process.env.ENDPOINT_API + '/', authRoute);
 app.use(process.env.ENDPOINT_API + '/user', userRoute);
 app.use(process.env.ENDPOINT_API + '/comment', commentRoute);
+app.use(process.env.ENDPOINT_API + '/reaction', reactionRoute);
 
 module.exports = app;

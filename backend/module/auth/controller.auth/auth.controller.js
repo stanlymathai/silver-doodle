@@ -1,6 +1,9 @@
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
-const User = require('../model/userModel');
+const User = require('../model.auth/user.model');
+
+const index = (_, res) =>
+  res.status(404).json({ message: 'MoniTalks Comment-session API Server' });
 
 const authenticate = async (payload) => {
   return new Promise((resolve, reject) => {
@@ -60,4 +63,4 @@ const onboardUser = (req, res) => {
 
   res.json({ token: 'Bearer ' + token, refreshToken });
 };
-module.exports = { index: main, authenticate };
+module.exports = { index, main, authenticate };
