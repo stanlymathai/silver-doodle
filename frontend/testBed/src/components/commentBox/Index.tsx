@@ -19,21 +19,21 @@ const CommentBox = (props: CommentBoxProps) => {
   const getCommentData = () => {
     setLoading(true);
     API.fetchComments(ARTICLE_ID, FETCH_LIMIT).then((res: any) => {
-      setComments(Object.values(res.data.threads))
-      setArticleData(res.data.articleData)
+      setComments(Object.values(res.data?.threads))
+      setArticleData(res.data?.articleData)
     }
     )
     setLoading(false);
   };
 
   const getCommentCount = () =>
-    API.totalCount(ARTICLE_ID).then((res: any) => setTotal(res.data.count))
+    API.totalCount(ARTICLE_ID).then((res: any) => setTotal(res.data?.count))
 
   const loadMore = () => {
     setLoading(true);
     API.fetchComments(ARTICLE_ID).then((res: any) => {
-      setComments(Object.values(res.data.threads))
-      setArticleData(res.data.articleData)
+      setComments(Object.values(res.data?.threads))
+      setArticleData(res.data?.articleData)
     }
     )
     setLoading(false);

@@ -25,9 +25,9 @@ export const ReactionBox = () => {
     const ArticleOverview = () => {
         const totalComments: number = globalStore.totalCount
         return (
-            <div className={totalComments > 0 || reactionCount
+            <div className={totalComments > 0 || reactionCount > 0
                 ? "article-overview" : "hidden"}>
-                {reactionCount && ReactionView(reactionCount)}
+                {reactionCount > 0 && ReactionView(reactionCount)}
                 {totalComments > 0 &&
                     <div className="comments-count">
                         {totalComments} Comment{totalComments != 1 && "s"}

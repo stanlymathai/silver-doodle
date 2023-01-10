@@ -1,4 +1,5 @@
 const Comment = require('../model.action/comment.model');
+const Reaction = require('../model.action/reaction.model');
 
 module.exports = {
   addComment(req, res) {
@@ -24,14 +25,31 @@ module.exports = {
     if (!articleId)
       return res.status(500).json({ error: 'article slug required' });
     try {
+      let articleQueryParams = {
+        ref: articleId,
+        status: 'Active',
+        type: 'ARTICLE',
+      };
       let articleData = {
         articleId,
         reaction: {
-          like: Math.random() < 0.5,
-          brilliant: Math.random() < 0.5,
-          thoughtful: Math.random() < 0.5,
+          like: await Reaction.exists({
+            ...articleQueryParams,
+            userId: req.user.id,
+            reaction: 'like',
+          }).then((el) => (el ? true : false)),
+          brilliant: await Reaction.exists({
+            ...articleQueryParams,
+            userId: req.user.id,
+            reaction: 'brilliant',
+          }).then((el) => (el ? true : false)),
+          thoughtful: await Reaction.exists({
+            ...articleQueryParams,
+            userId: req.user.id,
+            reaction: 'thoughtful',
+          }).then((el) => (el ? true : false)),
         },
-        reactionCount: Math.floor(Math.random() * 99),
+        reactionCount: await Reaction.countDocuments(articleQueryParams),
       };
       let threads = await Comment.find(
         { repliedToCommentId: null, articleId: req.params.articleId },
