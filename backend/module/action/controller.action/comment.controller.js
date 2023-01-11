@@ -21,35 +21,34 @@ module.exports = {
 
   async getComments(req, res) {
     let articleId = req.params.articleId;
+    let userId = req.user.id;
+    if (!articleId || !userId)
+      return res.status(500).json({ error: 'unique identifier required' });
 
-    if (!articleId)
-      return res.status(500).json({ error: 'article slug required' });
     try {
       let articleQueryParams = {
         ref: articleId,
         status: 'Active',
         type: 'ARTICLE',
       };
+
+      let articleReactions = await Reaction.aggregate([
+        { $match: articleQueryParams },
+        { $project: { userId: 1, reaction: 1 } },
+      ]);
+
+      const hasOneInArticle = (type) =>
+        articleReactions.some(
+          (el) => el.reaction == type && el.userId == userId
+        );
       let articleData = {
         articleId,
         reaction: {
-          like: await Reaction.exists({
-            ...articleQueryParams,
-            userId: req.user.id,
-            reaction: 'like',
-          }).then((el) => (el ? true : false)),
-          brilliant: await Reaction.exists({
-            ...articleQueryParams,
-            userId: req.user.id,
-            reaction: 'brilliant',
-          }).then((el) => (el ? true : false)),
-          thoughtful: await Reaction.exists({
-            ...articleQueryParams,
-            userId: req.user.id,
-            reaction: 'thoughtful',
-          }).then((el) => (el ? true : false)),
+          like: hasOneInArticle('like'),
+          brilliant: hasOneInArticle('brilliant'),
+          thoughtful: hasOneInArticle('thoughtful'),
         },
-        reactionCount: await Reaction.countDocuments(articleQueryParams),
+        reactionCount: articleReactions.length,
       };
       let threads = await Comment.find(
         { repliedToCommentId: null, articleId: req.params.articleId },
@@ -89,7 +88,6 @@ module.exports = {
         };
         thread.reactionCount = Math.floor(Math.random() * 99);
       });
-
       res.json({ threads, articleData });
     } catch (error) {
       res.status(500).json({ error });

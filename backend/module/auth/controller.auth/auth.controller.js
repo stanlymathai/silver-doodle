@@ -53,12 +53,10 @@ const onboardUser = (req, res) => {
   const token = jwt.sign(
     payload,
     Buffer.from(process.env.AUTHENTICATION_KEY).toString('base64'),
-    { expiresIn: '30m' }
   );
   const refreshToken = jwt.sign(
     payload,
     Buffer.from(process.env.REFRESH_TOKEN_KEY).toString('base64'),
-    { expiresIn: '1y' }
   );
 
   res.json({ token: 'Bearer ' + token, refreshToken });

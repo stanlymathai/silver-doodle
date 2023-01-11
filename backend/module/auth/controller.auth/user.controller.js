@@ -24,7 +24,6 @@ const userSignUp = (req, res) => {
                 error: err,
               });
             } else {
-              console.log(hash);
               const user = new User({
                 name: req.body.name,
                 password: hash,
@@ -32,17 +31,13 @@ const userSignUp = (req, res) => {
               user
                 .save()
                 .then((result) => {
-                  console.log(result);
                   const token = jwt.sign(
                     {
                       name: result.name,
                     },
                     process.env.JWT_KEY,
-                    {
-                      expiresIn: '1h',
-                    }
+                    
                   );
-                  console.log(token);
                   res.status(201).json({
                     message: 'User created',
                     id: user._id,
@@ -75,9 +70,7 @@ const userLogIn = (req, res) => {
               name: user.name,
             },
             process.env.JWT_KEY,
-            {
-              expiresIn: '1h',
-            }
+           
           );
           if (resp) {
             return res.status(200).json({
