@@ -23,7 +23,9 @@ module.exports = {
     let articleId = req.params.articleId;
     let userId = req.user.id;
     if (!articleId || !userId)
-      return res.status(500).json({ error: 'unique identifier required' });
+      return res
+        .status(500)
+        .json({ error: `unique ${userId}identifier required ${articleId}` });
 
     try {
       let articleQueryParams = {

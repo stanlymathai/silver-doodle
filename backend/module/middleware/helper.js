@@ -12,7 +12,8 @@ module.exports = {
           isTokenExpired = 1;
           const token = jwt.sign(
             payload,
-            Buffer.from(process.env.AUTHENTICATION_KEY).toString('base64')
+            Buffer.from(process.env.AUTHENTICATION_KEY).toString('base64'),
+            { expiresIn: '30m' }
           );
           req.headers.authorization = 'Bearer ' + token;
           res.setHeader('token', 'Bearer ' + token);

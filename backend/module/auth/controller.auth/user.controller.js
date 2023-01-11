@@ -36,7 +36,7 @@ const userSignUp = (req, res) => {
                       name: result.name,
                     },
                     process.env.JWT_KEY,
-                    
+                    { expiresIn: '1h' }
                   );
                   res.status(201).json({
                     message: 'User created',
@@ -70,7 +70,7 @@ const userLogIn = (req, res) => {
               name: user.name,
             },
             process.env.JWT_KEY,
-           
+            { expiresIn: '1h' }
           );
           if (resp) {
             return res.status(200).json({
