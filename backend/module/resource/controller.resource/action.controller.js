@@ -1,4 +1,4 @@
-const Reaction = require('../model.action/reaction.model');
+const Reaction = require('../model.resource/reaction.model');
 
 module.exports = {
   async handleReaction(req, res) {
@@ -30,5 +30,9 @@ module.exports = {
         res.status(500).json({ error: 'error' });
         break;
     }
+  },
+  reportComment(req, res) {
+    let reportData = req.body.payload;
+    res.json({ reportData });
   },
 };

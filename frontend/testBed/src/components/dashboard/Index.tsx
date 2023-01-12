@@ -31,6 +31,7 @@ const Dashboard = () => {
                         <form onSubmit={() => setCommentBoxVisibility(true)}>
                             <input
                                 required
+                                autoFocus
                                 type="text"
                                 value={articleId}
                                 style={{ padding: "4px" }}

@@ -23,22 +23,11 @@ let commentSchema = mongoose.Schema(
     articleId: {
       type: String,
     },
-    repliedToCommentId:{
+    repliedToCommentId: {
       type: String,
-    }
+    },
   },
   { versionKey: false }
 );
-
-// for future ref
-// parentId: {
-//   type: mongoose.Schema.Types.ObjectId,
-//   default: null
-// },
-// postedDate: {type: Date, default: Date.now},
-// author: {
-//   id: mongoose.Schema.Types.ObjectId,
-//   name: String,
-// },
 
 module.exports = mongoose.model('Comments', commentSchema);
