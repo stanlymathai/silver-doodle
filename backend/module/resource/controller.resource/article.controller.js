@@ -2,6 +2,37 @@ const Article = require('../model.resource/article.model');
 const axios = require('axios');
 
 module.exports = {
+  getAllArticles(_, res) {
+    Article.aggregate([
+      { $project: { _id: 0, timeStamp: 0 } },
+      {
+        $lookup: {
+          from: 'reactions',
+          pipeline: [
+            { $match: { type: 'ARTICLE', status: 'Active' } },
+            { $project: { reaction: 1, _id: 0 } },
+          ],
+          localField: 'articleId',
+          foreignField: 'ref',
+          as: 'reactions',
+        },
+      },
+      {
+        $lookup: {
+          from: 'comments',
+          pipeline: [{ $count: 'total' }],
+          localField: 'articleId',
+          foreignField: 'articleId',
+          as: 'comments',
+        },
+      },
+      { $match: { comments: { $elemMatch: { $exists: true } } } },
+    ])
+      .then((articles) => {
+        res.json({ articles });
+      })
+      .catch((e) => console.log(e, 'getAllArticles'));
+  },
   getArticleById(req, res) {
     let articleId = req.params.articleId;
     axios
