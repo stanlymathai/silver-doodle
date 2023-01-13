@@ -27,7 +27,6 @@ interface IProps {
     reactionCount: number
   }
   commentData: Array<{
-    userId: string
     comId: string
     fullName: string
     avatarUrl: string
@@ -41,7 +40,6 @@ interface IProps {
     reactionCount: number
     replies: Array<{
       text: string
-      userId: string
       comId: string
       fullName: string
       avatarUrl: string

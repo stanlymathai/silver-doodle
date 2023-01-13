@@ -10,7 +10,6 @@ interface IArticleData {
 interface ICommentData {
     text: string
     comId: string
-    userId: string
     fullName: string
     avatarUrl: string
     timeStamp: string
@@ -22,7 +21,6 @@ interface ICommentData {
     reactionCount: number
     replies: Array<{
         text: string
-        userId: string
         comId: string
         fullName: string
         avatarUrl: string

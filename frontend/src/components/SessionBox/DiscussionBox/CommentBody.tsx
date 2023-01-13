@@ -9,7 +9,6 @@ import { InputField } from "../../InputField/Index";
 
 interface ICommentBody {
   info: {
-    userId: string;
     comId: string;
     fullName: string;
     avatarUrl: string;

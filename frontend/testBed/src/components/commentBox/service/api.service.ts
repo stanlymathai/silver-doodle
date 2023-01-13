@@ -1,62 +1,47 @@
-import HTTP from "./http.service";
-import { ICommentData } from "./interface.service";
+import HTTP from './http.service';
+import { ICommentData, IReportData, IReactionData } from './interface.service';
 
-const handleError = (error: any, fn_name: string) => console.error(fn_name, error);
+const handleError = (error: any, fn_name: string) =>
+  console.error(fn_name, error);
+
 class CommentDataService {
-  async fetchComments(articleId: string, limit?: number) {
+  async fetchCommentData(articleId: string) {
     try {
-      return await HTTP.get<Array<ICommentData>>(
-        `/comment/${articleId}/${limit ?? 0}`
-      );
+      return await HTTP.get(`/comment/${articleId}`);
     } catch (e) {
-      return handleError(e, "fetchComments");
+      return handleError(e, 'fetchCommentData');
     }
   }
 
-  async handleAction(payload: ICommentData) {
+  async handleReport(data: IReportData) {
     try {
-      return await HTTP.post("/comment", { payload });
+      const payload = (({ reason, ref }) => ({ reason, ref }))(data);
+      return await HTTP.post('/action/report', { payload });
     } catch (e) {
-      return handleError(e, "handleAction");
-    }
-  }
-  async handleReport(payload: any) {
-    try {
-      return await HTTP.post("/comment/report", { payload });
-    } catch (e) {
-      return handleError(e, "handleReport");
-    }
-  }
-  async handleRection(payload: any) {
-    try {
-      return await HTTP.post("/reaction", { payload });
-    } catch (e) {
-      return handleError(e, "handleRection");
-    }
-  }
-  async totalCount(articleId: string) {
-    try {
-      return await HTTP.get(`/comment/count/${articleId}`);
-    } catch (e) {
-      return handleError(e, "totalCount");
+      return handleError(e, 'handleReport');
     }
   }
 
-  get(id: string) {
-    return HTTP.get<ICommentData>(`/comment/${id}`);
+  async handleReaction(data: IReactionData) {
+    try {
+      const payload = (({ action, event, type, ref }) => ({
+        action,
+        event,
+        type,
+        ref,
+      }))(data);
+      return await HTTP.post('/action/react', { payload });
+    } catch (e) {
+      return handleError(e, 'handleReaction');
+    }
   }
 
-  create(data: ICommentData) {
-    return HTTP.post<ICommentData>("/comment", data);
-  }
-
-  update(data: ICommentData, id: any) {
-    return HTTP.put<any>(`/comment/${id}`, data);
-  }
-
-  findByArticle(article: string) {
-    return HTTP.get<Array<ICommentData>>(`/comment?article=${article}`);
+  async handleComment(payload: ICommentData) {
+    try {
+      return await HTTP.post('/comment', { payload });
+    } catch (e) {
+      return handleError(e, 'handleComment');
+    }
   }
 }
-
 export default new CommentDataService();

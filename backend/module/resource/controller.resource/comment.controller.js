@@ -1,6 +1,6 @@
 const Comment = require('../model.resource/comment.model');
 const Reaction = require('../model.resource/reaction.model');
-const Article = require('../model.resource/article.model'); 
+const Article = require('../model.resource/article.model');
 const articleController = require('./article.controller');
 module.exports = {
   addComment(req, res) {
@@ -11,18 +11,9 @@ module.exports = {
       .catch((e) => res.status(500).json({ error: e }));
   },
 
-  totalComments(req, res) {
-    Comment.find({ repliedToCommentId: null, articleId: req.params.articleId })
-      .count()
-      .lean()
-      .exec()
-      .then((count) => res.json({ count }))
-      .catch((e) => res.status(500).json({ error: e }));
-  },
-
-  async getComments(req, res) {
-    let articleId = req.params.articleId;
-    let userId = req.user.id;
+  getComments(req, res) {
+    const articleId = req.params.articleId;
+    const userId = req.user.id;
     if (!articleId || !userId)
       return res
         .status(500)
@@ -31,69 +22,85 @@ module.exports = {
     try {
       Article.exists({ articleId }, async function (_, result) {
         if (result) {
-          let articleQueryParams = {
+          // reaction handlers
+          const hasUserReacted = (arr, val) =>
+            arr.some((el) => el.reaction == val && el.userId == userId);
+          const userReactions = (reactions) => {
+            return {
+              like: hasUserReacted(reactions, 'like'),
+              brilliant: hasUserReacted(reactions, 'brilliant'),
+              thoughtful: hasUserReacted(reactions, 'thoughtful'),
+            };
+          };
+
+          // article session
+          const articleQueryParams = {
             ref: articleId,
             status: 'Active',
             type: 'ARTICLE',
           };
 
-          let articleReactions = await Reaction.aggregate([
+          const articleReactions = await Reaction.aggregate([
             { $match: articleQueryParams },
-            { $project: { userId: 1, reaction: 1 } },
+            { $project: { _id: 0, userId: 1, reaction: 1 } },
           ]);
 
-          const hasOneInArticle = (type) =>
-            articleReactions.some(
-              (el) => el.reaction == type && el.userId == userId
-            );
-          let articleData = {
+          const articleData = {
             articleId,
-            reaction: {
-              like: hasOneInArticle('like'),
-              brilliant: hasOneInArticle('brilliant'),
-              thoughtful: hasOneInArticle('thoughtful'),
-            },
             reactionCount: articleReactions.length,
+            reaction: userReactions(articleReactions),
           };
-          let threads = await Comment.find(
-            { repliedToCommentId: null, articleId: req.params.articleId },
-            { articleId: 0, _id: 0 }
-          )
-            .limit(req.params.limit)
-            .sort({ _id: -1 })
-            .lean()
-            .exec();
 
-          let replies = await Comment.find(
+          // comment session
+          const reactionPipe = [
             {
-              repliedToCommentId: { $in: threads.map(({ comId }) => comId) },
+              $match: {
+                type: 'COMMENT',
+                status: 'Active',
+              },
             },
-            { articleId: 0, _id: 0 }
-          )
-            .lean()
-            .exec();
+            { $project: { _id: 0, userId: 1, reaction: 1 } },
+          ];
+          const reactionLookup = {
+            from: 'reactions',
+            pipeline: reactionPipe,
+            localField: 'comId',
+            foreignField: 'ref',
+            as: 'reactions',
+          };
+          const replyLookup = {
+            from: 'comments',
+            pipeline: [
+              { $lookup: reactionLookup },
+              { $project: { _id: 0, userId: 0, articleId: 0 } },
+            ],
+            localField: 'comId',
+            foreignField: 'repliedToCommentId',
+            as: 'replies',
+          };
 
-          replies.forEach((thread) => {
-            thread.reaction = {
-              like: Math.random() < 0.5,
-              brilliant: Math.random() < 0.5,
-              thoughtful: Math.random() < 0.5,
-            };
-            thread.reactionCount = Math.floor(Math.random() * 9999);
-          });
+          const commentData = await Comment.aggregate([
+            { $match: { repliedToCommentId: null, articleId } },
+            { $sort: { _id: -1 } },
+            { $project: { _id: 0, userId: 0, articleId: 0 } },
+            { $lookup: reactionLookup },
+            { $lookup: replyLookup },
+          ]);
 
-          threads.forEach((thread) => {
-            thread.replies = replies.filter(
-              (i) => i.repliedToCommentId == thread.comId
-            );
-            thread.reaction = {
-              like: Math.random() < 0.5,
-              brilliant: Math.random() < 0.5,
-              thoughtful: Math.random() < 0.5,
-            };
-            thread.reactionCount = Math.floor(Math.random() * 99);
+          commentData.forEach((thread) => {
+            thread.reaction = userReactions(thread.reactions);
+            thread.reactionCount = thread.reactions.length;
+            delete thread.reactions;
+
+            if (thread.replies.length) {
+              thread.replies.forEach((rThread) => {
+                rThread.reaction = userReactions(rThread.reactions);
+                rThread.reactionCount = rThread.reactions.length;
+                delete rThread.reactions;
+              });
+            }
           });
-          res.json({ threads, articleData });
+          res.json({ articleData, commentData });
         } else articleController.getArticleById(req, res);
       });
     } catch (error) {

@@ -24,7 +24,6 @@ export const DiscussionBox = () => {
                 (i: {
                     text: string;
                     comId: string;
-                    userId: string;
                     fullName: string;
                     avatarUrl: string;
                     timeStamp: string;

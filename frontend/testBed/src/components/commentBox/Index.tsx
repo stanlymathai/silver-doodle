@@ -7,49 +7,41 @@ import API from "./service/api.service";
 import { CommentBoxProps, ICommentData } from "./service/interface.service";
 
 const CommentBox = (props: CommentBoxProps) => {
-
-  const FETCH_LIMIT = 6;
+  
+  const INITIAL_LIMIT = 6;
   const ARTICLE_ID = props.articleId;
-
-  const [commentData, setComments] = useState<any>();
+  const [comments, setComments] = useState<any>()
   const [totalCount, setTotal] = useState<number>(0);
   const [articleData, setArticleData] = useState<any>();
+  const [commentData, setCommentData] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
 
   const getCommentData = () => {
     setLoading(true);
-    API.fetchComments(ARTICLE_ID, FETCH_LIMIT).then((res: any) => {
-      setComments(Object.values(res.data?.threads))
-      setArticleData(res.data?.articleData)
-    }
-    )
+    API.fetchCommentData(ARTICLE_ID).then((res: any) => {
+      const data = Object.values(res.data?.commentData);
+      setArticleData(res.data?.articleData);
+  
+      if (data) {
+        setComments(data);
+        setTotal(data.length);
+        setCommentData(data.slice(0, INITIAL_LIMIT));
+      }
+    });
     setLoading(false);
-  };
+  };  
 
-  const getCommentCount = () =>
-    API.totalCount(ARTICLE_ID).then((res: any) => setTotal(res.data?.count))
-
-  const loadMore = () => {
-    setLoading(true);
-    API.fetchComments(ARTICLE_ID).then((res: any) => {
-      setComments(Object.values(res.data?.threads))
-      setArticleData(res.data?.articleData)
-    }
-    )
-    setLoading(false);
-  }
+  const loadMore = () => setCommentData(comments)
 
   const onSubmitAction = (data: ICommentData) => {
-    setTotal(totalCount + 1)
-    API.handleAction(data)
-  }
+    setTotal(totalCount + 1);
+    API.handleComment(data);
+  };  
 
   useEffect(() => {
-    if (!ARTICLE_ID) return;
-    getCommentData();
-    getCommentCount();
+    if (ARTICLE_ID) getCommentData();
     // eslint-disable-next-line
-  }, [ARTICLE_ID]);
+  }, [ARTICLE_ID]);    
 
   return (
     <div style={style.main}>
@@ -61,13 +53,13 @@ const CommentBox = (props: CommentBoxProps) => {
         articleData={articleData}
         currentUser={props.currentUser}
         onSubmitAction={onSubmitAction}
-        onReplyAction={API.handleAction}
-        onUserRection={API.handleRection}
+        onReplyAction={API.handleComment}
         onReportAction={API.handleReport}
+        onUserRection={API.handleReaction}
         cancelBtnStyle={style.cancelButton}
       />
     </div>
-  );
+  );  
 };
 
 export default CommentBox;

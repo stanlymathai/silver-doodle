@@ -117,26 +117,23 @@ export const Provider = ({
 
   const report = {
     open: (commentData: any) => {
-      switchComponent("report-main")
-      setReport(commentData)
+      switchComponent('report-main');
+      setReport({ ref: commentData.info.comId });
     },
-    menu: (reson: string) => {
-      switchComponent("report-menu")
-      setReport({
-        reson, ...reportData,
-        reportedUser: currentUser?.currentUserId
-      })
+    menu: (reason: string) => {
+      switchComponent('report-menu');
+      setReport({ reason, ...reportData });
     },
     submit: () => {
-      onReportAction(reportData)
-      switchComponent("feedback")
-      setReport({})
+      onReportAction(reportData);
+      switchComponent('feedback');
+      setReport({});
     },
     close: () => {
-      setReport({})
-      switchComponent("close-menu")
-    }
-  }
+      setReport({});
+      switchComponent('close-menu');
+    },
+  };  
 
   const switchComponent = (id: string) => document.getElementById(id)?.click()
   const toggleDisscusionbox = () => setDiscussionVisibility(!showDiscussionBox)

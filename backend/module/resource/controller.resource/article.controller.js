@@ -25,7 +25,7 @@ module.exports = {
             },
             reactionCount: 0,
           },
-          threads: [],
+          commentData: [],
         };
         const article = new Article(articleData);
         article

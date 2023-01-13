@@ -106,11 +106,11 @@ const ReportMenu = () => {
                         <p>You can report the comment after selecting a problem.</p>
                     </div>
                     <hr />
-                    {reportReasons.map((reson: any) => (
+                    {reportReasons.map((reason: any) => (
                         <MenuItem
-                            key={reson}
-                            onClick={() => store.report.menu(reson)}
-                        >{reson}</MenuItem>
+                            key={reason}
+                            onClick={() => store.report.menu(reason)}
+                        >{reason}</MenuItem>
                     ))}
                 </div>
             </Menu>

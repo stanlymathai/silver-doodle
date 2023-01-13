@@ -1,5 +1,4 @@
 interface ICommentData {
-  userId: string;
   comId: string;
   fullName: string;
   avatarUrl: string;
@@ -7,7 +6,6 @@ interface ICommentData {
   text: string;
   replies?:
   | Array<{
-    userId: string;
     comId: string;
     fullName: string;
     avatarUrl: string;
@@ -16,6 +14,18 @@ interface ICommentData {
   }>
   | undefined;
   repliedToCommentId: string;
+}
+
+interface IReportData {
+  reason: string;
+  ref: string;
+}
+
+interface IReactionData {
+  action: string;
+  event:string;
+  type:string;
+  ref:string;
 }
 
 interface CommentBoxProps {
@@ -31,4 +41,4 @@ interface IAxiosHeaders {
   Authorization: string | any;
   refreshToken: string | any;
 }
-export type { ICommentData, CommentBoxProps, IAxiosHeaders };
+export type { ICommentData, IReportData, IReactionData, CommentBoxProps, IAxiosHeaders };

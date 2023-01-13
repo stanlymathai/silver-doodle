@@ -1,3 +1,4 @@
+const Report = require('../model.resource/report.model');
 const Reaction = require('../model.resource/reaction.model');
 
 module.exports = {
@@ -8,9 +9,9 @@ module.exports = {
       case 'ADD':
         const reaction = new Reaction({
           status: 'Active',
-          userId: req.user.id,
           ref: payload.ref,
           type: payload.type,
+          userId: req.user.id,
           reaction: payload.event,
         });
         reaction
@@ -20,7 +21,11 @@ module.exports = {
         break;
       case 'REMOVE':
         await Reaction.findOneAndUpdate(
-          { ref: payload.ref, status: 'Active', reaction: payload.event },
+          {
+            reaction: payload.event,
+            ref: payload.ref,
+            status: 'Active',
+          },
           { status: 'Removed' }
         )
           .then(() => res.json({ message: 'Success' }))
@@ -32,7 +37,15 @@ module.exports = {
     }
   },
   reportComment(req, res) {
-    let reportData = req.body.payload;
-    res.json({ reportData });
+    let payload = req.body.payload;
+    const report = new Report({
+      reportedUser: req.user.id,
+      reason: payload.reason,
+      ref: payload.ref,
+    });
+    report
+      .save()
+      .then(() => res.json({ message: 'Success' }))
+      .catch((e) => res.status(500).json({ error: e }));
   },
 };
