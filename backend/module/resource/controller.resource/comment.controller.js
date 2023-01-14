@@ -5,7 +5,14 @@ const articleController = require('./article.controller');
 module.exports = {
   addComment(req, res) {
     const payload = req.body.payload;
-    const comment = new Comment(req.body.payload);
+    const comment = new Comment({
+      text: payload.text,
+      comId: payload.comId,
+      userId: req.user.userId,
+      articleId: payload.articleId,
+      timeStamp: payload.timeStamp,
+      ...(payload.parentId && { parentId: payload.parentId }),
+    });
     comment
       .save()
       .then(() => res.json({ message: 'Success' }))
@@ -54,14 +61,28 @@ module.exports = {
 
           // comment session
           const reactionPipe = [
-            {
-              $match: {
-                type: 'COMMENT',
-                status: 'Active',
-              },
-            },
+            { $match: { type: 'COMMENT', status: 'Active' } },
             { $project: { _id: 0, userId: 1, reaction: 1 } },
           ];
+
+          const commentProject = {
+            _id: 0,
+            text: 1,
+            comId: 1,
+            userId: 1,
+            timeStamp: 1,
+            fullName: '$user.fullName',
+            avatarUrl: '$user.avatarUrl',
+          };
+
+          const userLookup = {
+            from: 'users',
+            pipeline: [{ $limit: 1 }],
+            localField: 'userId',
+            foreignField: 'userId',
+            as: 'user',
+          };
+
           const reactionLookup = {
             from: 'reactions',
             pipeline: reactionPipe,
@@ -69,11 +90,15 @@ module.exports = {
             foreignField: 'ref',
             as: 'reactions',
           };
+
           const replyLookup = {
             from: 'comments',
             pipeline: [
+              { $lookup: userLookup },
+              { $unwind: '$user' },
+              { $project: { parentId: 1, ...commentProject } },
               { $lookup: reactionLookup },
-              { $project: { _id: 0, userId: 0, articleId: 0 } },
+              { $project: { userId: 0 } },
             ],
             localField: 'comId',
             foreignField: 'parentId',
@@ -83,9 +108,12 @@ module.exports = {
           const commentData = await Comment.aggregate([
             { $match: { parentId: null, articleId } },
             { $sort: { _id: -1 } },
-            { $project: { _id: 0, userId: 0, articleId: 0 } },
+            { $lookup: userLookup },
+            { $unwind: '$user' },
+            { $project: commentProject },
             { $lookup: reactionLookup },
             { $lookup: replyLookup },
+            { $project: { userId: 0 } },
           ]);
 
           commentData.forEach((thread) => {
