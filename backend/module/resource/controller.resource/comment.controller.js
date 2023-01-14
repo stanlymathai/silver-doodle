@@ -4,6 +4,7 @@ const Article = require('../model.resource/article.model');
 const articleController = require('./article.controller');
 module.exports = {
   addComment(req, res) {
+    const payload = req.body.payload;
     const comment = new Comment(req.body.payload);
     comment
       .save()
@@ -13,7 +14,7 @@ module.exports = {
 
   getComments(req, res) {
     const articleId = req.params.articleId;
-    const userId = req.user.id;
+    const userId = req.user.userId;
     if (!articleId || !userId)
       return res
         .status(500)
@@ -75,12 +76,12 @@ module.exports = {
               { $project: { _id: 0, userId: 0, articleId: 0 } },
             ],
             localField: 'comId',
-            foreignField: 'repliedToCommentId',
+            foreignField: 'parentId',
             as: 'replies',
           };
 
           const commentData = await Comment.aggregate([
-            { $match: { repliedToCommentId: null, articleId } },
+            { $match: { parentId: null, articleId } },
             { $sort: { _id: -1 } },
             { $project: { _id: 0, userId: 0, articleId: 0 } },
             { $lookup: reactionLookup },

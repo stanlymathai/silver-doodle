@@ -13,9 +13,8 @@ interface IProps {
   onReportAction: Function
   loadMore?: Function
   currentUser: {
-    currentUserId: string
-    currentUserImg: string
-    currentUserFullName: string
+    avatar: string
+    fullName: string
   }
   articleData: {
     articleId: string

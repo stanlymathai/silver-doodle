@@ -22,7 +22,7 @@ export const InputComponent = ({
       <img
         alt='userIcon'
         className='user-img'
-        src={globalStore.currentUserData.currentUserImg}
+        src={globalStore.currentUserData.avatar}
 
       />
       <input

@@ -18,13 +18,13 @@ module.exports = {
           req.headers.authorization = 'Bearer ' + token;
           res.setHeader('token', 'Bearer ' + token);
           res.setHeader('isTokenExpired', isTokenExpired);
-          req.user = { id: payload.id };
+          req.user = user;
           next();
         } else if (!err && user) {
-          req.user = { id: payload.id };
+          req.user = user;
           next();
         } else if (!user || err) {
-          res.status(401);
+          res.status(401).json({ message: "don't suck your thumb boy" });
           res.end();
           return;
         }

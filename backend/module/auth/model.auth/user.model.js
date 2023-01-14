@@ -5,16 +5,29 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    fullName: {
+      type: String,
+      required: true,
+    },
+    avatarUrl: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       unique: true,
       required: true,
     },
-    authAccessToken: {
+    secretOrKey: {
       type: String,
       unique: true,
       required: true,
     },
+    status: {
+      type: String,
+      required: true,
+    },
+    createdAt: { type: Date, default: Date.now },
   },
   { versionKey: false }
 );

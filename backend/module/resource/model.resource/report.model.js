@@ -4,12 +4,15 @@ let reportSchema = mongoose.Schema(
   {
     reportedUser: {
       type: String,
+      required: true,
     },
     ref: {
       type: String,
+      required: true,
     },
     reason: {
       type: String,
+      required: true,
     },
     timeStamp: { type: Date, default: Date.now },
   },

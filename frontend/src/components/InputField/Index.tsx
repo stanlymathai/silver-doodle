@@ -4,9 +4,9 @@ import React from "react"
 import moment from "moment";
 const { v4: uuidv4 } = require("uuid")
 
-import "./Style.scss"
-import { InputComponent } from "./InputForm"
 import { GlobalContext } from "../../context/Index"
+import { InputComponent } from "./InputForm"
+import "./Style.scss"
 
 interface InputFieldProps {
   comId?: string
@@ -14,38 +14,49 @@ interface InputFieldProps {
 }
 
 export const InputField = ({ mode, comId }: InputFieldProps) => {
-  const [text, setText] = useState("")
 
   const globalStore: any = useContext(GlobalContext)
+  const [text, setText] = useState("")
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault()
-
+    e.preventDefault();
+  
     const formData = {
-      text,
-      comId: uuidv4(),
       timeStamp: moment().format(),
-      userId: globalStore.currentUserData.currentUserId,
-      avatarUrl: globalStore.currentUserData.currentUserImg,
-      fullName: globalStore.currentUserData.currentUserFullName,
-    }
-    const repliedToCommentId = comId;
-    const articleId = globalStore.article.articleId
-
-    setText("")
-
+      comId: uuidv4(),
+      text,
+    };
+    const parentId = comId;
+    const articleId = globalStore.article.articleId;
+  
+    setText('');
+  
     if (mode) {
       return (
-        await globalStore.handleReply({ ...formData, repliedToCommentId }),
-        await globalStore.onReplyAction({ ...formData, articleId, repliedToCommentId })
-      )
+        await globalStore.handleReply({
+          ...formData,
+          parentId,
+          avatarUrl: globalStore.currentUserData.avatar,
+          fullName: globalStore.currentUserData.fullName,
+        }),
+        await globalStore.onReplyAction({
+          ...formData,
+          articleId,
+          parentId,
+        })
+      );
     } else {
       return (
-        await globalStore.handleSubmit(formData),
-        await globalStore.onSubmitAction({ ...formData, articleId }))
+        await globalStore.handleSubmit({
+          ...formData,
+          avatarUrl: globalStore.currentUserData.avatar,
+          fullName: globalStore.currentUserData.fullName,
+        }),
+        await globalStore.onSubmitAction({ ...formData, articleId })
+      );
     }
-  }
-
+  };  
+  
   return (
     <InputComponent
       text={text}

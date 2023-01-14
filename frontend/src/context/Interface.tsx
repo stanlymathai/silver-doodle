@@ -31,13 +31,12 @@ interface ICommentData {
             thoughtful: boolean
         }
         reactionCount: number
-        repliedToCommentId?: string
+        parentId?: string
     }>
 }
 interface ICurrentUser {
-    currentUserId: string
-    currentUserImg: string
-    currentUserFullName: string
+    avatar: string
+    fullName: string
 }
 
 export type { IArticleData, ICommentData, ICurrentUser }

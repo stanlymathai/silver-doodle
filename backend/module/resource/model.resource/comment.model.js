@@ -2,28 +2,27 @@ let mongoose = require('mongoose');
 
 let commentSchema = mongoose.Schema(
   {
-    userId: {
-      type: String,
-    },
     comId: {
       type: String,
+      unique: true,
+      required: true,
     },
-    fullName: {
+    userId: {
       type: String,
+      required: true,
     },
     text: {
       type: String,
-    },
-    avatarUrl: {
-      type: String,
+      required: true,
     },
     timeStamp: {
       type: String,
+      required: true,
     },
     articleId: {
       type: String,
     },
-    repliedToCommentId: {
+    parentId: {
       type: String,
     },
   },

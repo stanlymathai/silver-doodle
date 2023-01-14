@@ -5,15 +5,9 @@ const User = require('../model.auth/user.model');
 const index = (_, res) =>
   res.status(404).json({ message: 'MoniTalks Comment-session API Server' });
 
-const authenticate = async (payload) =>
+const authenticate = (payload) =>
   new Promise((resolve, reject) =>
-    User.findOne(
-      {
-        userId: payload.id,
-        email: payload.email,
-      },
-      { _id: 0, userId: 1 }
-    )
+    User.findOne({ secretOrKey: payload.token }, { _id: 0, userId: 1 })
       .lean()
       .exec()
       .then((dbUser) => {
@@ -25,41 +19,40 @@ const authenticate = async (payload) =>
   );
 
 const main = (req, res) => {
-  User.findOne(
-    {
-      userId: req.body.user_id,
-      email: req.body.user_email,
-    },
-    { userId: 1, _id: 0, email: 1 }
-  )
+  const userParams = {
+    status: 'ACTIVE',
+    userId: req.body.payload.user_id,
+    email: req.body.payload.user_email,
+  };
+  User.findOne(userParams)
     .lean()
     .exec()
     .then((userObj) => {
       if (!!userObj) {
-        onboardUser({ userObj, ...req }, res);
-      } else registerUser(req, res);
+        onboardUser(res, userObj);
+      } else {
+        const userData = {
+          fullName: req.body.payload.fullName,
+          avatarUrl: req.body.payload.avatar,
+          secretOrKey: uuidv4(),
+          ...userParams,
+        };
+        registerUser(res, userData);
+      }
     })
     .catch((err) => res.status(500).json({ error: err }));
 };
 
-const registerUser = (req, res) => {
-  const userParams = {
-    userId: req.body.user_id,
-    email: req.body.user_email,
-    authAccessToken: uuidv4(),
-  };
-  const user = new User(userParams);
+const registerUser = (res, userData) => {
+  const user = new User(userData);
   user
     .save()
-    .then((userObj) => onboardUser({ userObj, ...req }, res))
+    .then((userObj) => onboardUser(res, userObj))
     .catch((err) => res.status(500).json({ error: err }));
 };
 
-const onboardUser = (req, res) => {
-  const payload = {
-    id: req.userObj.userId,
-    email: req.userObj.email,
-  };
+const onboardUser = (res, userObj) => {
+  const payload = { secretOrKey: userObj.secretOrKey };
   const token = jwt.sign(
     payload,
     Buffer.from(process.env.AUTHENTICATION_KEY).toString('base64'),

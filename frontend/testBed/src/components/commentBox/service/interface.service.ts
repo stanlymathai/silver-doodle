@@ -13,7 +13,7 @@ interface ICommentData {
     text: string;
   }>
   | undefined;
-  repliedToCommentId: string;
+  parentId: string;
 }
 
 interface IReportData {
@@ -31,9 +31,8 @@ interface IReactionData {
 interface CommentBoxProps {
   articleId: string;
   currentUser: {
-    currentUserId: string;
-    currentUserFullName: string;
-    currentUserImg: string;
+    fullName: string;
+    avatar: string;
   };
 }
 

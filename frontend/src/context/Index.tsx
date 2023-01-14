@@ -92,8 +92,8 @@ export const Provider = ({
 
     let copyData = [...data]
 
-    if (info.repliedToCommentId) {
-      const parentIdx = copyData.findIndex((i) => i.comId == info.repliedToCommentId)
+    if (info.parentId) {
+      const parentIdx = copyData.findIndex((i) => i.comId == info.parentId)
       const childIdx = copyData[parentIdx].replies.findIndex(i => i.comId == info.comId)
 
       copyData[parentIdx].replies[childIdx].reaction[event]
@@ -145,7 +145,7 @@ export const Provider = ({
     onReplyThread("")
     let copyData = [...data]
     const targetIdx = copyData.
-      findIndex((i) => i.comId == payload.repliedToCommentId)
+      findIndex((i) => i.comId == payload.parentId)
 
     copyData[targetIdx].replies!.push({
       ...payload,
