@@ -36,7 +36,7 @@ module.exports = {
         },
       },
     ])
-      .then((articles) => res.json({ articles }))
+      .then((articles) => res.json(articles))
       .catch((e) => console.log(e, 'getAllArticles'));
   },
   getArticleById(req, res) {
