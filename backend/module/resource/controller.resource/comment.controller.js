@@ -145,4 +145,30 @@ module.exports = {
       res.status(500).json({ error });
     }
   },
+
+  getAllComments(_, res) {
+    Comment.aggregate([
+      { $project: { _id: 0 } },
+      {
+        $lookup: {
+          from: 'articles',
+          pipeline: [{ $limit: 1 }, { $project: { slug: 1, _id: 0 } }],
+          localField: 'articleId',
+          foreignField: 'articleId',
+          as: 'article',
+        },
+      },
+      {
+        $lookup: {
+          from: 'reports',
+          pipeline: [{ $project: { reportedUser: 1, _id: 0 } }],
+          localField: 'comId',
+          foreignField: 'ref',
+          as: 'reporters',
+        },
+      },
+    ])
+      .then((comments) => res.json(comments))
+      .catch((e) => console.log(e, 'getAllComments'));
+  },
 };
