@@ -25,6 +25,10 @@ let commentSchema = mongoose.Schema(
     parentId: {
       type: String,
     },
+    status: {
+      type: String,
+      default: 'Active',
+    },
   },
   { versionKey: false }
 );
