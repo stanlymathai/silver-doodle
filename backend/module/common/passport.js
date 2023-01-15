@@ -19,7 +19,7 @@ const strategy = new JwtStrategy(
   async (payload, done) =>
     await authController
       .authenticate(payload.secretOrKey)
-      .then((result) => done(null, result))
+      .then(() => done(null, true))
       .catch((err) => done(err, false))
 );
 // use the strategy

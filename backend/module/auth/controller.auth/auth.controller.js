@@ -5,9 +5,9 @@ const User = require('../model.auth/user.model');
 const index = (_, res) =>
   res.status(404).json({ message: 'MoniTalks Comment-session API Server' });
 
-const authenticate = async (secretOrKey) =>
-  new Promise((resolve, reject) =>
-    User.findOne({ secretOrKey }, { _id: 0, userId: 1 })
+const authenticate = async (secretOrKey) => {
+  return new Promise((resolve, reject) =>
+    User.findOne({ secretOrKey }, { _id: 1 })
       .lean()
       .exec()
       .then((dbUser) => {
@@ -17,12 +17,13 @@ const authenticate = async (secretOrKey) =>
       })
       .catch((e) => reject(e))
   );
+};
 
 const main = async (req, res) => {
   const userParams = {
     status: 'ACTIVE',
-    userId: req.body.payload.user_id,
-    email: req.body.payload.user_email,
+    userId: req.body.payload.userId,
+    email: req.body.payload.userEmail,
   };
   await User.findOne(userParams)
     .lean()

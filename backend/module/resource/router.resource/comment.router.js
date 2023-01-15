@@ -6,6 +6,6 @@ const verifyAuthentication =
 const controller = require('../controller.resource/comment.controller');
 
 router.post('/', verifyAuthentication, controller.addComment);
-router.get('/:articleId', verifyAuthentication, controller.getComments);
+router.get('/:articleId/:userId', verifyAuthentication, controller.getComments);
 
 module.exports = router;

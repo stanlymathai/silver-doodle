@@ -47,6 +47,7 @@ export const userSearchHandler = (slug: string) => {
       if (!user.EmailAddress || !user.id) return;
 
       const currentUser = {
+        userId: user.id,
         fullName: !!user.PostWithName
           ? `${user.FirstName} ${user.MiddleName} ${user.LastName}`.trim()
           : user.NickName,
@@ -61,8 +62,7 @@ export const userSearchHandler = (slug: string) => {
 
       const authPayload = {
         ...currentUser,
-        user_id: user.id,
-        user_email: user.EmailAddress,
+        userEmail: user.EmailAddress,
       };
 
       userAuthentication(authPayload).then((response) => {

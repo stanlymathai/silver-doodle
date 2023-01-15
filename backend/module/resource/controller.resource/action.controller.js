@@ -11,8 +11,8 @@ module.exports = {
           status: 'Active',
           ref: payload.ref,
           type: payload.type,
+          userId: payload.userId,
           reaction: payload.event,
-          userId: req.user.userId,
         });
         reaction
           .save()
@@ -39,7 +39,7 @@ module.exports = {
   reportComment(req, res) {
     let payload = req.body.payload;
     const report = new Report({
-      reportedUser: req.user.userId,
+      reportedUser: payload.userId,
       reason: payload.reason,
       ref: payload.ref,
     });

@@ -5,14 +5,23 @@ const articleController = require('./article.controller');
 module.exports = {
   addComment(req, res) {
     const payload = req.body.payload;
-    const comment = new Comment({
-      text: payload.text,
-      comId: payload.comId,
-      userId: req.user.userId,
-      articleId: payload.articleId,
-      timeStamp: payload.timeStamp,
-      ...(payload.parentId && { parentId: payload.parentId }),
-    });
+    const commentData = (({
+      text,
+      comId,
+      userId,
+      parentId,
+      articleId,
+      timeStamp,
+    }) => ({
+      text,
+      comId,
+      userId,
+      parentId,
+      articleId,
+      timeStamp,
+    }))(payload);
+
+    const comment = new Comment(commentData);
     comment
       .save()
       .then(() => res.json({ message: 'Success' }))
@@ -21,7 +30,7 @@ module.exports = {
 
   getComments(req, res) {
     const articleId = req.params.articleId;
-    const userId = req.user.userId;
+    const userId = req.params.userId;
     if (!articleId || !userId)
       return res
         .status(500)
