@@ -11,6 +11,7 @@ module.exports = {
           pipeline: [
             { $match: { type: 'ARTICLE', status: 'Active' } },
             { $project: { reaction: 1, _id: 0 } },
+            { $group: { _id: '$reaction', count: { $sum: 1 } } },
           ],
           localField: 'articleId',
           foreignField: 'ref',
@@ -26,11 +27,16 @@ module.exports = {
           as: 'comments',
         },
       },
-      { $match: { comments: { $elemMatch: { $exists: true } } } },
+      {
+        $match: {
+          $or: [
+            { comments: { $elemMatch: { $exists: true } } },
+            { reactions: { $elemMatch: { $exists: true } } },
+          ],
+        },
+      },
     ])
-      .then((articles) => {
-        res.json({ articles });
-      })
+      .then((articles) => res.json({ articles }))
       .catch((e) => console.log(e, 'getAllArticles'));
   },
   getArticleById(req, res) {
