@@ -194,4 +194,61 @@ module.exports = {
       .then((comments) => res.json(comments))
       .catch((e) => console.log(e, 'getAllComments'));
   },
+  getUserComments(req, res) {
+    const userId = req.params.userId;
+    if (!userId) {
+      res.status(500).json({ error: 'userId not found' });
+    } else {
+      Comment.aggregate([
+        { $match: { userId } },
+        { $project: { _id: 0 } },
+        {
+          $lookup: {
+            from: 'articles',
+            pipeline: [{ $limit: 1 }, { $project: { slug: 1, _id: 0 } }],
+            localField: 'articleId',
+            foreignField: 'articleId',
+            as: 'article',
+          },
+        },
+        {
+          $lookup: {
+            from: 'reports',
+            pipeline: [
+              { $project: { ref: 0, reason: 0, _id: 0 } },
+              {
+                $lookup: {
+                  from: 'users',
+                  pipeline: [
+                    { $limit: 1 },
+                    { $project: { status: 1, _id: 0, userId: 1 } },
+                    {
+                      $lookup: {
+                        from: 'reports',
+                        pipeline: [
+                          { $project: { _id: 1 } },
+                          { $count: 'total' },
+                        ],
+                        localField: 'userId',
+                        foreignField: 'reportedUser',
+                        as: 'reported',
+                      },
+                    },
+                  ],
+                  localField: 'reportedUser',
+                  foreignField: 'userId',
+                  as: 'user',
+                },
+              },
+            ],
+            localField: 'comId',
+            foreignField: 'ref',
+            as: 'reporters',
+          },
+        },
+      ])
+        .then((comments) => res.json(comments))
+        .catch((e) => console.log(e, 'getUserComments'));
+    }
+  },
 };
