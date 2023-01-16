@@ -19,12 +19,14 @@ interface ICommentData {
 }
 
 interface IReportData {
+  timeStamp: string;
   userId: string;
   reason: string;
   ref: string;
 }
 
 interface IReactionData {
+  timeStamp: string;
   action: string;
   userId:string;
   event:string;

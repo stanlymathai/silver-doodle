@@ -16,16 +16,16 @@ class CommentDataService {
   async handleComment(data: ICommentData) {
     try {
       const payload = (({
-        userId,
-        comId,
         text,
+        comId,
+        userId,
         parentId,
         articleId,
         timeStamp,
       }) => ({
-        userId,
-        comId,
         text,
+        comId,
+        userId,
         parentId,
         articleId,
         timeStamp,
@@ -38,18 +38,22 @@ class CommentDataService {
 
   async handleReport(data: IReportData) {
     try {
-      const payload = (({ userId, reason, ref }) => ({ userId, reason, ref }))(
-        data
-      );
+      const payload = (({ userId, reason, ref, timeStamp }) => ({
+        ref,
+        userId,
+        reason,
+        timeStamp,
+      }))(data);
       return await HTTP.post('/action/report', { payload });
     } catch (e) {
       return handleError(e, 'handleReport');
-    }    
+    }
   }
 
   async handleReaction(data: IReactionData) {
     try {
-      const payload = (({ userId, action, event, type, ref }) => ({
+      const payload = (({ userId, timeStamp, action, event, type, ref }) => ({
+        timeStamp,
         userId,
         action,
         event,

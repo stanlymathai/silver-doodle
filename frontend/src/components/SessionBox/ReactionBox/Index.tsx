@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 
+import moment from "moment";
 import { GlobalContext } from "../../../context/Index";
 import { Menu, MenuItem } from "@szhsin/react-menu";
 import { ReactionView } from "../../Action/Overview";
@@ -48,7 +49,13 @@ export const ReactionBox = () => {
         } else setReactionCount(reactionCount + 1)
 
         setReaction(articleCopy.reaction)
-        globalStore.onUserRection({ ref, action, event, type: "ARTICLE" })
+        globalStore.onUserRection({
+            ref,
+            event,
+            action,
+            type: 'ARTICLE',
+            timeStamp: moment().format(),
+          });
     }
 
     const LikeAction = () => {

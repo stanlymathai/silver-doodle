@@ -13,6 +13,7 @@ module.exports = {
           type: payload.type,
           userId: payload.userId,
           reaction: payload.event,
+          timeStamp: payload.timeStamp,
         });
         reaction
           .save()
@@ -39,6 +40,7 @@ module.exports = {
   reportComment(req, res) {
     let payload = req.body.payload;
     const report = new Report({
+      timeStamp: payload.timeStamp,
       reportedUser: payload.userId,
       reason: payload.reason,
       ref: payload.ref,

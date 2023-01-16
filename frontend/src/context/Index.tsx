@@ -4,6 +4,8 @@ import { IArticleData, ICommentData, ICurrentUser } from "./Interface"
 
 export const GlobalContext = createContext({})
 
+import moment from "moment";
+
 export const Provider = ({
   loading,
   loadMore,
@@ -112,13 +114,19 @@ export const Provider = ({
       } else copyData[targetIdx].reactionCount++
     }
     setData(copyData)
-    onUserRection({ ref, action, event, type: "COMMENT" })
+    onUserRection({
+      ref,
+      event,
+      action,
+      type: 'COMMENT',
+      timeStamp: moment().format(),
+    });
   }
 
   const report = {
     open: (commentData: any) => {
       switchComponent('report-main');
-      setReport({ ref: commentData.info.comId });
+      setReport({ timeStamp: moment().format(), ref: commentData.info.comId });
     },
     menu: (reason: string) => {
       switchComponent('report-menu');
@@ -133,7 +141,7 @@ export const Provider = ({
       setReport({});
       switchComponent('close-menu');
     },
-  };  
+  };
 
   const switchComponent = (id: string) => document.getElementById(id)?.click()
   const toggleDisscusionbox = () => setDiscussionVisibility(!showDiscussionBox)

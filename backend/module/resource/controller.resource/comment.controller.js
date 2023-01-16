@@ -161,7 +161,33 @@ module.exports = {
       {
         $lookup: {
           from: 'reports',
-          pipeline: [{ $project: { reportedUser: 1, _id: 0 } }],
+          pipeline: [
+            { $project: { ref: 0, reason: 0, _id: 0 } },
+            {
+              $lookup: {
+                from: 'users',
+                pipeline: [
+                  { $limit: 1 },
+                  { $project: { status: 1, _id: 0, userId: 1 } },
+                  {
+                    $lookup: {
+                      from: 'users',
+                      pipeline: [
+                        { $limit: 1 },
+                        { $project: { status: 1, _id: 0 } },
+                      ],
+                      localField: 'reportedUser',
+                      foreignField: 'userId',
+                      as: 'user',
+                    },
+                  },
+                ],
+                localField: 'reportedUser',
+                foreignField: 'userId',
+                as: 'user',
+              },
+            },
+          ],
           localField: 'comId',
           foreignField: 'ref',
           as: 'reporters',
