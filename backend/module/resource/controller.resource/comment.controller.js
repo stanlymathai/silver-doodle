@@ -2,6 +2,7 @@ const Comment = require('../model.resource/comment.model');
 const Reaction = require('../model.resource/reaction.model');
 const Article = require('../model.resource/article.model');
 const articleController = require('./article.controller');
+
 module.exports = {
   addComment(req, res) {
     const payload = req.body.payload;
