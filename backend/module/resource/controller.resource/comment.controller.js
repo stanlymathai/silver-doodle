@@ -171,14 +171,11 @@ module.exports = {
                   { $project: { status: 1, _id: 0, userId: 1 } },
                   {
                     $lookup: {
-                      from: 'users',
-                      pipeline: [
-                        { $limit: 1 },
-                        { $project: { status: 1, _id: 0 } },
-                      ],
-                      localField: 'reportedUser',
-                      foreignField: 'userId',
-                      as: 'user',
+                      from: 'reports',
+                      pipeline: [{ $project: { _id: 1 } }, { $count: 'total' }],
+                      localField: 'userId',
+                      foreignField: 'reportedUser',
+                      as: 'reported',
                     },
                   },
                 ],
