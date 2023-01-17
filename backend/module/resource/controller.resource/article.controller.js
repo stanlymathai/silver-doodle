@@ -12,6 +12,7 @@ module.exports = {
             { $match: { type: 'ARTICLE', status: 'Active' } },
             { $project: { reaction: 1, _id: 0 } },
             { $group: { _id: '$reaction', count: { $sum: 1 } } },
+            { $project: { _id: 0, type: '$_id', count: 1} },
           ],
           localField: 'articleId',
           foreignField: 'ref',
