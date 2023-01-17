@@ -52,26 +52,26 @@ module.exports = {
   },
   async getUserReaction(req, res) {
     const userId = req.params.userId;
-    console.log('userId knri', userId);
     if (userId) {
-      const articleReactions_ = await Reaction.aggregate([
+      const articleReactions = await Reaction.aggregate([
         { $match: { userId, status: 'Active', type: 'ARTICLE' } },
         {
           $lookup: {
             from: 'articles',
             pipeline: [
               { $limit: 1 },
-              { $project: { publishedAt: 0, timeStamp: 0 } },
+              { $project: { publishedAt: 0, timeStamp: 0, _id: 0 } },
             ],
             localField: 'ref',
             foreignField: 'articleId',
             as: 'article',
           },
         },
-        { $project: { status: 0, userId: 0, ref: 0 } },
+        { $project: { status: 0, userId: 0, ref: 0, _id: 0 } },
+        { $unwind: '$article' },
       ]);
 
-      const articleReactions = await Reaction.aggregate([
+      const commentReactions = await Reaction.aggregate([
         { $match: { userId, status: 'Active', type: 'COMMENT' } },
         { $project: { userId: 0 } },
 
@@ -80,31 +80,34 @@ module.exports = {
             from: 'comments',
             pipeline: [
               { $limit: 1 },
-              { $project: { _id: 0, articleId: 1 } },
               {
                 $lookup: {
-                  from: 'articles', 
+                  from: 'articles',
                   pipeline: [
                     { $limit: 1 },
-                    { $project: { publishedAt: 0, timeStamp: 0 } },
+                    { $project: { publishedAt: 0, timeStamp: 0, _id: 0 } },
                   ],
                   localField: 'articleId',
                   foreignField: 'articleId',
-                  as: 'article',
+                  as: 'info',
                 },
               },
+              { $unwind: '$info' },
+              { $project: { _id: 0, info: 1 } },
             ],
             localField: 'ref',
             foreignField: 'comId',
-            as: 'comment',
+            as: 'article',
           },
         },
-        // { $project: { status: 0, userId: 0, ref: 0 } },
+        { $unwind: '$article' },
+        { $project: { status: 0, userId: 0, ref: 0, _id: 0 } },
       ]);
 
-      console.log('articleReactions knri', articleReactions);
-      res.json(articleReactions);
-      // .then((reactions) => res.json(reactions));
+      const userReactions = [...articleReactions, ...commentReactions].sort(
+        (a, b) => (a.timeStamp < b.timeStamp ? 1 : -1)
+      );
+      res.json(userReactions);
     } else res.status(500).json({ error: 'identifier required' });
   },
 };
