@@ -1,4 +1,6 @@
 import axios from 'axios';
+import CryptoJS from 'crypto-js';
+
 
 const RESOURCE_URL = {
   base: {
@@ -13,38 +15,65 @@ const RESOURCE_URL = {
     'https://s3.eu-west-2.amazonaws.com/prod-monitalks-media/userplaceholder_5734b83bd0.png',
 };
 
-const getCurrentUserInfo = async (backoffice_token: string, userId: string) => {
-  axios.defaults.headers.common['Authorization'] = `Bearer ${backoffice_token}`;
+const decryptData = (data: any) => {
+
+  let decryptedData: any;
+  const key = 'bJjdu678330jjJHd99300000040400o5HHKbzrNELs8='
   try {
-    const response = await axios['get'](
+      decryptedData = JSON.parse(
+          CryptoJS.enc.Utf8.stringify(
+              CryptoJS.AES.decrypt(data.data, key, {
+                  keySize: 128 / 8,
+                  iv: data.key,
+                  mode: CryptoJS.mode.CBC,
+                  padding: CryptoJS.pad.Pkcs7,
+              }),
+          ),
+      );
+  } catch (e) {
+      console.warn('Unable to decrypt', e);
+  }
+  return decryptedData;
+};
+
+const getCurrentUserInfo = async (userId: string) => {
+  axios.defaults.withCredentials = true;
+
+  try {
+    const result = await axios['get'](
       RESOURCE_URL.base.backoffice + RESOURCE_URL.end_point.profile + userId
     );
-    return await Promise.resolve(response);
+    return await Promise.resolve(result);
   } catch (e) {
     return await Promise.reject(e);
   }
 };
 
 const userAuthentication = async (payload: any) => {
+  axios.defaults.withCredentials = false;
+
   try {
-    const response = axios.post(
+    const result = axios.post(
       RESOURCE_URL.base.comment_session + RESOURCE_URL.end_point.authentication,
       { payload }
     );
-    return await Promise.resolve(response);
+    return await Promise.resolve(result);
   } catch (e) {
     return await Promise.reject(e);
   }
 };
 
-export const userSearchHandler = (slug: string) => {
-  let payload = slug.replace('?q=', '').trim().split('+');
-  if (!payload.length || payload.length !== 2) return;
-
+export const userSearchHandler = (identifier: string) => {
+  let payload = identifier.replace('?q=', '').trim().split('+');
+  if (!payload.length || payload.length !== 2) {
+    return window.alert('invalid identifier');
+  }
   try {
-    getCurrentUserInfo(payload[0], payload[1]).then((res) => {
-      let user = res.data;
-      if (!user.EmailAddress || !user.id) return;
+    getCurrentUserInfo(payload[1]).then((response) => {
+      const user = decryptData(response.data);
+      if (!user.EmailAddress || !user.id) {
+        return window.alert('invalid token');
+      }
 
       const currentUser = {
         userId: user.id,
@@ -65,12 +94,14 @@ export const userSearchHandler = (slug: string) => {
         userEmail: user.EmailAddress,
       };
 
-      userAuthentication(authPayload).then((response) => {
-        sessionStorage.setItem('token', response.data.token);
-        sessionStorage.setItem('refreshToken', response.data.refreshToken);
+      userAuthentication(authPayload).then((res) => {
+        sessionStorage.setItem('token', res.data.token);
+        sessionStorage.setItem('refreshToken', res.data.refreshToken);
       });
     });
   } catch (e) {
-    return console.log(e);
+    axios.defaults.withCredentials = false;
+    window.alert('invalid user credentials');
+    return console.log(e, 'userSearchHandler');
   }
 };

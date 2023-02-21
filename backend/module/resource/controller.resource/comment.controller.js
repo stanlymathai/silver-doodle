@@ -81,6 +81,7 @@ module.exports = {
             comId: 1,
             userId: 1,
             timeStamp: 1,
+            moderated: 1,
             fullName: '$user.fullName',
             avatarUrl: '$user.avatarUrl',
           };
