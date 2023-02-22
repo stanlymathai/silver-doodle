@@ -156,6 +156,13 @@
                         border-radius: 50%;
                     }
                 }
+                .moderate {
+                    opacity: .5;
+                    margin-left: 10px;
+                    font-weight: bolder;
+                    font-style: oblique 23deg;
+                    pointer-events: none;
+                }
 
                 .comment {
                     font-size: 17px;
@@ -195,6 +202,10 @@
                         outline: 0;
                     }
                 }
+            }
+            .disable-div {
+                pointer-events: none;
+                opacity: 0.3;
             }
         }
 

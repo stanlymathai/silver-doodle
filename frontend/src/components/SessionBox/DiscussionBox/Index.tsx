@@ -28,6 +28,7 @@ export const DiscussionBox = () => {
                     avatarUrl: string;
                     timeStamp: string;
                     replies: Array<any>;
+                    moderated?: boolean;
                     reaction: {
                         like: boolean;
                         brilliant: boolean;

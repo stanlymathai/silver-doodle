@@ -19,6 +19,7 @@ interface ICommentData {
         thoughtful: boolean
     }
     reactionCount: number
+    moderated?: boolean
     replies: Array<{
         text: string
         comId: string
@@ -32,6 +33,7 @@ interface ICommentData {
         }
         reactionCount: number
         parentId?: string
+        moderated?: boolean
     }>
 }
 interface ICurrentUser {

@@ -23,6 +23,10 @@ export const InputComponent = ({
         alt='userIcon'
         className='user-img'
         src={globalStore.currentUserData.avatar}
+        onError={({ currentTarget }) => {
+          currentTarget.onerror = null; // prevents looping
+          currentTarget.src="https://s3.eu-west-2.amazonaws.com/prod-monitalks-media/userplaceholder_5734b83bd0.png";
+        }}
 
       />
       <input
