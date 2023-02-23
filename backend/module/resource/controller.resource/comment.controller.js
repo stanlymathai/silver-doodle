@@ -150,6 +150,7 @@ module.exports = {
 
   getAllComments(_, res) {
     Comment.aggregate([
+      { $sort: { _id: -1 } },
       { $project: { _id: 0 } },
       {
         $lookup: {
