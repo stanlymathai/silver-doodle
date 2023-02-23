@@ -155,7 +155,7 @@ module.exports = {
       {
         $lookup: {
           from: 'articles',
-          pipeline: [{ $limit: 1 }, { $project: { slug: 1, _id: 0 } }],
+          pipeline: [{ $limit: 1 }, { $project: { slug: 1, title:1, _id: 0 } }],
           localField: 'articleId',
           foreignField: 'articleId',
           as: 'article',
@@ -171,7 +171,7 @@ module.exports = {
                 from: 'users',
                 pipeline: [
                   { $limit: 1 },
-                  { $project: { status: 1, _id: 0, userId: 1 } },
+                  { $project: { status: 1, _id: 0, userId: 1, fullName: 1 } },
                   {
                     $lookup: {
                       from: 'reports',
