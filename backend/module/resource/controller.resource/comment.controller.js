@@ -152,6 +152,15 @@ module.exports = {
     Comment.aggregate([
       { $sort: { _id: -1 } },
       { $project: { _id: 0 } },
+
+      { $lookup: {
+        from: 'users',
+        pipeline: [{ $limit: 1 }, { $project: { fullName: 1, _id: 0 } }],
+        localField: 'userId',
+        foreignField: 'userId',
+        as: 'userName',
+       },
+     },
       {
         $lookup: {
           from: 'articles',
@@ -171,7 +180,7 @@ module.exports = {
                 from: 'users',
                 pipeline: [
                   { $limit: 1 },
-                  { $project: { status: 1, _id: 0, userId: 1, fullName: 1 } },
+                  { $project: { status: 1, _id: 0, userId: 1 } },
                   {
                     $lookup: {
                       from: 'reports',
