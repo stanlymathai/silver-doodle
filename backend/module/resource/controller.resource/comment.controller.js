@@ -263,4 +263,7 @@ module.exports = {
         .catch((e) => console.log(e, 'getUserComments'));
     }
   },
+  moderateComment(req, res) {
+    res.send(req.body)
+  }
 };
