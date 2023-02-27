@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { CommentSection } from "discussion-box";
-import "discussion-box/dist/index.css";
+import { CommentSection } from "../dist/index"
+import "../dist/index.css";
 
 import style from "./customStyle";
 import API from "./service/api.service";

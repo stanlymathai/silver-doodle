@@ -4,7 +4,7 @@ import CryptoJS from 'crypto-js';
 
 const RESOURCE_URL = {
   base: {
-    comment_session: 'http://localhost:8080/api/v1',
+    comment_session: 'https://testapi.sc.monitalks.io/api/v1',
     backoffice: 'https://testapi.backoffice.monitalks.io/v1',
   },
   end_point: {
