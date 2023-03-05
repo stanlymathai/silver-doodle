@@ -148,23 +148,144 @@ module.exports = {
     }
   },
 
+  guestViewComments(req, res) {
+    const articleId = req.params.articleId;
+    if (!articleId)
+      return res.status(500).json({ error: 'article identifier required' });
+
+    try {
+      Article.exists({ articleId }, async function (_, result) {
+        if (result) {
+          // article aggregations
+          const articleQueryParams = {
+            ref: articleId,
+            status: 'Active',
+            type: 'ARTICLE',
+          };
+
+          const articleReactions = await Reaction.aggregate([
+            { $match: articleQueryParams },
+            { $project: { _id: 0, userId: 1, reaction: 1 } },
+          ]);
+
+          const articleData = {
+            articleId,
+            reactionCount: articleReactions.length,
+            reaction: {
+              like: false,
+              brilliant: false,
+              thoughtful: false,
+            },
+          };
+
+          // comment aggregations 
+          const reactionPipe = [
+            { $match: { type: 'COMMENT', status: 'Active' } },
+            { $project: { _id: 0, userId: 1, reaction: 1 } },
+          ];
+
+          const commentProject = {
+            _id: 0,
+            text: 1,
+            comId: 1,
+            userId: 1,
+            timeStamp: 1,
+            moderated: 1,
+            fullName: '$user.fullName',
+            avatarUrl: '$user.avatarUrl',
+          };
+
+          const userLookup = {
+            from: 'users',
+            pipeline: [{ $limit: 1 }],
+            localField: 'userId',
+            foreignField: 'userId',
+            as: 'user',
+          };
+
+          const reactionLookup = {
+            from: 'reactions',
+            pipeline: reactionPipe,
+            localField: 'comId',
+            foreignField: 'ref',
+            as: 'reactions',
+          };
+
+          const replyLookup = {
+            from: 'comments',
+            pipeline: [
+              { $lookup: userLookup },
+              { $unwind: '$user' },
+              { $project: { parentId: 1, ...commentProject } },
+              { $lookup: reactionLookup },
+              { $project: { userId: 0 } },
+            ],
+            localField: 'comId',
+            foreignField: 'parentId',
+            as: 'replies',
+          };
+
+          const commentData = await Comment.aggregate([
+            { $match: { parentId: null, articleId } },
+            { $sort: { _id: -1 } },
+            { $lookup: userLookup },
+            { $unwind: '$user' },
+            { $project: commentProject },
+            { $lookup: reactionLookup },
+            { $lookup: replyLookup },
+            { $project: { userId: 0 } },
+          ]);
+
+          commentData.forEach((thread) => {
+            thread.reaction = {
+              like: false,
+              brilliant: false,
+              thoughtful: false,
+            };
+            thread.reactionCount = thread.reactions.length;
+            delete thread.reactions;
+
+            if (thread.replies.length) {
+              thread.replies.forEach((rThread) => {
+                rThread.reaction = {
+                  like: false,
+                  brilliant: false,
+                  thoughtful: false,
+                };
+                rThread.reactionCount = rThread.reactions.length;
+                delete rThread.reactions;
+              });
+            }
+          });
+          res.json({ articleData, commentData });
+        } else articleController.getArticleById(req, res);
+      });
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  },
+
   getAllComments(_, res) {
     Comment.aggregate([
       { $sort: { _id: -1 } },
       { $project: { _id: 0 } },
 
-      { $lookup: {
-        from: 'users',
-        pipeline: [{ $limit: 1 }, { $project: { fullName: 1, _id: 0 } }],
-        localField: 'userId',
-        foreignField: 'userId',
-        as: 'userName',
-       },
-     },
+      {
+        $lookup: {
+          from: 'users',
+          pipeline: [{ $limit: 1 }, { $project: { fullName: 1, _id: 0 } }],
+          localField: 'userId',
+          foreignField: 'userId',
+          as: 'userName',
+        },
+      },
       {
         $lookup: {
           from: 'articles',
-          pipeline: [{ $limit: 1 }, { $project: { slug: 1, title:1, _id: 0 } }],
+          pipeline: [
+            { $limit: 1 },
+            { $project: { slug: 1, title: 1, _id: 0 } },
+          ],
           localField: 'articleId',
           foreignField: 'articleId',
           as: 'article',
@@ -264,6 +385,6 @@ module.exports = {
     }
   },
   moderateComment(req, res) {
-    res.send(req.body)
-  }
+    res.send(req.body);
+  },
 };
