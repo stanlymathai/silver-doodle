@@ -18,8 +18,7 @@ export const InputField = ({ mode, comId }: InputFieldProps) => {
   const globalStore: any = useContext(GlobalContext)
   const [text, setText] = useState("")
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
   
     const formData = {
       timeStamp: moment().format(),

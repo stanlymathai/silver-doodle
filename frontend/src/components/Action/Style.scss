@@ -45,6 +45,15 @@
                 margin-top: 25px;
             }
         }
+        .alert-message {
+            margin: 10px;
+            color: #f2f2f2;
+            font-family: neuzeit-grotesk, sans-serif;
+
+            p {
+                inline-size: 400px;
+            }
+        }
 
         .acknowledge {
             width: 50%;
