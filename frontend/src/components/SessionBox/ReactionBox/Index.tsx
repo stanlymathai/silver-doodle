@@ -39,7 +39,10 @@ export const ReactionBox = () => {
 
     const handleReaction = (event: string) => {
         if (globalStore?.currentUserData?.userId === 'GUEST')
-        return window.alert('Please login/signup to submit reaction.');
+            return globalStore.alert.open({
+                title: 'Alert Message',
+                content: 'Please login/signup to submit reaction.',
+            });
 
         const action = article.reaction[event] ? 'REMOVE' : 'ADD';
         const ref: string = article.articleId

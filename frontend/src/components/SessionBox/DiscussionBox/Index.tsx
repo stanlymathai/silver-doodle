@@ -6,7 +6,9 @@ import "./Style.scss";
 import { Header } from "./Header";
 import { CommentBody } from "./CommentBody";
 import { ReportMenu } from "../../Action/Report"
-import { InputField } from "../../InputField/Index";
+import { AlertModal } from "../../Action/AlertModal"
+
+import { InputField } from "../../InputField/Index";    
 
 import { GlobalContext } from "../../../context/Index";
 
@@ -15,10 +17,11 @@ export const DiscussionBox = () => {
 
     return (
         <div className="cs-overlay">
-            <Header />
-            <div className="report-menu">
+            <div className="modal-menu">
+                {AlertModal()}
                 {ReportMenu()}
             </div>
+            <Header />
             <InputField />
             {globalStore.data.map(
                 (i: {

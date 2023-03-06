@@ -178,7 +178,7 @@ module.exports = {
             },
           };
 
-          // comment aggregations 
+          // comment aggregations
           const reactionPipe = [
             { $match: { type: 'COMMENT', status: 'Active' } },
             { $project: { _id: 0, userId: 1, reaction: 1 } },
@@ -385,6 +385,16 @@ module.exports = {
     }
   },
   moderateComment(req, res) {
-    res.send(req.body);
+    let payload = req.body;
+    Comment.updateOne(
+      { comId: payload.comId },
+      {
+        moderated: true,
+        moderator: payload.moderator,
+        moderateReason: payload.reason,
+      }
+    )
+      .then((result) => res.send(result))
+      .catch((e) => res.error(e));
   },
 };

@@ -25,6 +25,12 @@ let commentSchema = mongoose.Schema(
     moderated: {
       type: Boolean,
     },
+    moderator: {
+      type: String,
+    },
+    moderateReason: {
+      type: String,
+    },
     parentId: {
       type: String,
     },

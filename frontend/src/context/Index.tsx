@@ -36,6 +36,7 @@ export const Provider = ({
   const [currentUserData] = useState(currentUser)
   const [data, setData] = useState<Array<ICommentData>>([])
   const [reportData, setReport] = useState<any>({})
+  const [alertData, setAlertData] = useState<any>({})
   const [article, setArticle] = useState<IArticleData>()
   const [replyThreadId, setReplyThread] = useState<string>("")
   const [showDiscussionBox, setDiscussionVisibility] = useState<Boolean>(false)
@@ -47,7 +48,10 @@ export const Provider = ({
 
   const handleSubmit = (payload: any) => {
     if (currentUserData?.userId === 'GUEST')
-      return window.alert('Please login/signup to post a comment');
+      return alert.open({
+        title: 'Alert Message',
+        content: 'Please login/signup to post a comment.',
+      });
   
     let commentData = {
       ...payload,
@@ -93,9 +97,12 @@ export const Provider = ({
 
   const handleReaction = (event: string, info: any) => {
     if (currentUserData?.userId === 'GUEST')
-      return window.alert('Please login/signup to submit reaction.');
+      return alert.open({
+        title: 'Alert Message',
+        content: 'Please login/signup to submit reaction.',
+      });
+    const action = info.reaction[event] ? 'REMOVE' : 'ADD';
 
-    const action = info.reaction[event] ? "REMOVE" : "ADD"
     const ref: string = info.comId
 
     let copyData = [...data]
@@ -132,7 +139,10 @@ export const Provider = ({
   const report = {
     open: (commentData: any) => {
       if (currentUserData?.userId === 'GUEST')
-      return window.alert('Please login/signup to report a comment');
+        return alert.open({
+          title: 'Alert Message',
+          content: 'Please login/signup to report a comment.',
+        });
 
       switchComponent('report-main');
       setReport({ timeStamp: moment().format(), ref: commentData.info.comId });
@@ -152,6 +162,15 @@ export const Provider = ({
     },
   };
 
+  const alert = {
+    open: ({title, content }: any) => {
+      setAlertData({title, content})
+      switchComponent('alert-modal');
+    },
+    
+    close: () => switchComponent('close-alert'),
+  };
+
   const switchComponent = (id: string) => document.getElementById(id)?.click()
   const toggleDisscusionbox = () => setDiscussionVisibility(!showDiscussionBox)
 
@@ -160,7 +179,10 @@ export const Provider = ({
     payload: any
   ) => {
     if (currentUserData?.userId === 'GUEST')
-      return window.alert('Please login/signup to reply to a comment.');
+      return alert.open({
+        title: 'Alert Message',
+        content: 'Please login/signup to reply to a comment.',
+      });
 
     onReplyThread("")
     let copyData = [...data]
@@ -182,10 +204,12 @@ export const Provider = ({
     <GlobalContext.Provider
       value={{
         data,
+        alert,
         report,
         article,
         loading,
         loadMore,
+        alertData,
         totalCount,
         replyThreadId,
         onReplyAction,
