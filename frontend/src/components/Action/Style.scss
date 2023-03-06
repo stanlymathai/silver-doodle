@@ -17,12 +17,14 @@
             }
 
             .close {
-                padding: 4px;
+                width: 5%;
+                height: 5%;
+                display: flex;
                 cursor: pointer;
                 color: #1a1a2b;
                 border-radius: 50%;
                 margin-right: 10px;
-                margin-bottom: 10px;
+                justify-content: center;
                 background-color: #1cf39c;
             }
         }

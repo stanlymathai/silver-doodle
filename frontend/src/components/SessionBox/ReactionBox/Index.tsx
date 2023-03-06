@@ -38,7 +38,10 @@ export const ReactionBox = () => {
     }
 
     const handleReaction = (event: string) => {
-        const action = article.reaction[event] ? "REMOVE" : "ADD"
+        if (globalStore?.currentUserData?.userId === 'GUEST')
+        return window.alert('Please login/signup to submit reaction.');
+
+        const action = article.reaction[event] ? 'REMOVE' : 'ADD';
         const ref: string = article.articleId
 
         let articleCopy = article

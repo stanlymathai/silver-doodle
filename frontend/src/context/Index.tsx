@@ -46,18 +46,21 @@ export const Provider = ({
   const onReplyThread = (id: string) => setReplyThread(replyThreadId == id ? "" : id)
 
   const handleSubmit = (payload: any) => {
+    if (currentUserData?.userId === 'GUEST')
+      return window.alert('Please login/signup to post a comment');
+  
     let commentData = {
       ...payload,
       replies: [],
       reaction: {
         like: false,
         brilliant: false,
-        thoughtful: false
+        thoughtful: false,
       },
-      reactionCount: 0
-    }
-    setData([commentData, ...data])
-  }
+      reactionCount: 0,
+    };
+    setData([commentData, ...data]);
+  };  
 
   const handleSort = (el: { value: string }) => {
     let arrCopy = data
@@ -89,6 +92,9 @@ export const Provider = ({
   }
 
   const handleReaction = (event: string, info: any) => {
+    if (currentUserData?.userId === 'GUEST')
+      return window.alert('Please login/signup to submit reaction.');
+
     const action = info.reaction[event] ? "REMOVE" : "ADD"
     const ref: string = info.comId
 
@@ -125,6 +131,9 @@ export const Provider = ({
 
   const report = {
     open: (commentData: any) => {
+      if (currentUserData?.userId === 'GUEST')
+      return window.alert('Please login/signup to report a comment');
+
       switchComponent('report-main');
       setReport({ timeStamp: moment().format(), ref: commentData.info.comId });
     },
@@ -150,6 +159,9 @@ export const Provider = ({
   const handleReply = (
     payload: any
   ) => {
+    if (currentUserData?.userId === 'GUEST')
+      return window.alert('Please login/signup to reply to a comment.');
+
     onReplyThread("")
     let copyData = [...data]
     const targetIdx = copyData.

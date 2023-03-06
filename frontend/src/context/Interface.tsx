@@ -37,6 +37,7 @@ interface ICommentData {
     }>
 }
 interface ICurrentUser {
+    userId: string
     avatar: string
     fullName: string
 }

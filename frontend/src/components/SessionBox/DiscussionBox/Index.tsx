@@ -16,10 +16,10 @@ export const DiscussionBox = () => {
     return (
         <div className="cs-overlay">
             <Header />
-            <InputField />
             <div className="report-menu">
                 {ReportMenu()}
             </div>
+            <InputField />
             {globalStore.data.map(
                 (i: {
                     text: string;
