@@ -24,6 +24,7 @@ export const InputComponent = ({
         title: 'Warning',
         content: warningMessage,
       });
+      globalStore.handleTicker(text)
     } else handleSubmit();
   };  
 

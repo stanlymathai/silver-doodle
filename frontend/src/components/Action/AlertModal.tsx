@@ -36,7 +36,17 @@ const AlertModal = () => {
           <div className="alert-message">
             <p>{store.alertData?.content}</p>
           </div>
-          <button type='button' className='acknowledge' onClick={store.alert.close}>Dismiss</button>
+          <div className="box-header">
+            <div>&nbsp;</div>
+            <button
+              type="button"
+              className="acknowledge"
+              onClick={store.alert.close}
+            >
+              Dismiss
+            </button>
+            <div>&nbsp;</div>
+          </div>
         </div>
       </Menu>
     </div>

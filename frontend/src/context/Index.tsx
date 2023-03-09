@@ -40,11 +40,27 @@ export const Provider = ({
   const [article, setArticle] = useState<IArticleData>()
   const [replyThreadId, setReplyThread] = useState<string>("")
   const [showDiscussionBox, setDiscussionVisibility] = useState<Boolean>(false)
+  const [tickers, setTickers] = useState<any>([])
 
   useEffect(() => { if (commentData) setData(commentData) }, [commentData])
   useEffect(() => { if (articleData) setArticle(articleData) }, [articleData])
 
   const onReplyThread = (id: string) => setReplyThread(replyThreadId == id ? "" : id)
+
+  const timeoutAlert = () =>
+  alert.open({
+    title: 'Alert Message',
+    content:
+      'As a result of violating our community guidelines, you have been timed out for 30 Minutes. We kindly request that you maintain a safe environment for everyone on our platform.',
+  });
+  const handleTicker = (info: any) => {
+    const currentTickers = tickers;
+    if (currentTickers.length > 2) timeoutAlert();
+    setTickers([Date.now(), ...currentTickers]);
+    console.log('info knri', info);
+  };
+
+  const isInTimeout = () => Date.now() - tickers[0] < 30 * 60 * 1000; // milli seconds
 
   const handleSubmit = (payload: any) => {
     if (currentUserData?.userId === 'GUEST')
@@ -52,10 +68,11 @@ export const Provider = ({
         title: 'Alert Message',
         content: 'Please login/signup to post a comment.',
       });
-  
+
+    if(isInTimeout()) return timeoutAlert();
     let commentData = {
       ...payload,
-      replies: [],
+      replies: [],  
       reaction: {
         like: false,
         brilliant: false,
@@ -219,6 +236,7 @@ export const Provider = ({
         cancelBtnStyle,
         currentUserData,
         showDiscussionBox,
+        handleTicker,
         handleSort,
         handleReply,
         handleSubmit,

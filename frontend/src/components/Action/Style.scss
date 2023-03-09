@@ -11,6 +11,7 @@
 
             .title {
                 padding: 4px;
+                font-size: 17px;
                 color: #1cf39c;
                 margin-bottom: 10px;
                 font-weight: bolder;
@@ -48,29 +49,28 @@
         .alert-message {
             margin: 10px;
             color: #f2f2f2;
+            text-align: center;
             font-family: neuzeit-grotesk, sans-serif;
 
             p {
-                inline-size: 400px;
+                font-size: 17px;
+                inline-size: 369px;
             }
         }
 
         .acknowledge {
             width: 50%;
-            height: 28px;
-            float: right;
-            cursor: pointer;
-            color: #E8E8E8;
-            margin-right: 10px;
-            margin-bottom: 6px;
-            text-align: center;
-            border-radius: 3px;
-            border-style:solid;
-            border-color: #1cf39c;
+            padding: 10px;
+            font-size: 17px;
+            color: #f2f2f2;
+            margin-bottom: 8px;
+            border-radius: 25px;
+            border: 1px solid #1cf39c;
             background-color: transparent;
+            font-family: neuzeit-grotesk, sans-serif;
             
             &:hover {
-                opacity: .7;
+                background-color: #ffffff1c;
             }
         }
     }
