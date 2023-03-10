@@ -395,6 +395,6 @@ module.exports = {
       }
     )
       .then((result) => res.send(result))
-      .catch((e) => res.error(e));
+      .catch((e) => res.status(500).json(e));
   },
 };

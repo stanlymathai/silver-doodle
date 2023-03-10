@@ -14,9 +14,17 @@ let profanitySchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    oldValue: {
-        type: String,
-        default: '',
+    oldWord: {
+      type: String,
+    },
+    newWord: {
+      type: String,
+    },
+    oldCountry: {
+      type: String,
+    },
+    newCountry: {
+      type: String,
     },
     type: {
       type: String,
