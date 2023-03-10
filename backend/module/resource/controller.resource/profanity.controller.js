@@ -5,7 +5,7 @@ module.exports = {
     await Profanity.aggregate([
       { $sort: { _id: -1 } },
       { $addFields: { id: '$_id' } },
-      { $project: { _id: 0, id: 1, swear: 1, countryCode: 1 } },
+      { $project: { _id: 0, id: 1, swear: 1, countryCode: 1, type: 1 } },
     ])
       .then((result) => res.json(result))
       .catch((e) => res.status(500).json(e));
