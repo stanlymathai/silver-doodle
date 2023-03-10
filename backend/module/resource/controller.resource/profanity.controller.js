@@ -24,7 +24,14 @@ module.exports = {
     let swearIds = req.body;
     await Profanity.updateMany(
       { _id: { $in: swearIds } },
-      { $set: { type: 'Removed' } }
+      {
+        $set: {
+          newWord: '',
+          newCountry: '',
+          type: 'Removed',
+          updatedAt: Date.now(),
+        },
+      }
     )
       .then((result) => res.json(result))
       .catch((e) => res.status(500).json(e));
@@ -32,7 +39,7 @@ module.exports = {
 
   async history(_, res) {
     await Profanity.aggregate([
-      { $sort: { _id: -1 } },
+      { $sort: { updatedAt: -1 } },
       { $addFields: { id: '$_id' } },
       { $project: { _id: 0 } },
     ])
@@ -44,6 +51,7 @@ module.exports = {
     let payload = req.body;
     if (payload.newWord) payload.swear = payload.newWord;
     if (payload.newCountry) payload.countryCode = payload.newCountry;
+    if (!payload.updatedAt) payload.updatedAt = Date.now();
 
     const profanityId = payload.id;
     await Profanity.updateOne(
