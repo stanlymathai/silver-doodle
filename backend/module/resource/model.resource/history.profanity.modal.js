@@ -2,6 +2,9 @@ let mongoose = require('mongoose');
 
 let profanitySchema = mongoose.Schema(
   {
+    profanityId: {
+      type: String,
+    },
     swear: {
       type: String,
       required: true,
@@ -14,6 +17,18 @@ let profanitySchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    oldWord: {
+      type: String,
+    },
+    newWord: {
+      type: String,
+    },
+    oldCountry: {
+      type: String,
+    },
+    newCountry: {
+      type: String,
+    },
     type: {
       type: String,
       default: 'Added',
@@ -24,4 +39,4 @@ let profanitySchema = mongoose.Schema(
   { versionKey: false }
 );
 
-module.exports = mongoose.model('Profanity', profanitySchema);
+module.exports = mongoose.model('ProfanityHistory', profanitySchema);
