@@ -18,60 +18,59 @@ module.exports = {
     }
 
     await Profanity.insertMany(payload)
-      .then((result) => {
-        const historyDocs = [];
+      .then(async (result) => {
+        const history = [];
         result.forEach(function (el) {
-          historyDocs.push({
+          history.push({
             oldWord: '',
             oldCountry: '',
             swear: el.swear,
             newWord: el.swear,
-            adminId: el.adminId,
             profanityId: el._id,
+            timestamp: el.timestamp,
             newCountry: el.countryCode,
             countryCode: el.countryCode,
-            timeStamp: el.timeStamp,
-            updatedAt: el.updatedAt,
+            adminId: payload[0].adminId,
+            internalId: payload[0].internalId,
           });
         });
-        ProfanityHistory.insertMany(historyDocs);
-        res.json(result);
+        await ProfanityHistory.insertMany(history)
+          .then(() => res.json(result))
+          .catch((e) => res.status(500).json(e));
       })
       .catch((e) => res.status(500).json(e));
   },
   async softDelete(req, res) {
-    const swearIds = req.body;
-    const updatedAt = Date.now();
+    const payload = req.body;
     await Profanity.updateMany(
-      { _id: { $in: swearIds } },
+      { _id: payload.id },
       {
         $set: {
           type: 'Removed',
-          updatedAt: updatedAt,
+          updatedAt: payload.timestamp,
         },
       }
     )
       .then((result) => {
-        Profanity.find({ _id: { $in: swearIds } }).then((docs) => {
-          const historyDocs = [];
-          docs.forEach(function (el) {
-            historyDocs.push({
-              newWord: '',
-              newCountry: '',
-              type: 'Removed',
-              swear: el.swear,
-              adminId: el.adminId,
-              profanityId: el._id,
-              oldWord: el.swear,
-              oldCountry: el.countryCode,
-              countryCode: el.countryCode,
-              timeStamp: el.timeStamp,
-              updatedAt: updatedAt,
-            });
+        Profanity.findOne({ _id: payload.id }).then((el) => {
+          const historyDoc = new ProfanityHistory({
+            newWord: '',
+            newCountry: '',
+            type: 'Removed',
+            swear: el.swear,
+            oldWord: el.swear,
+            profanityId: el._id,
+            oldCountry: el.countryCode,
+            countryCode: el.countryCode,
+            adminId: payload.adminId,
+            internalId: payload.internalId,
+            timestamp: payload.timestamp,
           });
-          ProfanityHistory.insertMany(historyDocs);
+          historyDoc
+            .save()
+            .then(() => res.json(result))
+            .catch((e) => res.status(500).json(e));
         });
-        res.json(result);
       })
       .catch((e) => res.status(500).json(e));
   },
@@ -97,7 +96,7 @@ module.exports = {
     await Profanity.findOne({ _id: profanityId })
       .then(async (doc) => {
         await Profanity.updateOne({ _id: profanityId }, { ...payload })
-          .then(() => {
+          .then((result) => {
             const history = new ProfanityHistory({
               profanityId,
               ...payload,
@@ -106,7 +105,10 @@ module.exports = {
               ...(!payload.oldCountry && { swear: doc.countryCode }),
               ...(!payload.countryCode && { countryCode: doc.countryCode }),
             });
-            history.save().then((result) => res.json(result));
+            history
+              .save()
+              .then(() => res.json(result))
+              .catch((e) => res.status(500).json(e));
           })
           .catch((e) => res.status(500).json(e));
       })

@@ -17,6 +17,10 @@ let profanitySchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    internalId: {
+      type: String,
+      required: true,
+    },
     oldWord: {
       type: String,
     },
@@ -33,8 +37,7 @@ let profanitySchema = mongoose.Schema(
       type: String,
       default: 'Added',
     },
-    timeStamp: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
+    timestamp: { type: Date, default: Date.now },
   },
   { versionKey: false }
 );
