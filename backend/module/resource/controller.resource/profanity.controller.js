@@ -77,7 +77,7 @@ module.exports = {
   },
 
   async history(_, res) {
-    await Profanity.aggregate([
+    await ProfanityHistory.aggregate([
       { $sort: { updatedAt: -1 } },
       { $addFields: { id: '$profanityId' } },
       { $project: { _id: 0, profanityId: 0 } },
@@ -88,16 +88,28 @@ module.exports = {
 
   async updateList(req, res) {
     let payload = req.body;
+    payload.type = 'Edited';
     if (payload.newWord) payload.swear = payload.newWord;
     if (payload.newCountry) payload.countryCode = payload.newCountry;
     if (!payload.updatedAt) payload.updatedAt = Date.now();
 
     const profanityId = payload.id;
-    await Profanity.updateOne(
-      { _id: profanityId },
-      { type: 'Edited', ...payload }
-    )
-      .then((result) => res.json(result))
+    await Profanity.findOne({ _id: profanityId })
+      .then(async (doc) => {
+        await Profanity.updateOne({ _id: profanityId }, { ...payload })
+          .then(() => {
+            const history = new ProfanityHistory({
+              profanityId,
+              ...payload,
+              ...(!payload.swear && { swear: doc.swear }),
+              ...(!payload.oldWord && { swear: doc.swear }),
+              ...(!payload.oldCountry && { swear: doc.countryCode }),
+              ...(!payload.countryCode && { countryCode: doc.countryCode }),
+            });
+            history.save().then((result) => res.json(result));
+          })
+          .catch((e) => res.status(500).json(e));
+      })
       .catch((e) => res.status(500).json(e));
   },
 };
