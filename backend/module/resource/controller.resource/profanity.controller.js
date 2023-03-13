@@ -77,7 +77,7 @@ module.exports = {
 
   async history(_, res) {
     await ProfanityHistory.aggregate([
-      { $sort: { updatedAt: -1 } },
+      { $sort: { timestamp: -1 } },
       { $addFields: { id: '$profanityId' } },
       { $project: { _id: 0, profanityId: 0 } },
     ])
@@ -90,7 +90,6 @@ module.exports = {
     payload.type = 'Edited';
     if (payload.newWord) payload.swear = payload.newWord;
     if (payload.newCountry) payload.countryCode = payload.newCountry;
-    if (!payload.updatedAt) payload.updatedAt = Date.now();
 
     const profanityId = payload.id;
     await Profanity.findOne({ _id: profanityId })
@@ -98,11 +97,12 @@ module.exports = {
         await Profanity.updateOne({ _id: profanityId }, { ...payload })
           .then((result) => {
             const history = new ProfanityHistory({
-              profanityId,
               ...payload,
+              profanityId,
+              timestamp: payload.updatedAt,
               ...(!payload.swear && { swear: doc.swear }),
-              ...(!payload.oldWord && { swear: doc.swear }),
-              ...(!payload.oldCountry && { swear: doc.countryCode }),
+              ...(!payload.oldWord && { oldWord: doc.swear }),
+              ...(!payload.oldCountry && { oldCountry: doc.countryCode }),
               ...(!payload.countryCode && { countryCode: doc.countryCode }),
             });
             history
