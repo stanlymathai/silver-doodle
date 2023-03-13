@@ -24,6 +24,7 @@ module.exports = {
           history.push({
             oldWord: '',
             oldCountry: '',
+            type: 'Added',
             swear: el.swear,
             newWord: el.swear,
             profanityId: el._id,
@@ -77,7 +78,7 @@ module.exports = {
 
   async history(_, res) {
     await ProfanityHistory.aggregate([
-      { $sort: { timestamp: -1 } },
+      { $sort: { _id: -1 } },
       { $addFields: { id: '$profanityId' } },
       { $project: { _id: 0, profanityId: 0 } },
     ])
@@ -86,32 +87,113 @@ module.exports = {
   },
 
   async updateList(req, res) {
-    let payload = req.body;
-    payload.type = 'Edited';
-    if (payload.newWord) payload.swear = payload.newWord;
-    if (payload.newCountry) payload.countryCode = payload.newCountry;
+    const payload = req.body;
+    const modifyType = payload.modified;
 
-    const profanityId = payload.id;
-    await Profanity.findOne({ _id: profanityId })
-      .then(async (doc) => {
-        await Profanity.updateOne({ _id: profanityId }, { ...payload })
-          .then((result) => {
+    if (!modifyType)
+      return res.status(500).json({ error: 'modify type required.' });
+
+    try {
+      const doc = await Profanity.findOne({ _id: payload.id });
+      switch (modifyType) {
+        case 'word':
+          await Profanity.updateOne(
+            { _id: payload.id },
+            {
+              type: 'Edited',
+              swear: payload.newWord,
+              updatedAt: payload.timestamp,
+            }
+          ).then((result) => {
             const history = new ProfanityHistory({
-              ...payload,
-              profanityId,
-              timestamp: payload.updatedAt,
-              ...(!payload.swear && { swear: doc.swear }),
-              ...(!payload.oldWord && { oldWord: doc.swear }),
-              ...(!payload.oldCountry && { oldCountry: doc.countryCode }),
-              ...(!payload.countryCode && { countryCode: doc.countryCode }),
+              type: 'Edited',
+              profanityId: payload.id,
+              swear: payload.newWord,
+              oldWord: doc.swear,
+              newWord: payload.newWord,
+              countryCode: doc.countryCode,
+              adminId: payload.adminId,
+              internalId: payload.internalId,
+              timestamp: payload.timestamp,
             });
             history
               .save()
               .then(() => res.json(result))
-              .catch((e) => res.status(500).json(e));
-          })
-          .catch((e) => res.status(500).json(e));
-      })
-      .catch((e) => res.status(500).json(e));
+              .catch((e) => res.status(500).json({ error: e }));
+          });
+          break;
+        case 'country':
+          await Profanity.updateOne(
+            { _id: payload.id },
+            {
+              type: 'Edited',
+              countryCode: payload.newCountry,
+              updatedAt: payload.timestamp,
+            }
+          ).then((result) => {
+            const history = new ProfanityHistory({
+              type: 'Edited',
+              profanityId: payload.id,
+              swear: doc.swear,
+              countryCode: payload.newCountry,
+              oldCountry: doc.countryCode,
+              newCountry: payload.newCountry,
+              adminId: payload.adminId,
+              internalId: payload.internalId,
+              timestamp: payload.timestamp,
+            });
+            history
+              .save()
+              .then(() => res.json(result))
+              .catch((e) => res.status(500).json({ error: e }));
+          });
+          break;
+        case 'both':
+          await Profanity.updateOne(
+            { _id: payload.id },
+            {
+              type: 'Edited',
+              swear: payload.newWord,
+              countryCode: payload.newCountry,
+              updatedAt: payload.timestamp,
+            }
+          ).then((result) => {
+            const history = new ProfanityHistory(
+              {
+                type: 'Edited',
+                profanityId: payload.id,
+                swear: doc.swear,
+                countryCode: payload.newCountry,
+                oldCountry: doc.countryCode,
+                newCountry: payload.newCountry,
+                adminId: payload.adminId,
+                internalId: payload.internalId,
+                timestamp: payload.timestamp,
+              },
+              {
+                type: 'Edited',
+                profanityId: payload.id,
+                swear: payload.newWord,
+                oldWord: doc.swear,
+                newWord: payload.newWord,
+                countryCode: doc.countryCode,
+                adminId: payload.adminId,
+                internalId: payload.internalId,
+                timestamp: payload.timestamp,
+              }
+            );
+            history
+              .save()
+              .then(() => res.json(result))
+              .catch((e) => res.status(500).json({ error: e }));
+          });
+          break;
+        default:
+          res.status(500).json({ error: 'modify type required.' });
+          break;
+      }
+    } catch (error) {
+      res.status(500).json(error);
+    }
   },
 };
