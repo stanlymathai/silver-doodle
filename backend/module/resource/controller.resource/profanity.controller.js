@@ -57,12 +57,7 @@ module.exports = {
     const payload = req.body;
     await Profanity.updateMany(
       { _id: payload.id },
-      {
-        $set: {
-          type: 'Removed',
-          updatedAt: payload.timestamp,
-        },
-      }
+      { $set: { type: 'Removed' } }
     )
       .then((result) => {
         Profanity.findOne({ _id: payload.id }).then((el) => {
@@ -114,7 +109,6 @@ module.exports = {
             {
               type: 'Edited',
               swear: payload.newWord,
-              updatedAt: payload.timestamp,
             }
           ).then((result) => {
             const history = new ProfanityHistory({
@@ -140,7 +134,6 @@ module.exports = {
             {
               type: 'Edited',
               countryCode: payload.newCountry,
-              updatedAt: payload.timestamp,
             }
           ).then((result) => {
             const history = new ProfanityHistory({
@@ -167,7 +160,6 @@ module.exports = {
               type: 'Edited',
               swear: payload.newWord,
               countryCode: payload.newCountry,
-              updatedAt: payload.timestamp,
             }
           ).then(async (result) => {
             await ProfanityHistory.insertMany([
@@ -215,120 +207,79 @@ module.exports = {
   },
   addMultipleSwears: async function (req, res) {
     const filePath = 'uploads/' + req.file.filename;
+
+    const payload = req.body;
+    const adminId = payload.adminId;
+    const timestamp = payload.timestamp;
+    const internalId = payload.internalId;
+
+    let bulkUploadData = [];
+
+    function handleError(error) {
+      return res.status(500).json({ error });
+    }
     await readXlsxFile(filePath)
-      .then(async (hosts) => {
+      .then(async (data) => {
         fs.unlinkSync(filePath);
-        let HOSTS = hosts.slice(1);
-        console.log('HOSTS knri', HOSTS);
-        return res.json(HOSTS);
-        if (!HOSTS.length)
-          return res.json({ error: 'Uploaded file contains no data' });
+        const rows = data.slice(1);
+        if (!rows.length) return handleError('Uploaded file contains no data');
 
-        let failedUploads = [];
-        let emailRegex =
-          /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        let phoneRegex = /^[0-9\+]{10,14}$/;
-
-        for (const host of HOSTS) {
-          if (host.length > 5) {
-            host[4] = 'Invalid data format';
-            failedUploads.push(host.slice(0, 5));
-            continue;
-          }
-          if (host[0] == null) {
-            host[4] = 'Invalid first name';
-            failedUploads.push(host);
-            continue;
-          }
-          if (host[1] == null) {
-            host[4] = 'Invalid last name';
-            failedUploads.push(host);
-            continue;
-          }
-          if (!emailRegex.test(host[2])) {
-            host[4] = 'Invalid email address';
-            failedUploads.push(host);
-            continue;
-          }
-          if (!phoneRegex.test(host[3])) {
-            host[4] = 'Invalid phone number';
-            failedUploads.push(host);
-            continue;
-          }
-          let authUserparams = {
-            status: 1,
-            email: host[2],
-            roleId: req.body.role,
-            authAccessToken: uuidv4(),
-            passwordHash: Math.random().toString(36).slice(2, 10),
-          };
-          let clientUserParams = {
-            clientId: USER.clientId,
-            createdBy: req.user.id,
-            roleId: req.body.role,
-          };
-          let userProfileModelparams = {
-            organization: req.body.organization,
-            countryId: req.body.country,
-            firstName: host[0],
-            lastName: host[1],
-            phone: host[3],
-          };
-
-          await authUserModel
-            .add(authUserparams)
-            .then((result) => {
-              userProfileModelparams.userId = result.id;
-              // Entry to client user
-              clientUserParams.userId = result.id;
-              clientUserModel
-                .add(clientUserParams)
-                .then((_) =>
-                  // Entry to User profile
-                  userProfileModel
-                    .add(userProfileModelparams)
-                    .then(async () =>
-                      userLocations.split(',').forEach(
-                        async (locationId) =>
-                          await locationUserModel.add({
-                            userId: userProfileModelparams.userId,
-                            locationId,
-                          })
-                      )
-                    )
-                    .then(() => {
-                      let payload = {
-                        email: authUserparams.email,
-                        firstName: userProfileModelparams.firstName,
-                        lastName: userProfileModelparams.lastName,
-                        activationUrl:
-                          process.env.BASEURL +
-                          'reset-password?token=' +
-                          authUserparams.authAccessToken,
-                        queueType: USER_ACCOUNT_ACTIVATION_EMAIL,
-                      };
-
-                      queueMessage.push(JSON.stringify(payload));
-                    })
-                    .catch((err) => console.log(err))
-                    .catch((err) => console.log(err))
-                )
-                .catch((err) => console.log(err));
-            })
-            .catch((err) => {
-              host[4] = err.errors[0].message;
-              failedUploads.push(host);
+        rows.forEach((row, idx) => {
+          if (row.length < 2) {
+            handleError(
+              `Invalid row format at line number ${
+                idx + 2
+              }, every row should contain minimum two columns, ${row}`
+            );
+          } else if (row[0] == null || row[1] == null) {
+            handleError(`invalid row, line number ${idx + 2}, ${row}`);
+          } else {
+            bulkUploadData.push({
+              type: 'Added',
+              swear: row[0],
+              countryCode: row[1],
             });
-        }
-        res.json({
-          uploadSucceeded: HOSTS.length - failedUploads.length,
-          totalCount: HOSTS.length,
-          failedUploads,
+          }
         });
+        bulkUploadData = bulkUploadData.filter(
+          (value, index, self) =>
+            index ===
+            self.findIndex(
+              (t) =>
+                t.swear === value.swear && t.countryCode === value.countryCode
+            )
+        );
+
+        await Profanity.insertMany(bulkUploadData)
+          .then(async (result) => {
+            const history = [];
+            result.forEach(function (el) {
+              history.push({
+                oldWord: '',
+                oldCountry: '',
+                type: 'Added',
+                swear: el.swear,
+                newWord: el.swear,
+                profanityId: el._id,
+                newCountry: el.countryCode,
+                countryCode: el.countryCode,
+                adminId,
+                timestamp,
+                internalId,
+              });
+            });
+            await ProfanityHistory.insertMany(history)
+              .then(() =>
+                res.json({
+                  message: `${result.length} out of ${rows.length} uploaded successfully.`,
+                })
+              )
+              .catch((error) => res.status(500).json({ error }));
+          })
+          .catch((error) => res.status(500).json({ error }));
       })
-      .catch((err) => {
-        console.log(err);
-        res.json(err);
+      .catch((error) => {
+        res.status(500).json({ error });
       });
   },
 };

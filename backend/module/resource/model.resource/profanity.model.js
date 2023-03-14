@@ -17,5 +17,5 @@ let profanitySchema = mongoose.Schema(
   },
   { versionKey: false }
 );
-
+// db.profanities.createIndex( { countryCode: 1, swear: 1 }, {unique:true} )
 module.exports = mongoose.model('Profanity', profanitySchema);
