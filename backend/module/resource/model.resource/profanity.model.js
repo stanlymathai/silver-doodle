@@ -14,8 +14,6 @@ let profanitySchema = mongoose.Schema(
       type: String,
       default: 'Added',
     },
-    timestamp: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
   },
   { versionKey: false }
 );

@@ -1,7 +1,7 @@
 const Profanity = require('../model.resource/profanity.model');
 const ProfanityHistory = require('../model.resource/history.profanity.modal');
 
-const fs = require("fs");
+const fs = require('fs');
 const readXlsxFile = require('read-excel-file/node');
 
 module.exports = {
@@ -31,10 +31,10 @@ module.exports = {
             swear: el.swear,
             newWord: el.swear,
             profanityId: el._id,
-            timestamp: el.timestamp,
             newCountry: el.countryCode,
             countryCode: el.countryCode,
             adminId: payload[0].adminId,
+            timestamp: payload[0].timestamp,
             internalId: payload[0].internalId,
           });
         });
@@ -42,7 +42,16 @@ module.exports = {
           .then(() => res.json(result))
           .catch((e) => res.status(500).json(e));
       })
-      .catch((e) => res.status(500).json(e));
+      .catch((e) => {
+        if (e.code === 11000) {
+          const extDoc = e.writeErrors[0].err.op;
+          res.status(500).json({
+            error: `The word: ${extDoc.swear} and country: ${extDoc.countryCode} already exist.`,
+          });
+        } else {
+          res.status(500).json(e);
+        }
+      });
   },
   async softDelete(req, res) {
     const payload = req.body;
@@ -193,8 +202,15 @@ module.exports = {
           res.status(500).json({ error: 'modify type required.' });
           break;
       }
-    } catch (error) {
-      res.status(500).json(error);
+    } catch (e) {
+      if (e.code === 11000) {
+        const extDoc = e.keyValue;
+        res.status(500).json({
+          error: `The word: ${extDoc.swear} and country: ${extDoc.countryCode} already exist.`,
+        });
+      } else {
+        res.status(500).json(e);
+      }
     }
   },
   addMultipleSwears: async function (req, res) {
