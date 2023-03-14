@@ -157,19 +157,8 @@ module.exports = {
               countryCode: payload.newCountry,
               updatedAt: payload.timestamp,
             }
-          ).then((result) => {
-            const history = new ProfanityHistory(
-              {
-                type: 'Edited',
-                profanityId: payload.id,
-                swear: doc.swear,
-                countryCode: payload.newCountry,
-                oldCountry: doc.countryCode,
-                newCountry: payload.newCountry,
-                adminId: payload.adminId,
-                internalId: payload.internalId,
-                timestamp: payload.timestamp,
-              },
+          ).then(async (result) => {
+            await ProfanityHistory.insertMany([
               {
                 type: 'Edited',
                 profanityId: payload.id,
@@ -180,10 +169,19 @@ module.exports = {
                 adminId: payload.adminId,
                 internalId: payload.internalId,
                 timestamp: payload.timestamp,
-              }
-            );
-            history
-              .save()
+              },
+              {
+                type: 'Edited',
+                profanityId: payload.id,
+                swear: payload.newWord,
+                countryCode: payload.newCountry,
+                oldCountry: doc.countryCode,
+                newCountry: payload.newCountry,
+                adminId: payload.adminId,
+                internalId: payload.internalId,
+                timestamp: payload.timestamp,
+              },
+            ])
               .then(() => res.json(result))
               .catch((e) => res.status(500).json({ error: e }));
           });
