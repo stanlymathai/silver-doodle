@@ -1,6 +1,9 @@
 const Profanity = require('../model.resource/profanity.model');
 const ProfanityHistory = require('../model.resource/history.profanity.modal');
 
+const fs = require("fs");
+const readXlsxFile = require('read-excel-file/node');
+
 module.exports = {
   async getList(_, res) {
     await Profanity.aggregate([
@@ -193,5 +196,123 @@ module.exports = {
     } catch (error) {
       res.status(500).json(error);
     }
+  },
+  addMultipleSwears: async function (req, res) {
+    const filePath = 'uploads/' + req.file.filename;
+    await readXlsxFile(filePath)
+      .then(async (hosts) => {
+        fs.unlinkSync(filePath);
+        let HOSTS = hosts.slice(1);
+        console.log('HOSTS knri', HOSTS);
+        return res.json(HOSTS);
+        if (!HOSTS.length)
+          return res.json({ error: 'Uploaded file contains no data' });
+
+        let failedUploads = [];
+        let emailRegex =
+          /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        let phoneRegex = /^[0-9\+]{10,14}$/;
+
+        for (const host of HOSTS) {
+          if (host.length > 5) {
+            host[4] = 'Invalid data format';
+            failedUploads.push(host.slice(0, 5));
+            continue;
+          }
+          if (host[0] == null) {
+            host[4] = 'Invalid first name';
+            failedUploads.push(host);
+            continue;
+          }
+          if (host[1] == null) {
+            host[4] = 'Invalid last name';
+            failedUploads.push(host);
+            continue;
+          }
+          if (!emailRegex.test(host[2])) {
+            host[4] = 'Invalid email address';
+            failedUploads.push(host);
+            continue;
+          }
+          if (!phoneRegex.test(host[3])) {
+            host[4] = 'Invalid phone number';
+            failedUploads.push(host);
+            continue;
+          }
+          let authUserparams = {
+            status: 1,
+            email: host[2],
+            roleId: req.body.role,
+            authAccessToken: uuidv4(),
+            passwordHash: Math.random().toString(36).slice(2, 10),
+          };
+          let clientUserParams = {
+            clientId: USER.clientId,
+            createdBy: req.user.id,
+            roleId: req.body.role,
+          };
+          let userProfileModelparams = {
+            organization: req.body.organization,
+            countryId: req.body.country,
+            firstName: host[0],
+            lastName: host[1],
+            phone: host[3],
+          };
+
+          await authUserModel
+            .add(authUserparams)
+            .then((result) => {
+              userProfileModelparams.userId = result.id;
+              // Entry to client user
+              clientUserParams.userId = result.id;
+              clientUserModel
+                .add(clientUserParams)
+                .then((_) =>
+                  // Entry to User profile
+                  userProfileModel
+                    .add(userProfileModelparams)
+                    .then(async () =>
+                      userLocations.split(',').forEach(
+                        async (locationId) =>
+                          await locationUserModel.add({
+                            userId: userProfileModelparams.userId,
+                            locationId,
+                          })
+                      )
+                    )
+                    .then(() => {
+                      let payload = {
+                        email: authUserparams.email,
+                        firstName: userProfileModelparams.firstName,
+                        lastName: userProfileModelparams.lastName,
+                        activationUrl:
+                          process.env.BASEURL +
+                          'reset-password?token=' +
+                          authUserparams.authAccessToken,
+                        queueType: USER_ACCOUNT_ACTIVATION_EMAIL,
+                      };
+
+                      queueMessage.push(JSON.stringify(payload));
+                    })
+                    .catch((err) => console.log(err))
+                    .catch((err) => console.log(err))
+                )
+                .catch((err) => console.log(err));
+            })
+            .catch((err) => {
+              host[4] = err.errors[0].message;
+              failedUploads.push(host);
+            });
+        }
+        res.json({
+          uploadSucceeded: HOSTS.length - failedUploads.length,
+          totalCount: HOSTS.length,
+          failedUploads,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.json(err);
+      });
   },
 };
