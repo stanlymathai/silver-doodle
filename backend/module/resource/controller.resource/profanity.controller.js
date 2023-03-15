@@ -213,34 +213,31 @@ module.exports = {
     const timestamp = payload.timestamp;
     const internalId = payload.internalId;
 
+    if (!adminId || !internalId)
+      return res.status(500).json({
+        error: 'payload should contain both "adminId" and "internalId"',
+      });
+
     let bulkUploadData = [];
 
-    function handleError(error) {
-      return res.status(500).json({ error });
-    }
     await readXlsxFile(filePath)
-      .then(async (data) => {
+      .then(async (rows) => {
         fs.unlinkSync(filePath);
-        const rows = data.slice(1);
-        if (!rows.length) return handleError('Uploaded file contains no data');
+        if (!rows.length)
+          return res
+            .status(500)
+            .json({ error: 'Uploaded file contains no data' });
 
-        rows.forEach((row, idx) => {
-          if (row.length < 2) {
-            handleError(
-              `Invalid row format at line number ${
-                idx + 2
-              }, every row should contain minimum two columns, ${row}`
-            );
-          } else if (row[0] == null || row[1] == null) {
-            handleError(`invalid row, line number ${idx + 2}, ${row}`);
-          } else {
-            bulkUploadData.push({
-              type: 'Added',
-              swear: row[0],
-              countryCode: row[1],
-            });
-          }
-        });
+        for (const row of rows) {
+          if (row.length < 2) continue;
+          if (row[0] == null || row[1] == null) continue;
+
+          bulkUploadData.push({
+            type: 'Added',
+            swear: row[0],
+            countryCode: row[1],
+          });
+        }
         bulkUploadData = bulkUploadData.filter(
           (value, index, self) =>
             index ===
@@ -276,10 +273,15 @@ module.exports = {
               )
               .catch((error) => res.status(500).json({ error }));
           })
-          .catch((error) => res.status(500).json({ error }));
+          .catch((e) => {
+            if (e.code === 11000) {
+              const extDoc = e.writeErrors[0].err.op;
+              res.status(500).json({
+                error: `The word: ${extDoc.swear} and country: ${extDoc.countryCode} already exist.`,
+              });
+            } else res.status(500).json({ error: e });
+          });
       })
-      .catch((error) => {
-        res.status(500).json({ error });
-      });
+      .catch((error) => res.status(500).json({ error }));
   },
 };
