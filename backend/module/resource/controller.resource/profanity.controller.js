@@ -15,6 +15,7 @@ module.exports = {
       .then((result) => res.json(result))
       .catch((e) => res.status(500).json(e));
   },
+
   async addToList(req, res) {
     const payload = req.body;
     if (!payload.length > 0) {
@@ -47,13 +48,96 @@ module.exports = {
         if (e.code === 11000) {
           const extDoc = e.writeErrors[0].err.op;
           res.status(500).json({
-            error: `The word: ${extDoc.swear} and country: ${extDoc.countryCode} already exist.`,
+            error: `The word '${extDoc.swear}' and country '${extDoc.countryCode}' already exist.`,
           });
         } else {
           res.status(500).json(e);
         }
       });
   },
+
+  addMultipleSwears: async function (req, res) {
+    const filePath = 'uploads/' + req.file.filename;
+
+    const payload = req.body;
+    const adminId = payload.adminId;
+    const timestamp = payload.timestamp;
+    const internalId = payload.internalId;
+
+    if (!adminId || !internalId)
+      return res.status(500).json({
+        error: "Payload should contain both 'adminId' and 'internalId'.",
+      });
+
+    let bulkUploadData = [];
+
+    await readXlsxFile(filePath)
+      .then(async (rows) => {
+        fs.unlinkSync(filePath);
+        if (!rows.length)
+          return res
+            .status(500)
+            .json({ error: 'Uploaded file contains no data' });
+
+        for (const row of rows) {
+          if (row.length < 2) continue;
+          if (row[0] == null || row[1] == null) continue;
+
+          bulkUploadData.push({
+            swear: row[0],
+            countryCode: row[1],
+          });
+        }
+        bulkUploadData = bulkUploadData.filter(
+          (value, index, self) =>
+            index ===
+            self.findIndex(
+              (t) =>
+                t.swear === value.swear && t.countryCode === value.countryCode
+            )
+        );
+
+        const addToHistory = async (data) => {
+          const history = [];
+          data.forEach(function (el) {
+            history.push({
+              oldWord: '',
+              oldCountry: '',
+              type: 'Added',
+              swear: el.swear,
+              newWord: el.swear,
+              profanityId: el._id,
+              newCountry: el.countryCode,
+              countryCode: el.countryCode,
+              adminId,
+              timestamp,
+              internalId,
+            });
+          });
+          await ProfanityHistory.insertMany(history)
+            .then(() =>
+              res.json({
+                message: `${data.length} out of ${rows.length} uploaded successfully.`,
+              })
+            )
+            .catch((error) => res.status(500).json({ error }));
+        };
+
+        await Profanity.insertMany(bulkUploadData, { ordered: false })
+          .then((result) => addToHistory(result))
+          .catch((e) => {
+            if (e.code === 11000) {
+              const insertCount = e.result.nInserted;
+              const insertedDocs = e.insertedDocs;
+              if (insertCount && insertedDocs.length) {
+                addToHistory(insertedDocs);
+              } else res.status(500).json({ error: 'Duplicate Entries' });
+            } else res.status(500).json({ error: e });
+          });
+      })
+      .catch((error) => res.status(500).json({ error }));
+  },
+
   async softDelete(req, res) {
     const payload = req.body;
     await Profanity.updateMany(
@@ -192,89 +276,11 @@ module.exports = {
       if (e.code === 11000) {
         const extDoc = e.keyValue;
         res.status(500).json({
-          error: `The word: ${extDoc.swear} and country: ${extDoc.countryCode} already exist.`,
+          error: `The word '${extDoc.swear}' and country '${extDoc.countryCode}' already exist.`,
         });
       } else {
         res.status(500).json(e);
       }
     }
-  },
-  addMultipleSwears: async function (req, res) {
-    const filePath = 'uploads/' + req.file.filename;
-
-    const payload = req.body;
-    const adminId = payload.adminId;
-    const timestamp = payload.timestamp;
-    const internalId = payload.internalId;
-
-    if (!adminId || !internalId)
-      return res.status(500).json({
-        error: 'payload should contain both "adminId" and "internalId"',
-      });
-
-    let bulkUploadData = [];
-
-    await readXlsxFile(filePath)
-      .then(async (rows) => {
-        fs.unlinkSync(filePath);
-        if (!rows.length)
-          return res
-            .status(500)
-            .json({ error: 'Uploaded file contains no data' });
-
-        for (const row of rows) {
-          if (row.length < 2) continue;
-          if (row[0] == null || row[1] == null) continue;
-
-          bulkUploadData.push({
-            swear: row[0],
-            countryCode: row[1],
-          });
-        }
-        bulkUploadData = bulkUploadData.filter(
-          (value, index, self) =>
-            index ===
-            self.findIndex(
-              (t) =>
-                t.swear === value.swear && t.countryCode === value.countryCode
-            )
-        );
-
-        await Profanity.insertMany(bulkUploadData)
-          .then(async (result) => {
-            const history = [];
-            result.forEach(function (el) {
-              history.push({
-                oldWord: '',
-                oldCountry: '',
-                type: 'Added',
-                swear: el.swear,
-                newWord: el.swear,
-                profanityId: el._id,
-                newCountry: el.countryCode,
-                countryCode: el.countryCode,
-                adminId,
-                timestamp,
-                internalId,
-              });
-            });
-            await ProfanityHistory.insertMany(history)
-              .then(() =>
-                res.json({
-                  message: `${result.length} out of ${rows.length} uploaded successfully.`,
-                })
-              )
-              .catch((error) => res.status(500).json({ error }));
-          })
-          .catch((e) => {
-            if (e.code === 11000) {
-              const extDoc = e.writeErrors[0].err.op;
-              res.status(500).json({
-                error: `The word: ${extDoc.swear} and country: ${extDoc.countryCode} already exist.`,
-              });
-            } else res.status(500).json({ error: e });
-          });
-      })
-      .catch((error) => res.status(500).json({ error }));
   },
 };
