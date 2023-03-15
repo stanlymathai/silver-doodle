@@ -17,10 +17,18 @@ module.exports = {
   },
 
   async addToList(req, res) {
-    const payload = req.body;
-    if (!payload.length > 0) {
+    let payload = req.body;
+    if (!payload.length > 0)
       return res.status(500).json('Must contain payload');
-    }
+
+    // remove duplicates
+    payload = payload.filter(
+      (value, index, self) =>
+        index ===
+        self.findIndex(
+          (t) => t.swear === value.swear && t.countryCode === value.countryCode
+        )
+    );
 
     await Profanity.insertMany(payload)
       .then(async (result) => {
@@ -72,12 +80,28 @@ module.exports = {
     let bulkUploadData = [];
 
     await readXlsxFile(filePath)
-      .then(async (rows) => {
+      .then(async (reader) => {
         fs.unlinkSync(filePath);
-        if (!rows.length)
+        if (!reader.length)
           return res
             .status(500)
             .json({ error: 'Uploaded file contains no data' });
+
+        const headerRow = reader[0];
+        if (!headerRow.length || headerRow.length < 2)
+          return res.status(500).json({
+            error: 'Uploaded file should contain two columns (word, country).',
+          });
+        if (!/word/i.test(headerRow[0]))
+          return res.status(500).json({
+            error: "First column header should contain a 'word' column.",
+          });
+        if (!/country/i.test(headerRow[1]))
+          return res.status(500).json({
+            error: "Second column header should contain a 'country' column.",
+          });
+
+        const rows = reader.slice(1);
 
         for (const row of rows) {
           if (row.length < 2) continue;
@@ -182,8 +206,7 @@ module.exports = {
     const payload = req.body;
     const modifyType = payload.modified;
 
-    if (!modifyType)
-      return res.status(500).json({ error: 'modify type required.' });
+    if (!modifyType) return res.status(500).json({ error: 'Invalid data.' });
 
     try {
       const doc = await Profanity.findOne({ _id: payload.id });
