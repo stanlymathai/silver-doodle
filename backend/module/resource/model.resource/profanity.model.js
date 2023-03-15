@@ -10,12 +10,12 @@ let profanitySchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    type: {
+    status: {
       type: String,
-      default: 'Added',
+      default: 'Active',
     },
   },
   { versionKey: false }
 );
-// db.profanities.createIndex( { countryCode: 1, swear: 1 }, {unique:true} )
+// db.profanities.createIndex( { countryCode: 1, swear: 1, status: 1 }, {unique:true} )
 module.exports = mongoose.model('Profanity', profanitySchema);

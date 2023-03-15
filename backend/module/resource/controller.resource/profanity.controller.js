@@ -7,9 +7,10 @@ const readXlsxFile = require('read-excel-file/node');
 module.exports = {
   async getList(_, res) {
     await Profanity.aggregate([
+      { $match: { status: 'Active' } },
       { $sort: { _id: -1 } },
       { $addFields: { id: '$_id' } },
-      { $project: { _id: 0, id: 1, swear: 1, countryCode: 1, type: 1 } },
+      { $project: { _id: 0, status: 0 } },
     ])
       .then((result) => res.json(result))
       .catch((e) => res.status(500).json(e));
@@ -57,7 +58,7 @@ module.exports = {
     const payload = req.body;
     await Profanity.updateMany(
       { _id: payload.id },
-      { $set: { type: 'Removed' } }
+      { $set: { status: 'Disabled' } }
     )
       .then((result) => {
         Profanity.findOne({ _id: payload.id }).then((el) => {
@@ -106,10 +107,7 @@ module.exports = {
         case 'word':
           await Profanity.updateOne(
             { _id: payload.id },
-            {
-              type: 'Edited',
-              swear: payload.newWord,
-            }
+            { swear: payload.newWord }
           ).then((result) => {
             const history = new ProfanityHistory({
               type: 'Edited',
@@ -131,10 +129,7 @@ module.exports = {
         case 'country':
           await Profanity.updateOne(
             { _id: payload.id },
-            {
-              type: 'Edited',
-              countryCode: payload.newCountry,
-            }
+            { countryCode: payload.newCountry }
           ).then((result) => {
             const history = new ProfanityHistory({
               type: 'Edited',
@@ -157,7 +152,6 @@ module.exports = {
           await Profanity.updateOne(
             { _id: payload.id },
             {
-              type: 'Edited',
               swear: payload.newWord,
               countryCode: payload.newCountry,
             }
@@ -233,7 +227,6 @@ module.exports = {
           if (row[0] == null || row[1] == null) continue;
 
           bulkUploadData.push({
-            type: 'Added',
             swear: row[0],
             countryCode: row[1],
           });
