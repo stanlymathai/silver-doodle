@@ -17,6 +17,7 @@ interface IProps {
     avatar: string
     fullName: string
   }
+  profanityData: object
   articleData: {
     articleId: string
     reaction: {
@@ -62,6 +63,7 @@ export const CommentSection = ({
   commentData,
   currentUser,
   articleData,
+  profanityData,
   onUserRection,
   onReplyAction,
   onSubmitAction,
@@ -76,6 +78,7 @@ export const CommentSection = ({
       articleData={articleData}
       commentData={commentData}
       currentUser={currentUser}
+      profanityData={profanityData}
       onUserRection={onUserRection}
       onReplyAction={onReplyAction}
       onSubmitAction={onSubmitAction}

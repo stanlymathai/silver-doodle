@@ -14,6 +14,7 @@ export const Provider = ({
   currentUser,
   commentData,
   articleData,
+  profanityData,
   onUserRection,
   onReplyAction,
   onReportAction,
@@ -24,6 +25,7 @@ export const Provider = ({
   articleData?: IArticleData
   totalCount?: number
   children: any
+  profanityData: any
   currentUser?: ICurrentUser
   cancelBtnStyle?: object
   commentData?: Array<ICommentData>
@@ -45,7 +47,35 @@ export const Provider = ({
   useEffect(() => { if (commentData) setData(commentData) }, [commentData])
   useEffect(() => { if (articleData) setArticle(articleData) }, [articleData])
 
-  const onReplyThread = (id: string) => setReplyThread(replyThreadId == id ? "" : id)
+  // handle profanity
+  useEffect(() => {
+    if (profanityData?.moderator === 'Profanity') {
+      alert.open({
+        title: 'Warning',
+        content: profanityData.warning,
+      });
+      removefromThread(profanityData);
+    }
+  }, [profanityData]);
+
+  const onReplyThread = (id: string) =>
+    setReplyThread(replyThreadId == id ? '' : id);
+
+    const removefromThread = (info: any) => {
+      if (info.parentId) {
+        let copyData = [...data];
+        const targetIdx = copyData.findIndex((i) => i.comId == info.parentId);
+        const replies = data[targetIdx].replies.filter(
+          (x) => x.comId != info.comId
+        );
+    
+        copyData[targetIdx].replies = replies;
+        setData(copyData);
+      } else {
+        const newData = data.filter((x) => x.comId != info.comId);
+        setData(newData);
+      }
+    };    
 
   const timeoutAlert = () =>
   alert.open({

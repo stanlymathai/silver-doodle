@@ -37,12 +37,14 @@ export const ReactionBox = () => {
         )
     }
 
-    const handleReaction = (event: string) => {
-        if (globalStore?.currentUserData?.userId === 'GUEST')
+    const handleReaction = async (event: string) => {
+        if (globalStore?.currentUserData?.userId === 'GUEST') {
+            if (!globalStore.showDiscussionBox) await globalStore.toggleDisscusionbox();
             return globalStore.alert.open({
-                title: 'Alert Message',
-                content: 'Please login/signup to submit reaction.',
+              title: 'Alert Message',
+              content: 'Please login/signup to submit reaction.',
             });
+          }          
 
         const action = article.reaction[event] ? 'REMOVE' : 'ADD';
         const ref: string = article.articleId

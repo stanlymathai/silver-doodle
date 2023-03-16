@@ -1,7 +1,11 @@
 const Comment = require('../model.resource/comment.model');
-const Reaction = require('../model.resource/reaction.model');
 const Article = require('../model.resource/article.model');
+const Reaction = require('../model.resource/reaction.model');
+const Profanity = require('../model.resource/profanity.model');
+
 const articleController = require('./article.controller');
+
+const profanityWarning = require('../utils.resource').profanityWarning;
 
 module.exports = {
   addComment(req, res) {
@@ -22,11 +26,29 @@ module.exports = {
       timeStamp,
     }))(payload);
 
-    const comment = new Comment(commentData);
-    comment
-      .save()
-      .then(() => res.json({ message: 'Success' }))
-      .catch((e) => res.status(500).json({ error: e }));
+    const profanityCheckList = commentData.text.split(' ');
+    let responseData = { message: 'Success' };
+    Profanity.find(
+      { swear: { $in: profanityCheckList }, status: 'Active' },
+      { _id: 0, swear: 1 }
+    ).then((result) => {
+      if (result.length) {
+        commentData.moderated = true;
+        commentData.moderator = 'Profanity';
+        commentData.moderateReason =
+          'Comment contains ' + result.map((item) => item['swear']);
+
+        responseData = {
+          ...commentData,
+          warning: profanityWarning,
+        };
+      }
+      const comment = new Comment(commentData);
+      comment
+        .save()
+        .then(() => res.json(responseData))
+        .catch((error) => res.status(500).json({ error }));
+    });
   },
 
   getComments(req, res) {
@@ -70,6 +92,12 @@ module.exports = {
           };
 
           // comment session
+          const commentFilter = {
+            articleId,
+            parentId: null,
+            moderator: { $ne: 'Profanity' },
+          };
+
           const reactionPipe = [
             { $match: { type: 'COMMENT', status: 'Active' } },
             { $project: { _id: 0, userId: 1, reaction: 1 } },
@@ -105,6 +133,7 @@ module.exports = {
           const replyLookup = {
             from: 'comments',
             pipeline: [
+              { $match: { moderator: { $ne: 'Profanity' } } },
               { $lookup: userLookup },
               { $unwind: '$user' },
               { $project: { parentId: 1, ...commentProject } },
@@ -117,7 +146,7 @@ module.exports = {
           };
 
           const commentData = await Comment.aggregate([
-            { $match: { parentId: null, articleId } },
+            { $match: commentFilter },
             { $sort: { _id: -1 } },
             { $lookup: userLookup },
             { $unwind: '$user' },
@@ -126,7 +155,6 @@ module.exports = {
             { $lookup: replyLookup },
             { $project: { userId: 0 } },
           ]);
-
           commentData.forEach((thread) => {
             thread.reaction = userReactions(thread.reactions);
             thread.reactionCount = thread.reactions.length;

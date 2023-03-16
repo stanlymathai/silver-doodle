@@ -24,6 +24,7 @@ let commentSchema = mongoose.Schema(
     },
     moderated: {
       type: Boolean,
+      default: false,
     },
     moderator: {
       type: String,

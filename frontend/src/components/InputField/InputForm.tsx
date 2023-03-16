@@ -1,7 +1,6 @@
 import React from "react"
 import { useContext } from "react"
 import { GlobalContext } from "../../context/Index"
-import swear, { warningMessage } from "./profanity"
 
 interface InputComponentProps {
   text: string
@@ -17,16 +16,6 @@ export const InputComponent = ({
   handleSubmit,
 }: InputComponentProps) => {
   const globalStore: any = useContext(GlobalContext);
-
-  const submitHandler = () => {
-    if (text.split(' ').some((el) => swear.includes(el.toLowerCase()))) {
-      globalStore.alert.open({
-        title: 'Warning',
-        content: warningMessage,
-      });
-      globalStore.handleTicker(text)
-    } else handleSubmit();
-  };  
 
   return (
     <form
@@ -53,8 +42,8 @@ export const InputComponent = ({
       <button
         type='submit'
         className='hidden'
-        onClick={(e) => {e.preventDefault(); submitHandler()}}
         disabled={text != "" ? false : true}
+        onClick={(e) => {e.preventDefault(); handleSubmit()}}
       />
 
       {mode && (
