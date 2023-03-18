@@ -48,14 +48,14 @@ export const Provider = ({
 
   // handle profanity
   useEffect(() => {
-    if (profanityData?.moderator === 'Profanity') {
+    if (profanityData?.moderator === 'Profanity' || profanityData?.alert) {
       alert.open({
         title: 'Warning',
-        content: profanityData.warning,
+        content: profanityData.warning ?? profanityData.alert,
       });
       removefromThread(profanityData);
     }
-  }, [profanityData]);
+  }, [profanityData]);  
 
   const onReplyThread = (id: string) =>
     setReplyThread(replyThreadId == id ? '' : id);

@@ -5,4 +5,6 @@ module.exports = {
     'As a result of violating our community guidelines, you have been timed out for ',
     ' Minutes. We kindly request that you maintain a safe environment for everyone on our platform.',
   ],
+  banedAlert:
+    'As a result of violating our Community Guidelines, you have been permanently banned.',
 };

@@ -1,20 +1,21 @@
 const Comment = require('../model.resource/comment.model');
 const Article = require('../model.resource/article.model');
+const User = require('../../auth/model.auth/user.model.js');
 const Reaction = require('../model.resource/reaction.model');
 const Profanity = require('../model.resource/profanity.model');
 
 const articleController = require('./article.controller');
-
-const profanityWarning = require('../utils.resource').profanityWarning;
+const alerts = require('../utils.resource/alert.utils');
 
 module.exports = {
-  addComment(req, res) {
+  async addComment(req, res) {
     const payload = req.body.payload;
     const commentData = (({
       text,
       comId,
       userId,
       parentId,
+      platform,
       articleId,
       timeStamp,
     }) => ({
@@ -22,16 +23,27 @@ module.exports = {
       comId,
       userId,
       parentId,
+      platform,
       articleId,
       timeStamp,
     }))(payload);
 
-    const profanityCheckList = commentData.text.split(' ');
     let responseData = { message: 'Success' };
+
+    const USER = await User.findOne({ userId: payload.userId });
+
+    if (USER.status == 'Banned') {
+      responseData = {
+        ...commentData,
+        alert: alerts.banedAlert,
+      };
+      return res.json(responseData);
+    }
+    const profanityCheckList = commentData.text.split(' ');
     Profanity.find(
       { swear: { $in: profanityCheckList }, status: 'Active' },
       { _id: 0, swear: 1 }
-    ).then((result) => {
+    ).then(async (result) => {
       if (result.length) {
         commentData.moderated = true;
         commentData.moderator = 'Profanity';
@@ -40,13 +52,21 @@ module.exports = {
 
         responseData = {
           ...commentData,
-          warning: profanityWarning,
+          warning: alerts.profanityWarning,
         };
+        await User.updateOne(
+          { userId: USER.userId },
+          { $set: { status: 'Banned' } }
+        );
       }
+      // const isInTimeout = () => Date.now() - tickers[0] < 30 * 60 * 1000; // milli seconds
+
       const comment = new Comment(commentData);
       comment
         .save()
-        .then(() => res.json(responseData))
+        .then(() => {
+          res.json(responseData);
+        })
         .catch((error) => res.status(500).json({ error }));
     });
   },

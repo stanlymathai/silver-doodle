@@ -22,6 +22,10 @@ let commentSchema = mongoose.Schema(
     articleId: {
       type: String,
     },
+    platform: {
+      type: String,
+      required: true,
+    },
     moderated: {
       type: Boolean,
       default: false,

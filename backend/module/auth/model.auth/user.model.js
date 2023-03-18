@@ -5,6 +5,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    internalId: {
+      type: String,
+      required: true,
+    },
     fullName: {
       type: String,
       required: true,

@@ -19,31 +19,6 @@ const authenticate = async (secretOrKey) => {
   );
 };
 
-const main = async (req, res) => {
-  const userParams = {
-    status: 'ACTIVE',
-    userId: req.body.payload.userId,
-    email: req.body.payload.userEmail,
-  };
-  await User.findOne(userParams)
-    .lean()
-    .exec()
-    .then((userObj) => {
-      if (!!userObj) {
-        onboardUser(res, userObj);
-      } else {
-        const userData = {
-          fullName: req.body.payload.fullName,
-          avatarUrl: req.body.payload.avatar,
-          secretOrKey: uuidv4(),
-          ...userParams,
-        };
-        registerUser(res, userData);
-      }
-    })
-    .catch((err) => res.status(500).json({ error: err }));
-};
-
 const registerUser = async (res, userData) => {
   const user = new User(userData);
   await user
@@ -66,4 +41,31 @@ const onboardUser = (res, userObj) => {
   );
   res.json({ token: 'Bearer ' + token, refreshToken });
 };
+
+const main = async (req, res) => {
+  const userParams = {
+    userId: req.body.payload.userId,
+    email: req.body.payload.userEmail,
+    internalId: req.body.payload.internalId,
+  };
+  await User.findOne(userParams)
+    .lean()
+    .exec()
+    .then((userObj) => {
+      if (!!userObj) {
+        onboardUser(res, userObj);
+      } else {
+        const userData = {
+          fullName: req.body.payload.fullName,
+          avatarUrl: req.body.payload.avatar,
+          secretOrKey: uuidv4(),
+          status: 'ACTIVE',
+          ...userParams,
+        };
+        registerUser(res, userData);
+      }
+    })
+    .catch((err) => res.status(500).json({ error: err }));
+};
+
 module.exports = { index, main, authenticate };
