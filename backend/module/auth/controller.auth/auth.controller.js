@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const User = require('../model.auth/user.model');
+const UserLog = require('../model.auth/log.user.model.js');
 
 const index = (_, res) =>
   res.status(404).json({ message: 'MoniTalks Comment-session API Server' });
@@ -19,12 +20,17 @@ const authenticate = async (secretOrKey) => {
   );
 };
 
-const registerUser = async (res, userData) => {
+const registerUser = (res, userData) => {
   const user = new User(userData);
-  await user
-    .save()
-    .then((userObj) => onboardUser(res, userObj))
-    .catch((err) => res.status(500).json({ error: err }));
+  const userLog = new UserLog({ userId: userData.userId });
+
+  try {
+    user
+      .save()
+      .then((userObj) => userLog.save().then(() => onboardUser(res, userObj)));
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 };
 
 const onboardUser = (res, userObj) => {

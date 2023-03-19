@@ -2,75 +2,20 @@ const Comment = require('../model.resource/comment.model');
 const Article = require('../model.resource/article.model');
 const User = require('../../auth/model.auth/user.model.js');
 const Reaction = require('../model.resource/reaction.model');
+
+const Misc = require('../model.resource/misc.model.js');
 const Profanity = require('../model.resource/profanity.model');
+const UserLog = require('../../auth/model.auth/log.user.model.js');
 
 const articleController = require('./article.controller');
 const alerts = require('../utils.resource/alert.utils');
 
+const TYPES = {
+  TIMEOUT_CONFIG: 'TIMEOUT_CONFIG',
+};
+const MILLI_SECONDS = 60 * 1000;
+
 module.exports = {
-  async addComment(req, res) {
-    const payload = req.body.payload;
-    const commentData = (({
-      text,
-      comId,
-      userId,
-      parentId,
-      platform,
-      articleId,
-      timeStamp,
-    }) => ({
-      text,
-      comId,
-      userId,
-      parentId,
-      platform,
-      articleId,
-      timeStamp,
-    }))(payload);
-
-    let responseData = { message: 'Success' };
-
-    const USER = await User.findOne({ userId: payload.userId });
-
-    if (USER.status == 'Banned') {
-      responseData = {
-        ...commentData,
-        alert: alerts.banedAlert,
-      };
-      return res.json(responseData);
-    }
-    const profanityCheckList = commentData.text.split(' ');
-    Profanity.find(
-      { swear: { $in: profanityCheckList }, status: 'Active' },
-      { _id: 0, swear: 1 }
-    ).then(async (result) => {
-      if (result.length) {
-        commentData.moderated = true;
-        commentData.moderator = 'Profanity';
-        commentData.moderateReason =
-          'Comment contains ' + result.map((item) => item['swear']);
-
-        responseData = {
-          ...commentData,
-          warning: alerts.profanityWarning,
-        };
-        await User.updateOne(
-          { userId: USER.userId },
-          { $set: { status: 'Banned' } }
-        );
-      }
-      // const isInTimeout = () => Date.now() - tickers[0] < 30 * 60 * 1000; // milli seconds
-
-      const comment = new Comment(commentData);
-      comment
-        .save()
-        .then(() => {
-          res.json(responseData);
-        })
-        .catch((error) => res.status(500).json({ error }));
-    });
-  },
-
   getComments(req, res) {
     const articleId = req.params.articleId;
     const userId = req.params.userId;
@@ -191,6 +136,133 @@ module.exports = {
           res.json({ articleData, commentData });
         } else articleController.getArticleById(req, res);
       });
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  },
+
+  async addComment(req, res) {
+    const payload = req.body.payload;
+    const commentData = (({
+      text,
+      comId,
+      userId,
+      parentId,
+      platform,
+      articleId,
+      timeStamp,
+    }) => ({
+      text,
+      comId,
+      userId,
+      parentId,
+      platform,
+      articleId,
+      timeStamp,
+    }))(payload);
+
+    try {
+      const USER = await User.aggregate([
+        { $match: { userId: payload.userId } },
+        { $limit: 1 },
+        {
+          $lookup: {
+            from: 'userlogs',
+            pipeline: [{ $limit: 1 }],
+            localField: 'userId',
+            foreignField: 'userId',
+            as: 'userLog',
+          },
+        },
+      ]);
+
+      if (USER.status == 'Banned')
+        return res.json({
+          ...commentData,
+          alert: alerts.banedAlert,
+        });
+
+      const timeNow = Date.now();
+      const userLogs = USER[0].userLog[0];
+      const tickers = [...userLogs.tickers];
+      const timeouts = [...userLogs.timeouts];
+
+      await Misc.findOne({ type: TYPES.TIMEOUT_CONFIG }).then(
+        async (config) => {
+          const prelude = config?.prelude;
+          if (!prelude) return;
+
+          const isInBan =
+            timeouts.length &&
+            timeouts[timeouts.length - 1].createdAt >
+              timeNow - prelude.timeout * MILLI_SECONDS;
+
+          const response = {
+            alert:
+              alerts.timoutMessage[0] +
+              prelude.timeout +
+              alerts.timoutMessage[1],
+            ...commentData,
+          };
+          if (isInBan) return res.json(response);
+
+          const tickersInQuestion = tickers.filter(
+            (el) => timeNow - el.ticker < prelude.interval * MILLI_SECONDS
+          );
+
+          if (tickersInQuestion.length >= prelude.moderation) {
+            await UserLog.updateOne(
+              { userId: USER[0].userId },
+              {
+                $push: {
+                  timeouts: {
+                    createdAt: timeNow,
+                    timeout: prelude.timeout,
+                    timeStamp: payload.timeStamp,
+                  },
+                },
+              }
+            );
+            return res.json(response);
+          }
+
+          // profanits section
+          const profanityCheckList = commentData.text.split(' ');
+          Profanity.find(
+            { swear: { $in: profanityCheckList }, status: 'Active' },
+            { _id: 0, swear: 1 }
+          ).then(async (result) => {
+            let responseData = { message: 'Success' };
+            if (result.length) {
+              responseData = {
+                ...commentData,
+                alert: alerts.profanityWarning,
+              };
+
+              commentData.moderated = true;
+              commentData.moderator = 'Profanity';
+              commentData.moderateReason =
+                'Comment contains ' + result.map((item) => item['swear']);
+
+              await UserLog.updateOne(
+                { userId: USER[0].userId },
+                {
+                  $push: {
+                    tickers: {
+                      ticker: Date.now(),
+                      comId: payload.comId,
+                      timeStamp: payload.timeStamp,
+                    },
+                  },
+                }
+              );
+            }
+
+            const comment = new Comment(commentData);
+            comment.save().then(() => res.json(responseData));
+          });
+        }
+      );
     } catch (error) {
       res.status(500).json({ error });
     }
