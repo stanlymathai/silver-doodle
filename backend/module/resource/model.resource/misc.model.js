@@ -9,6 +9,10 @@ const miscSchema = mongoose.Schema(
     prelude: {
       type: Object,
     },
+    history: {
+      type: Array,
+      default: [],
+    },
 
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },

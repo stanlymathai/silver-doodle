@@ -1,3 +1,4 @@
+const Misc = require('../model.resource/misc.model');
 const Profanity = require('../model.resource/profanity.model');
 const ProfanityHistory = require('../model.resource/history.profanity.modal');
 
@@ -305,5 +306,22 @@ module.exports = {
         res.status(500).json(e);
       }
     }
+  },
+  configuration(req, res) {
+    const payload = req.body;
+    const CONFIG_TYPE = 'TIMEOUT_CONFIG';
+    Misc.updateOne(
+      { type: CONFIG_TYPE },
+      {
+        $set: {
+          prelude: payload,
+          updatedAt: payload.timestamp,
+        },
+        $push: { history: payload },
+      },
+      { upsert: true }
+    )
+      .then((result) => res.json(result))
+      .catch((error) => res.status(500).json({ error }));
   },
 };
