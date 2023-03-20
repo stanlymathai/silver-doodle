@@ -12,7 +12,9 @@ router.post('/update', controller.updateList);
 router.get('/list', controller.getList);
 router.get('/history', controller.history);
 router.post('/remove', controller.softDelete);
-router.post('/config', controller.configuration);
+router.post('/config', controller.configure);
+router.get('/config', controller.configuration);
+
 
 router.post(
   '/upload',

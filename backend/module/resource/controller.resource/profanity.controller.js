@@ -307,7 +307,7 @@ module.exports = {
       }
     }
   },
-  configuration(req, res) {
+  configure(req, res) {
     const payload = req.body;
     const CONFIG_TYPE = 'TIMEOUT_CONFIG';
     Misc.updateOne(
@@ -321,6 +321,17 @@ module.exports = {
       },
       { upsert: true }
     )
+      .then((result) => res.json(result))
+      .catch((error) => res.status(500).json({ error }));
+  },
+  configuration(_, res) {
+    const CONFIG_TYPE = 'TIMEOUT_CONFIG';
+
+    Misc.aggregate([
+      { $match: { type: CONFIG_TYPE } },
+      { $addFields: { config: '$prelude' } },
+      { $project: { _id: 0, prelude: 0, type: 0, createdAt: 0 } },
+    ])
       .then((result) => res.json(result))
       .catch((error) => res.status(500).json({ error }));
   },
