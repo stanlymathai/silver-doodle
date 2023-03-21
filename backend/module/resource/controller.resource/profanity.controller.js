@@ -309,7 +309,38 @@ module.exports = {
   },
   configure(req, res) {
     const payload = req.body;
+    if (!payload.activity.length) return res.json();
+
     const CONFIG_TYPE = 'TIMEOUT_CONFIG';
+    const history = [];
+
+    payload.activity.forEach((type) => {
+      let prelude = {
+        adminId: payload.adminId,
+        timestamp: payload.timestamp,
+        internalId: payload.internalId,
+      };
+      switch (type) {
+        case 'interval':
+          prelude.type = `${type} in Minutes`;
+          prelude.interval = payload.interval;
+          break;
+        case 'timeout':
+          prelude.type = `${type} in Minutes`;
+          prelude.interval = payload.timeout;
+          break;
+        case 'moderation':
+          prelude.type = 'Moderations';
+          prelude.interval = payload.moderation;
+          break;
+
+        default:
+          break;
+      }
+
+      return history.push(prelude);
+    });
+
     Misc.updateOne(
       { type: CONFIG_TYPE },
       {
@@ -317,7 +348,7 @@ module.exports = {
           prelude: payload,
           updatedAt: payload.timestamp,
         },
-        $push: { history: payload },
+        $push: { history: { $each: history } },
       },
       { upsert: true }
     )
@@ -330,7 +361,16 @@ module.exports = {
     Misc.aggregate([
       { $match: { type: CONFIG_TYPE } },
       { $addFields: { config: '$prelude' } },
-      { $project: { _id: 0, prelude: 0, type: 0, createdAt: 0 } },
+      {
+        $project: {
+          _id: 0,
+          history: 1,
+          updatedAt: 1,
+          'config.timeout': 1,
+          'config.interval': 1,
+          'config.moderation': 1,
+        },
+      },
     ])
       .then((result) => res.json(result))
       .catch((error) => res.status(500).json({ error }));
