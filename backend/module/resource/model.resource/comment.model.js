@@ -26,6 +26,13 @@ let commentSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    parentId: {
+      type: String,
+    },
+    status: {
+      type: String,
+      default: 'Active',
+    },
     moderated: {
       type: Boolean,
       default: false,
@@ -40,17 +47,10 @@ let commentSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    tempKey: {
-      type: Number,
-      default: 0000,
-    },
-    parentId: {
+    acknowledgedBy: {
       type: String,
     },
-    status: {
-      type: String,
-      default: 'Active',
-    },
+    acknowledgedAt: { type: Date, default: Date.now },
   },
   { versionKey: false }
 );

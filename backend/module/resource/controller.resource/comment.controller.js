@@ -240,7 +240,7 @@ module.exports = {
               };
 
               commentData.moderated = true;
-              commentData.status = "Moderated"
+              commentData.status = 'Moderated';
               commentData.moderator = 'Profanity';
               commentData.moderateReason =
                 'Comment contains ' + result.map((item) => item['swear']);
@@ -507,13 +507,26 @@ module.exports = {
     }
   },
   moderateComment(req, res) {
-    let payload = req.body;
+    const payload = req.body;
     Comment.updateOne(
       { comId: payload.comId },
       {
         moderated: true,
         moderator: payload.moderator,
         moderateReason: payload.reason,
+      }
+    )
+      .then((result) => res.send(result))
+      .catch((e) => res.status(500).json(e));
+  },
+  acknowledgeComment(req, res) {
+    const payload = req.body;
+    Comment.updateMany(
+      { comId: { $in: payload.comIds } },
+      {
+        acknowledged: true,
+        acknowledgedBy: payload.acknowledgedBy,
+        acknowledgedAt: payload.acknowledgedAt,
       }
     )
       .then((result) => res.send(result))
