@@ -322,12 +322,12 @@ module.exports = {
       };
       switch (type) {
         case 'interval':
-          prelude.type = `${type} in Minutes`;
           prelude.interval = payload.interval;
+          prelude.type = 'Interval in Minutes';
           break;
         case 'timeout':
-          prelude.type = `${type} in Minutes`;
           prelude.interval = payload.timeout;
+          prelude.type = 'Timeout in Minutes';
           break;
         case 'moderation':
           prelude.type = 'Moderations';

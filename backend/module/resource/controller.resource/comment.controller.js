@@ -240,6 +240,7 @@ module.exports = {
               };
 
               commentData.moderated = true;
+              commentData.status = "Moderated"
               commentData.moderator = 'Profanity';
               commentData.moderateReason =
                 'Comment contains ' + result.map((item) => item['swear']);

@@ -36,6 +36,14 @@ let commentSchema = mongoose.Schema(
     moderateReason: {
       type: String,
     },
+    acknowledged: {
+      type: Boolean,
+      default: false,
+    },
+    tempKey: {
+      type: Number,
+      default: 0000,
+    },
     parentId: {
       type: String,
     },
