@@ -12,7 +12,7 @@ module.exports = {
             { $match: { type: 'ARTICLE', status: 'Active' } },
             { $project: { reaction: 1, _id: 0 } },
             { $group: { _id: '$reaction', count: { $sum: 1 } } },
-            { $project: { _id: 0, type: '$_id', count: 1} },
+            { $project: { _id: 0, type: '$_id', count: 1 } },
           ],
           localField: 'articleId',
           foreignField: 'ref',
@@ -40,6 +40,7 @@ module.exports = {
       .then((articles) => res.json(articles))
       .catch((e) => console.log(e, 'getAllArticles'));
   },
+
   getArticleById(req, res) {
     let articleId = req.params.articleId;
     axios
