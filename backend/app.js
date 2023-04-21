@@ -2,7 +2,7 @@ const cors = require('cors');
 const express = require('express');
 
 // Loads .env file contents into process.env.
-require('dotenv').config({ path: './config/env/local.env' });
+// require('dotenv').config({ path: './config/env/local.env' });
 
 // db config.
 const db = require('./config/db');
