@@ -29,7 +29,7 @@ module.exports = {
   },
 
   async updatePlatform(req, res) {
-    const payload = req.body.payload;
+    const payload = req.body;
 
     await PLATFORM.updateOne({ _id: payload.id }, payload)
       .then((result) => res.json(result))
@@ -38,7 +38,7 @@ module.exports = {
 
   async softDelete(req, res) {
     const payload = req.body;
-    await Profanity.updateOne(
+    await PLATFORM.updateOne(
       { _id: payload.id },
       { $set: { status: 'Disabled' } }
     )
