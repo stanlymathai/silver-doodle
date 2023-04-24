@@ -1,12 +1,13 @@
 const Comment = require('../model.resource/comment.model');
 const Article = require('../model.resource/article.model');
-const User = require('../../auth/model.auth/user.model.js');
 const Reaction = require('../model.resource/reaction.model');
+const Platform = require('../model.resource/platform.model');
 
 const Misc = require('../model.resource/misc.model.js');
 const Profanity = require('../model.resource/profanity.model');
-const UserLog = require('../../auth/model.auth/log.user.model.js');
 
+const User = require('../../auth/model.auth/user.model.js');
+const UserLog = require('../../auth/model.auth/log.user.model.js');
 const articleController = require('./article.controller');
 const alerts = require('../utils.resource/alert.utils');
 
@@ -16,15 +17,41 @@ const TYPES = {
 const MILLI_SECONDS = 60 * 1000;
 
 module.exports = {
-  getComments(req, res) {
-    const articleId = req.params.articleId;
-    const userId = req.params.userId;
+  async getComments(req, res) {
+    const payload = req.body;
+
+    const articleData = (({
+      id,
+      slug,
+      title,
+      author,
+      platformId,
+      publishedAt,
+    }) => ({
+      slug,
+      title,
+      author,
+      platformId,
+      publishedAt,
+      articleId: id,
+    }))(payload);
+
+    const articleId = articleData.articleId;
+    const userId = payload.userId;
     if (!articleId || !userId)
       return res
         .status(500)
         .json({ error: `unique ${userId} identifier ${articleId} required` });
 
     try {
+      await Platform.exists(
+        { code: articleData.platformId, status: 'Active' },
+        (_, pdata) => {
+          if (!pdata)
+            return res.status(500).json({ error: 'Invalid Platform.' });
+        }
+      );
+
       Article.exists({ articleId }, async function (_, result) {
         if (result) {
           // reaction handlers
@@ -134,7 +161,22 @@ module.exports = {
             }
           });
           res.json({ articleData, commentData });
-        } else articleController.getArticleById(req, res);
+        } else {
+          const responseData = {
+            articleData: {
+              articleId,
+              reaction: {
+                like: false,
+                brilliant: false,
+                thoughtful: false,
+              },
+              reactionCount: 0,
+            },
+            commentData: [],
+          };
+          const ARTICLE = new Article(articleData);
+          ARTICLE.save().then(() => res.json({ ...responseData })); 
+        }
       });
     } catch (error) {
       res.status(500).json({ error });
@@ -270,12 +312,38 @@ module.exports = {
     }
   },
 
-  guestViewComments(req, res) {
-    const articleId = req.params.articleId;
+  async guestViewComments(req, res) {
+    const payload = req.body;
+
+    const articleData = (({
+      id,
+      slug,
+      title,
+      author,
+      platformId,
+      publishedAt,
+    }) => ({
+      slug,
+      title,
+      author,
+      platformId,
+      publishedAt,
+      articleId: id,
+    }))(payload);
+
+    const articleId = articleData.articleId;
+
     if (!articleId)
       return res.status(500).json({ error: 'article identifier required' });
 
     try {
+      await Platform.exists(
+        { code: articleData.platformId, status: 'Active' },
+        (_, pdata) => {
+          if (!pdata)
+            return res.status(500).json({ error: 'Invalid Platform.' });
+        }
+      );
       Article.exists({ articleId }, async function (_, result) {
         if (result) {
           // article aggregations
@@ -380,7 +448,22 @@ module.exports = {
             }
           });
           res.json({ articleData, commentData });
-        } else articleController.getArticleById(req, res);
+        } else {
+          const responseData = {
+            articleData: {
+              articleId,
+              reaction: {
+                like: false,
+                brilliant: false,
+                thoughtful: false,
+              },
+              reactionCount: 0,
+            },
+            commentData: [],
+          };
+          const ARTICLE = new Article(articleData);
+          ARTICLE.save().then(() => res.json({ ...responseData }));
+        }
       });
     } catch (error) {
       res.status(500).json({ error });

@@ -20,6 +20,7 @@ module.exports = {
       code: payload.code,
       description: payload.description,
       resourceUrl: payload.resourceUrl,
+      platformUrl: payload.platformUrl,
       timeStamp: payload.timeStamp,
     });
     platform

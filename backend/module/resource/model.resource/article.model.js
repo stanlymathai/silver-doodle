@@ -4,7 +4,6 @@ let articleSchema = mongoose.Schema(
   {
     articleId: {
       type: String,
-      unique: true,
       required: true,
     },
     title: {
@@ -13,10 +12,13 @@ let articleSchema = mongoose.Schema(
     },
     slug: {
       type: String,
-      unique: true,
       required: true,
     },
     author: {
+      type: String,
+      required: true,
+    },
+    platformId: {
       type: String,
       required: true,
     },

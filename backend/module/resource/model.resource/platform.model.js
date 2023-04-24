@@ -18,6 +18,9 @@ let platformSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    platformUrl: {
+      type: String,
+    },
     status: {
       type: String,
       default: 'Active',
