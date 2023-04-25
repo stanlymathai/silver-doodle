@@ -8,7 +8,6 @@ const Profanity = require('../model.resource/profanity.model');
 
 const User = require('../../auth/model.auth/user.model.js');
 const UserLog = require('../../auth/model.auth/log.user.model.js');
-const articleController = require('./article.controller');
 const alerts = require('../utils.resource/alert.utils');
 
 const TYPES = {
@@ -20,7 +19,7 @@ module.exports = {
   async getComments(req, res) {
     const payload = req.body;
 
-    const articleData = (({
+    const articleInfo = (({
       id,
       slug,
       title,
@@ -36,7 +35,7 @@ module.exports = {
       articleId: id,
     }))(payload);
 
-    const articleId = articleData.articleId;
+    const articleId = articleInfo.articleId;
     const userId = payload.userId;
     if (!articleId || !userId)
       return res
@@ -45,7 +44,7 @@ module.exports = {
 
     try {
       await Platform.exists(
-        { code: articleData.platformId, status: 'Active' },
+        { code: articleInfo.platformId, status: 'Active' },
         (_, pdata) => {
           if (!pdata)
             return res.status(500).json({ error: 'Invalid Platform.' });
@@ -88,6 +87,7 @@ module.exports = {
             articleId,
             parentId: null,
             moderator: { $ne: 'Profanity' },
+            platform: articleInfo.platformId,
           };
 
           const reactionPipe = [
@@ -174,8 +174,8 @@ module.exports = {
             },
             commentData: [],
           };
-          const ARTICLE = new Article(articleData);
-          ARTICLE.save().then(() => res.json({ ...responseData })); 
+          const ARTICLE = new Article(articleInfo);
+          ARTICLE.save().then(() => res.json({ ...responseData }));
         }
       });
     } catch (error) {
@@ -315,7 +315,7 @@ module.exports = {
   async guestViewComments(req, res) {
     const payload = req.body;
 
-    const articleData = (({
+    const articleInfo = (({
       id,
       slug,
       title,
@@ -331,14 +331,14 @@ module.exports = {
       articleId: id,
     }))(payload);
 
-    const articleId = articleData.articleId;
+    const articleId = articleInfo.articleId;
 
     if (!articleId)
       return res.status(500).json({ error: 'article identifier required' });
 
     try {
       await Platform.exists(
-        { code: articleData.platformId, status: 'Active' },
+        { code: articleInfo.platformId, status: 'Active' },
         (_, pdata) => {
           if (!pdata)
             return res.status(500).json({ error: 'Invalid Platform.' });
@@ -416,7 +416,13 @@ module.exports = {
           };
 
           const commentData = await Comment.aggregate([
-            { $match: { parentId: null, articleId } },
+            {
+              $match: {
+                articleId,
+                parentId: null,
+                platform: articleInfo.platformId,
+              },
+            },
             { $sort: { _id: -1 } },
             { $lookup: userLookup },
             { $unwind: '$user' },
@@ -461,7 +467,7 @@ module.exports = {
             },
             commentData: [],
           };
-          const ARTICLE = new Article(articleData);
+          const ARTICLE = new Article(articleInfo);
           ARTICLE.save().then(() => res.json({ ...responseData }));
         }
       });
