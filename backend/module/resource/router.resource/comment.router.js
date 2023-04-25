@@ -5,7 +5,7 @@ const verifyAuthentication =
   require('../../common/helper').verifyAuthentication;
 const controller = require('../controller.resource/comment.controller');
 
-router.post('/all', controller.getAllComments);
+router.get('/all', controller.getAllComments);
 router.post('/moderate', controller.moderateComment);
 router.post('/guest-view', controller.guestViewComments);
 router.post('/acknowledge', controller.acknowledgeComment);
