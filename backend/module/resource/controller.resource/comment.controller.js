@@ -621,6 +621,14 @@ module.exports = {
       .then((result) => res.send(result))
       .catch((e) => res.status(500).json(e));
   },
+  unReviewedCommentsCount(req, res) {
+    Comment.aggregate([
+      { $match: { acknowledged: false } },
+      { $count: 'total' },
+    ])
+      .then((result) => res.status(200).json(result[0].total))
+      .catch((e) => res.status(500).json(e));
+  },
 
   fetchUnReviewedComments(req, res) {
     const payload = req.body;

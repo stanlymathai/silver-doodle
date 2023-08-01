@@ -11,6 +11,7 @@ router.post('/guest-view', controller.guestViewComments);
 router.post('/acknowledge', controller.acknowledgeComment);
 router.get('/user-comment/:userId', controller.getUserComments);
 router.post('/fetch-unreviewed', controller.fetchUnReviewedComments);
+router.get('/unreviewed-count', controller.unReviewedCommentsCount);
 
 // marketing routes.
 router.post('/', verifyAuthentication, controller.addComment);
