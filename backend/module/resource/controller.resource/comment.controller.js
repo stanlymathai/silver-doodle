@@ -622,7 +622,7 @@ module.exports = {
       .catch((e) => res.status(500).json(e));
   },
 
-  async fetchUnReviewedComments(req, res) {
+  fetchUnReviewedComments(req, res) {
     const payload = req.body;
 
     const searchType = payload.searchType;
@@ -632,35 +632,71 @@ module.exports = {
       ...(searchType === 'By Article' && { platform: 'NEWS' }),
       ...(searchType === 'By Podcast' && { platform: 'PODCAST' }),
     };
+
+    // sort type for oldest and latest comments
     const sortType = { _id: -1 };
     if (searchType === 'Oldest') sortType._id = 1;
 
-    try {
-      const commentData = await Comment.aggregate([
-        { $match: matchParams },
-        { $sort: sortType },
-        { $project: { _id: 0 } },
-        { $limit: payload.limit },
+    // search type for reported comments and unreported comments
+    const preserveNullAndEmptyArrays = searchType === 'Reported' ? false : true;
 
-        {
-          $lookup: {
-            from: 'reports',
-            pipeline: [{ $project: { _id: 1 } }],
-            localField: 'comId',
-            foreignField: 'ref',
-            as: 'reporters',
-          },
+    Comment.aggregate([
+      { $match: matchParams },
+      { $sort: sortType },
+      { $limit: payload.limit },
+      {
+        $lookup: {
+          from: 'articles',
+          pipeline: [
+            { $limit: 1 },
+            { $project: { slug: 1, title: 1, _id: 0 } },
+          ],
+          localField: 'articleId',
+          foreignField: 'articleId',
+          as: 'article',
         },
-      ]);
-      // todo: add query optimization to filter out reported comments
+      },
+      {
+        $lookup: {
+          from: 'users',
+          pipeline: [{ $limit: 1 }, { $project: { fullName: 1, _id: 0 } }],
+          localField: 'userId',
+          foreignField: 'userId',
+          as: 'userDetails',
+        },
+      },
+      {
+        $lookup: {
+          from: 'reports',
+          pipeline: [{ $project: { _id: 1 } }],
+          localField: 'comId',
+          foreignField: 'ref',
+          as: 'reporters',
+        },
+      },
+      {
+        $unwind: {
+          path: '$reporters',
+          preserveNullAndEmptyArrays, // preserve / not comments with no reports
+        },
+      },
+      { $unwind: '$userDetails' },
+      { $unwind: '$article' },
 
-      if (searchType === 'Reported') {
-        return res
-          .status(200)
-          .json(commentData.filter((comment) => comment.reporters.length > 0));
-      } else res.status(200).json(commentData);
-    } catch (error) {
-      res.status(500).json(error);
-    }
+      {
+        $project: {
+          _id: 0,
+          text: 1,
+          comId: 1,
+          article: 1,
+          moderator: 1,
+          timeStamp: 1,
+          reporters: 1,
+          userDetails: 1,
+        },
+      },
+    ])
+      .then((comments) => res.status(200).json(comments))
+      .catch((e) => res.status(500).json(e));
   },
 };
