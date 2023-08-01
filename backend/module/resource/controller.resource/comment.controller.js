@@ -622,54 +622,45 @@ module.exports = {
       .catch((e) => res.status(500).json(e));
   },
 
-  fetchUnReviewedComments(req, res) {
-    console.log('req.body knri', req.body)
-    Comment.aggregate([
-      { $match: { acknowledged: false } },
-      { $project: { _id: 0 } },
-      {
-        $lookup: {
-          from: 'articles',
-          pipeline: [{ $limit: 1 }, { $project: { slug: 1, _id: 0 } }],
-          localField: 'articleId',
-          foreignField: 'articleId',
-          as: 'article',
+  async fetchUnReviewedComments(req, res) {
+    const payload = req.body;
+
+    const searchType = payload.searchType;
+    const matchParams = {
+      acknowledged: false,
+      articleId: payload.selectedArticle,
+      ...(searchType === 'By Article' && { platform: 'NEWS' }),
+      ...(searchType === 'By Podcast' && { platform: 'PODCAST' }),
+    };
+    const sortType = { _id: -1 };
+    if (searchType === 'Oldest') sortType._id = 1;
+
+    try {
+      const commentData = await Comment.aggregate([
+        { $match: matchParams },
+        { $sort: sortType },
+        { $project: { _id: 0 } },
+        { $limit: payload.limit },
+
+        {
+          $lookup: {
+            from: 'reports',
+            pipeline: [{ $project: { _id: 1 } }],
+            localField: 'comId',
+            foreignField: 'ref',
+            as: 'reporters',
+          },
         },
-      },
-      {
-        $lookup: {
-          from: 'reports',
-          pipeline: [
-            { $project: { ref: 0, reason: 0, _id: 0 } },
-            {
-              $lookup: {
-                from: 'users',
-                pipeline: [
-                  { $limit: 1 },
-                  { $project: { status: 1, _id: 0, userId: 1 } },
-                  {
-                    $lookup: {
-                      from: 'reports',
-                      pipeline: [{ $project: { _id: 1 } }, { $count: 'total' }],
-                      localField: 'userId',
-                      foreignField: 'reportedUser',
-                      as: 'reported',
-                    },
-                  },
-                ],
-                localField: 'reportedUser',
-                foreignField: 'userId',
-                as: 'user',
-              },
-            },
-          ],
-          localField: 'comId',
-          foreignField: 'ref',
-          as: 'reporters',
-        },
-      },
-    ])
-      .then((comments) => res.json(comments))
-      .catch((e) => console.log(e, 'fetchUnReviewedComments'));
+      ]);
+      // todo: add query optimization to filter out reported comments
+
+      if (searchType === 'Reported') {
+        return res
+          .status(200)
+          .json(commentData.filter((comment) => comment.reporters.length > 0));
+      } else res.status(200).json(commentData);
+    } catch (error) {
+      res.status(500).json(error);
+    }
   },
 };
