@@ -538,6 +538,7 @@ module.exports = {
       .then((comments) => res.json(comments))
       .catch((e) => console.log(e, 'getAllComments'));
   },
+
   getUserComments(req, res) {
     const userId = req.params.userId;
     if (!userId) {
@@ -595,6 +596,7 @@ module.exports = {
         .catch((e) => console.log(e, 'getUserComments'));
     }
   },
+
   moderateComment(req, res) {
     const payload = req.body;
     Comment.updateOne(
@@ -608,6 +610,7 @@ module.exports = {
       .then((result) => res.send(result))
       .catch((e) => res.status(500).json(e));
   },
+
   acknowledgeComment(req, res) {
     const payload = req.body;
     Comment.updateMany(
@@ -621,6 +624,7 @@ module.exports = {
       .then((result) => res.send(result))
       .catch((e) => res.status(500).json(e));
   },
+
   unReviewedCommentsCount(req, res) {
     Comment.aggregate([
       { $match: { acknowledged: false } },
