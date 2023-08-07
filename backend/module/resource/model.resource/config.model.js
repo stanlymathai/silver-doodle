@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const miscSchema = mongoose.Schema(
+const configSchema = mongoose.Schema(
   {
     type: {
       type: String,
@@ -20,4 +20,4 @@ const miscSchema = mongoose.Schema(
   { versionKey: false }
 );
 
-module.exports = mongoose.model('Misc', miscSchema);
+module.exports = mongoose.model('Config', configSchema);

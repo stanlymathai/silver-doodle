@@ -1,4 +1,4 @@
-const Misc = require('../model.resource/misc.model');
+const Config = require('../model.resource/config.model');
 const Profanity = require('../model.resource/profanity.model');
 const ProfanityHistory = require('../model.resource/history.profanity.modal');
 
@@ -341,7 +341,7 @@ module.exports = {
       return history.push(prelude);
     });
 
-    Misc.updateOne(
+    Config.updateOne(
       { type: CONFIG_TYPE },
       {
         $set: {
@@ -358,7 +358,7 @@ module.exports = {
   configuration(_, res) {
     const CONFIG_TYPE = 'TIMEOUT_CONFIG';
 
-    Misc.aggregate([
+    Config.aggregate([
       { $match: { type: CONFIG_TYPE } },
       { $addFields: { config: '$prelude' } },
       {
