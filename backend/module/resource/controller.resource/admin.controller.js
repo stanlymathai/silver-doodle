@@ -202,7 +202,7 @@ module.exports = {
           break;
 
         default:
-          throw new Error('invalid cessation.unit not found');
+          throw new Error('invalid cessation');
       }
       matchParams.reviewTag = {
         $lte: new Date(Date.now() - 1000 * cessationValue),
@@ -264,7 +264,11 @@ module.exports = {
         },
       ]);
 
-      res.status(200).json({ unReviewedComments, cessation });
+      // update reviewTag for fetched comments
+      Comment.updateMany(
+        { comId: { $in: unReviewedComments.map((el) => el.comId) } },
+        { reviewTag: new Date() }
+      ).then(() => res.status(200).json({ unReviewedComments, cessation }));
     } catch (e) {
       console.log(error, 'fetchUnReviewedComments');
       res.status(500).json(e);
