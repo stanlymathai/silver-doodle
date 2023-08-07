@@ -51,6 +51,11 @@ let commentSchema = mongoose.Schema(
       type: String,
     },
     acknowledgedAt: { type: Date, default: Date.now },
+    // for get unique batch of comments for review
+    reviewTag: {
+      type: Date,
+      default: new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
+    },
   },
   { versionKey: false }
 );
