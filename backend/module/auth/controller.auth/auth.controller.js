@@ -74,4 +74,37 @@ const main = async (req, res) => {
     .catch((err) => res.status(500).json({ error: err }));
 };
 
-module.exports = { index, main, authenticate };
+const social = (req, res) => {
+  const userId = req.params.id;
+  if (!userId) return res.status(400).json({ message: 'userId is required' });
+
+  User.aggregate([
+    { $match: { userId } },
+    { $limit: 1 },
+    { $project: { _id: 0, userId: 1, status: 1 } },
+    {
+      $lookup: {
+        from: 'userlogs',
+        pipeline: [{ $limit: 1 }, { $project: { _id: 0, userId: 0 } }],
+        localField: 'userId',
+        foreignField: 'userId',
+        as: 'userLog',
+      },
+    },
+    {
+      $lookup: {
+        from: 'reports',
+        pipeline: [{ $project: { _id: 1, reason: 1 } }],
+        localField: 'userId',
+        foreignField: 'reportedUser',
+        as: 'reported',
+      },
+    },
+  ])
+    .then((result) => res.status(200).json(result[0]))
+    .catch((e) => {
+      console.log(e, 'social');
+      res.status(500).json(e);
+    });
+};
+module.exports = { index, main, authenticate, social };

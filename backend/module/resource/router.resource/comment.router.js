@@ -9,9 +9,10 @@ const adminController = require('../controller.resource/admin.controller');
 router.get('/all', adminController.getAllComments);
 router.post('/moderate', adminController.moderateComment);
 router.post('/acknowledge', adminController.acknowledgeComment);
+
 router.get('/user-comment/:userId', adminController.getUserComments);
-router.post('/fetch-unreviewed', adminController.fetchUnReviewedComments);
 router.get('/unreviewed-count', adminController.unReviewedCommentsCount);
+router.post('/fetch-unreviewed', adminController.fetchUnReviewedComments);
 
 // marketing routes.
 router.post('/guest-view', controller.guestViewComments);

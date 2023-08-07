@@ -12,7 +12,6 @@ db.connect()
 
 //  routes.
 const authRoute = require('./module/auth/router.auth/auth.router');
-const userRoute = require('./module/auth/router.auth/user.router');
 const actionRoute = require('./module/resource/router.resource/action.router');
 const commentRoute = require('./module/resource/router.resource/comment.router');
 const articleRoute = require('./module/resource/router.resource/article.router');
@@ -35,7 +34,6 @@ app.use(express.urlencoded({ extended: false }));
 
 // routing requests.
 app.use(process.env.ENDPOINT_API + '/', authRoute);
-app.use(process.env.ENDPOINT_API + '/user', userRoute);
 app.use(process.env.ENDPOINT_API + '/action', actionRoute);
 app.use(process.env.ENDPOINT_API + '/comment', commentRoute);
 app.use(process.env.ENDPOINT_API + '/article', articleRoute);

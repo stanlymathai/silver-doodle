@@ -1,5 +1,4 @@
 const Comment = require('../model.resource/comment.model');
-
 const Config = require('../model.resource/config.model.js');
 
 module.exports = {
