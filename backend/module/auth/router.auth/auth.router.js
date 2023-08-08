@@ -4,6 +4,7 @@ const controller = require('../controller.auth/auth.controller');
 
 router.get('/', controller.index);
 router.post('/auth', controller.main);
-router.get('/info/social/:id', controller.social);
+router.post('/admin/ban-user', controller.banUser);
+router.get('/info/social/:id', controller.userOverview);
 
 module.exports = router;

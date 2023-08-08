@@ -74,7 +74,7 @@ const main = async (req, res) => {
     .catch((err) => res.status(500).json({ error: err }));
 };
 
-const social = (req, res) => {
+const userOverview = (req, res) => {
   const userId = req.params.id;
   if (!userId) return res.status(400).json({ message: 'userId is required' });
 
@@ -91,6 +91,7 @@ const social = (req, res) => {
         as: 'userLog',
       },
     },
+    { $unwind: '$userLog' },
     {
       $lookup: {
         from: 'reports',
@@ -103,8 +104,47 @@ const social = (req, res) => {
   ])
     .then((result) => res.status(200).json(result[0]))
     .catch((e) => {
-      console.log(e, 'social');
+      console.log(e, 'userOverview');
       res.status(500).json(e);
     });
 };
-module.exports = { index, main, authenticate, social };
+
+const banUser = async (req, res) => {
+  const payload = req.body;
+  console.log(payload);
+  if (!payload.userId)
+    return res.status(400).json({ message: 'userId is required' });
+  if (!payload.banReason)
+    return res.status(400).json({ message: 'reason is required' });
+
+  try {
+    await UserLog.updateOne(
+      { userId: payload.userId },
+      {
+        $push: {
+          bans: {
+            banUntil: payload.banUntil,
+            bannedBy: payload.bannedBy,
+            banReason: payload.banReason,
+            banStarts: payload.banStarts,
+          },
+        },
+      }
+    );
+    if (payload.intlyStatus) {
+      await User.updateOne(
+        { userId: payload.userId },
+        {
+          $set: {
+            status: payload.status ? 'BANNED' : 'ACTIVE',
+          },
+        }
+      );
+    }
+    res.status(200).json({ message: 'success' });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+module.exports = { index, main, authenticate, banUser, userOverview };
