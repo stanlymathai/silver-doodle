@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
+
 const User = require('../model.auth/user.model');
 const UserLog = require('../model.auth/log.user.model.js');
+const Reports = require('../../resource/model.resource/report.model');
 
 const index = (_, res) =>
   res.status(404).json({ message: 'MoniTalks Comment-session API Server' });
@@ -92,15 +94,6 @@ const userOverview = (req, res) => {
       },
     },
     { $unwind: '$userLog' },
-    {
-      $lookup: {
-        from: 'reports',
-        pipeline: [{ $project: { _id: 1, reason: 1 } }],
-        localField: 'userId',
-        foreignField: 'reportedUser',
-        as: 'reported',
-      },
-    },
   ])
     .then((result) => res.status(200).json(result[0]))
     .catch((e) => {
@@ -111,7 +104,7 @@ const userOverview = (req, res) => {
 
 const banUser = async (req, res) => {
   const payload = req.body;
-  console.log(payload);
+
   if (!payload.userId)
     return res.status(400).json({ message: 'userId is required' });
   if (!payload.banReason)
@@ -147,4 +140,29 @@ const banUser = async (req, res) => {
   }
 };
 
-module.exports = { index, main, authenticate, banUser, userOverview };
+const reported = async (req, res) => {
+  const userId = req.params.id;
+
+  if (!userId) return res.status(400).json({ message: 'userId is required' });
+  Reports.aggregate([
+    { $match: { reportedUser: userId } },
+    { $group: { _id: '$reason', count: { $sum: 1 } } },
+
+    { $addFields: { category: '$_id' } },
+    { $project: { _id: 0 } },
+  ])
+    .then((result) => res.status(200).json(result))
+    .catch((e) => {
+      console.log(e, 'reported');
+      res.status(500).json(e);
+    });
+};
+
+module.exports = {
+  authenticate,
+  banUser,
+  index,
+  main,
+  reported,
+  userOverview,
+};
