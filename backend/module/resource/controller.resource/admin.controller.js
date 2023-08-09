@@ -163,7 +163,7 @@ module.exports = {
   async fetchUnReviewedComments(req, res) {
     const payload = req.body;
 
-    const searchType = payload.searchType;
+    const searchType = payload.searchType || 'Default';
     const matchParams = {
       acknowledged: false,
       articleId: payload.selectedArticle,
@@ -171,12 +171,10 @@ module.exports = {
       ...(searchType === 'By Podcast' && { platform: 'PODCAST' }),
     };
 
-    // sort type for oldest and latest comments
-    const sortType = { _id: -1 };
+    // sort type for default, oldest and latest comments
+    const sortType = { 'reporters.count': -1 };
     if (searchType === 'Oldest') sortType._id = 1;
-
-    // search type for reported comments and unreported comments
-    const preserveNullAndEmptyArrays = searchType === 'Reported' ? false : true;
+    if (searchType === 'Latest') sortType._id = -1;
 
     try {
       const reviewBatchCessation = await Config.findOne({
@@ -191,7 +189,6 @@ module.exports = {
       switch (cessation.unit) {
         case 'min':
           cessationValue = cessationValue * cessation.value;
-
           break;
         case 'hour':
           cessationValue = cessationValue * 60 * cessation.value;
@@ -206,9 +203,8 @@ module.exports = {
       matchParams.reviewTag = {
         $lte: new Date(Date.now() - 1000 * cessationValue),
       };
-      const unReviewedComments = await Comment.aggregate([
+      Comment.aggregate([
         { $match: matchParams },
-        { $sort: sortType },
         { $limit: payload.limit },
         {
           $lookup: {
@@ -234,21 +230,23 @@ module.exports = {
         {
           $lookup: {
             from: 'reports',
-            pipeline: [{ $project: { _id: 1 } }],
+            pipeline: [
+              { $project: { _id: 0, reason: 1 } },
+              { $group: { _id: '$reporters', count: { $sum: 1 } } },
+              { $project: { _id: 0, count: 1 } },
+            ],
             localField: 'comId',
             foreignField: 'ref',
             as: 'reporters',
           },
         },
-        {
-          $unwind: {
-            path: '$reporters',
-            preserveNullAndEmptyArrays, // preserve / not comments with no reports
-          },
-        },
+
         { $unwind: '$userDetails' },
+        { $unwind: '$reporters' },
         { $unwind: '$article' },
 
+        { $sort: { 'reporters.count': -1 } },
+        { $sort: sortType },
         {
           $project: {
             _id: 0,
@@ -261,13 +259,13 @@ module.exports = {
             userDetails: 1,
           },
         },
-      ]);
-
-      // update reviewTag for fetched comments
-      Comment.updateMany(
-        { comId: { $in: unReviewedComments.map((el) => el.comId) } },
-        { reviewTag: new Date() }
-      ).then(() => res.status(200).json({ unReviewedComments, cessation }));
+      ]).then((unReviewedComments) => {
+        // update reviewTag for fetched comments
+        Comment.updateMany(
+          { comId: { $in: unReviewedComments.map((el) => el.comId) } },
+          { reviewTag: new Date() }
+        ).then(() => res.status(200).json({ unReviewedComments, cessation }));
+      });
     } catch (e) {
       console.log(error, 'fetchUnReviewedComments');
       res.status(500).json(e);
