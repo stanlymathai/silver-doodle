@@ -172,9 +172,10 @@ module.exports = {
     };
 
     // sort type for default, oldest and latest comments
-    const sortType = { 'reporters.count': -1 };
+    let sortType = {};
     if (searchType === 'Oldest') sortType._id = 1;
     if (searchType === 'Latest') sortType._id = -1;
+    if (searchType === 'Default') sortType = { 'reporters.count': -1 };
 
     try {
       const reviewBatchCessation = await Config.findOne({
@@ -245,7 +246,6 @@ module.exports = {
         { $unwind: '$reporters' },
         { $unwind: '$article' },
 
-        { $sort: { 'reporters.count': -1 } },
         { $sort: sortType },
         {
           $project: {
