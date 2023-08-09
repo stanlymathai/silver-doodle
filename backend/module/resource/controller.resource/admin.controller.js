@@ -172,9 +172,8 @@ module.exports = {
     };
 
     // sort type for default, oldest and latest comments
-    let sortType = {};
+    let sortType = { _id: -1 }; // latest sort type
     if (searchType === 'Oldest') sortType._id = 1;
-    if (searchType === 'Latest') sortType._id = -1;
     if (searchType === 'Default') sortType = { 'reporters.count': -1 };
 
     try {
