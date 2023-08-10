@@ -289,15 +289,8 @@ module.exports = {
           // profanity section
           const checkList = commentData.text.split(' ') || [];
 
-          const iCheckList = []; // ignore case check list
-
-          checkList.forEach(function (item) {
-            const re = new RegExp(item, 'i');
-            iCheckList.push(re);
-          });
-
           Profanity.find(
-            { swear: { $in: iCheckList }, status: 'Active' },
+            { swear: { $in: checkList }, status: 'Active' },
             { _id: 0, swear: 1 }
           ).then(async (result) => {
             let responseData = { message: 'Success' };
