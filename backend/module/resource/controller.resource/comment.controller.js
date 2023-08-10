@@ -217,7 +217,7 @@ module.exports = {
         },
       ]);
 
-      if (USER.status == 'Banned')
+      if (USER.status == 'BANNED')
         return res.json({
           ...commentData,
           alert: alerts.banedAlert,
@@ -225,15 +225,34 @@ module.exports = {
 
       const timeNow = Date.now();
       const userLogs = USER[0].userLog[0];
+      const userBans = [...userLogs.bans];
       const tickers = [...userLogs.tickers];
       const timeouts = [...userLogs.timeouts];
+
+      // check user is in temporary ban
+      if (userBans.length > 0) {
+        const banStarts = new Date(userBans[userBans.length - 1].banStarts);
+        const banUntil = new Date(userBans[userBans.length - 1].banUntil);
+
+        const dateInQuestion = new Date().toJSON().slice(0, 10);
+        const dateNow = new Date(dateInQuestion);
+        const isInBan =
+          dateNow.getTime() <= banUntil.getTime() &&
+          dateNow.getTime() >= banStarts.getTime();
+
+        if (isInBan)
+          return res.json({
+            ...commentData,
+            alert: alerts.tempBanAlert + banUntil.toDateString(),
+          });
+      }
 
       await Config.findOne({ type: TYPES.TIMEOUT_CONFIG }).then(
         async (config) => {
           const prelude = config?.prelude;
           if (!prelude) return;
 
-          const isInBan =
+          const isInTimeout =
             timeouts.length &&
             timeouts[timeouts.length - 1].createdAt >
               timeNow - prelude.timeout * MILLI_SECONDS;
@@ -245,7 +264,7 @@ module.exports = {
               alerts.timoutMessage[1],
             ...commentData,
           };
-          if (isInBan) return res.json(response);
+          if (isInTimeout) return res.json(response);
 
           const tickersInQuestion = tickers.filter(
             (el) => timeNow - el.ticker < prelude.interval * MILLI_SECONDS
@@ -267,10 +286,18 @@ module.exports = {
             return res.json(response);
           }
 
-          // profanits section
-          const profanityCheckList = commentData.text.split(' ');
+          // profanity section
+          const checkList = commentData.text.split(' ') || [];
+
+          const iCheckList = []; // ignore case check list
+
+          checkList.forEach(function (item) {
+            const re = new RegExp(item, 'i');
+            iCheckList.push(re);
+          });
+
           Profanity.find(
-            { swear: { $in: profanityCheckList }, status: 'Active' },
+            { swear: { $in: iCheckList }, status: 'Active' },
             { _id: 0, swear: 1 }
           ).then(async (result) => {
             let responseData = { message: 'Success' };

@@ -7,4 +7,5 @@ module.exports = {
   ],
   banedAlert:
     'As a result of violating our Community Guidelines, you have been permanently banned.',
+  tempBanAlert: 'You have been temporarily banned until ',
 };
