@@ -10,12 +10,16 @@ module.exports = {
       {
         $lookup: {
           from: 'users',
-          pipeline: [{ $limit: 1 }, { $project: { fullName: 1, _id: 0 } }],
+          pipeline: [
+            { $limit: 1 },
+            { $project: { fullName: 1, _id: 0, internalId: 1, userId: 1 } },
+          ],
           localField: 'userId',
           foreignField: 'userId',
-          as: 'userName',
+          as: 'userDetails',
         },
       },
+      { $unwind: '$userDetails' },
       {
         $lookup: {
           from: 'articles',
@@ -60,6 +64,7 @@ module.exports = {
           as: 'reporters',
         },
       },
+      { $project: { userId: 0 } },
     ])
       .then((comments) => res.json(comments))
       .catch((e) => console.log(e, 'getAllComments'));
