@@ -146,6 +146,7 @@ module.exports = {
   },
 
   unReviewedCommentsCount(_, res) {
+    // todo: real time count
     Comment.aggregate([
       { $match: { acknowledged: false } },
       { $count: 'total' },
