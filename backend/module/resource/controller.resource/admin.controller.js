@@ -145,45 +145,13 @@ module.exports = {
       .catch((e) => res.status(500).json(e));
   },
 
-  async unReviewedCommentsCount(_, res) {
-    try {
-      const reviewBatchCessation = await Config.findOne({
-        type: 'REVIEW_BATCH_CESSATION',
-      });
-      if (!reviewBatchCessation)
-        throw new Error('REVIEW_BATCH_CESSATION not found');
-
-      const cessation = reviewBatchCessation.prelude;
-      let cessationValue = 60;
-
-      switch (cessation.unit) {
-        case 'min':
-          cessationValue *= cessation.value;
-          break;
-        case 'hour':
-          cessationValue *= 60 * cessation.value;
-          break;
-        case 'day':
-          cessationValue *= 60 * 24 * cessation.value;
-          break;
-
-        default:
-          throw new Error('invalid cessation');
-      }
-
-      Comment.aggregate([
-        {
-          $match: {
-            acknowledged: false,
-            reviewTag: { $lte: new Date(Date.now() - 1000 * cessationValue) },
-          },
-        },
-        { $count: 'total' },
-      ]).then((result) => res.status(200).json(result[0].total));
-    } catch (e) {
-      console.log(e, 'unReviewedCommentsCount');
-      res.status(500).json(e);
-    }
+  unReviewedCommentsCount(_, res) {
+    Comment.aggregate([
+      { $match: { acknowledged: false } },
+      { $count: 'total' },
+    ])
+      .then((result) => res.status(200).json(result[0].total))
+      .catch((e) => res.status(500).json(e));
   },
 
   acknowledgeComment(req, res) {
